@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Adresse;
 use App\Entity\Contact;
 use App\Entity\Lieux;
+use App\Entity\TypeLieux;
 use App\Form\AssociationType;
 use Doctrine\ORM\EntityManagerInterface;
 use http\Env\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,17 +32,28 @@ class AssociationController extends AbstractController
         $asso = new Lieux();
         $adresse = new Adresse();
         $contact = new Contact();
-        $asso->setTypeLieux("association");
+        $typeLieux = new TypeLieux();
+        $typeLieux->setLibelle("association");
+        $asso->setTypeLieux($typeLieux);
         $contact->setBenevole(false);
         $contact->setProximite(false);
         $asso->setAdresse($adresse);
+        $asso->addContact($contact);
+        $contact->setAdresse($adresse);
         $form = $this->createForm(AssociationType::class,$asso);
+        $form->add('send',SubmitType::class,['label'=>'Ajouter']);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
-
+            $em->persist($asso);
+            $em->persist($contact);
+            $em->persist($adresse);
+            $em->persist($typeLieux);
+            $em->flush();
+            return $this->redirectToRoute('association_index');
         }
-        $this->render('association/form.html.twig',['form'=>$form->createView()]);
+
+        return $this->render('association/form.html.twig',['form'=>$form->createView()]);
     }
 
 }
