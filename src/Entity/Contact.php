@@ -47,6 +47,7 @@ class Contact
     private Collection $lieux;
 
     #[ORM\ManyToOne(inversedBy: 'contacts')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Adresse $adresse = null;
 
     public function __construct()
