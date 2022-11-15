@@ -29,10 +29,10 @@ class Contact
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $benevole = null;
+    private ?bool $benevole = false;
 
     #[ORM\Column]
-    private ?bool $proximite = null;
+    private ?bool $proximite = false;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $dateDisponibilite = [];

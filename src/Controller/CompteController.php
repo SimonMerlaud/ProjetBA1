@@ -2,8 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\CompteBenevole;
+use App\Entity\Contact;
+use App\Form\CompteType;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -32,8 +38,29 @@ class CompteController extends AbstractController
     }
 
     #[Route(path: '/add', name: '_add')]
-    public function addCompte(): void
+    public function addCompte(UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $em): Response
     {
+        $compte = new CompteBenevole();
+        $form = $this->createForm(CompteType::class, $compte);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()) {
+            $hashedPassword = $passwordHasher->hashPassword(
+                $compte,
+                $compte->getPassword()
+            );
+            $compte->setPassword($hashedPassword);
+            $contact = new Contact();
+            $contact->setPrenom('ba')
+                ->setNom('ba');
 
+            $compte->setContact($contact);
+            $em->persist($compte);
+            $em->flush();
+            $this->addFlash('add', "le compte a été ajouté");
+            return $this->redirectToRoute("accueil");
+        }
+        return $this->render('compte/form.html.twig', [
+            'form' => $form->createView()
+        ]);
     }
 }

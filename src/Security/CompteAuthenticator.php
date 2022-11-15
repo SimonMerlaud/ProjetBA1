@@ -47,7 +47,7 @@ class CompteAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('compte_accueil'));
+        return new RedirectResponse($this->urlGenerator->generate('accueil'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
     }
 
