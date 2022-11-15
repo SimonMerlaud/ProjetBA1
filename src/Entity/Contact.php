@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ContactRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -40,6 +42,17 @@ class Contact
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $fonction = [];
+
+    #[ORM\ManyToMany(targetEntity: Lieux::class, mappedBy: 'contacts')]
+    private Collection $lieux;
+
+    #[ORM\ManyToOne(inversedBy: 'contacts')]
+    private ?Adresse $adresse = null;
+
+    public function __construct()
+    {
+        $this->lieux = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -150,6 +163,45 @@ class Contact
     public function setFonction(?array $fonction): self
     {
         $this->fonction = $fonction;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lieux>
+     */
+    public function getLieux(): Collection
+    {
+        return $this->lieux;
+    }
+
+    public function addLieux(Lieux $lieux): self
+    {
+        if (!$this->lieux->contains($lieux)) {
+            $this->lieux->add($lieux);
+            $lieux->addContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLieux(Lieux $lieux): self
+    {
+        if ($this->lieux->removeElement($lieux)) {
+            $lieux->removeContact($this);
+        }
+
+        return $this;
+    }
+
+    public function getAdresse(): ?Adresse
+    {
+        return $this->adresse;
+    }
+
+    public function setAdresse(?Adresse $adresse): self
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

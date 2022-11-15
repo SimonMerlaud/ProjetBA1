@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AdresseRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
@@ -27,6 +29,18 @@ class Adresse
 
     #[ORM\Column(nullable: true)]
     private ?int $numeroAppart = null;
+
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Lieux::class)]
+    private Collection $lieux;
+
+    #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Contact::class)]
+    private Collection $contacts;
+
+    public function __construct()
+    {
+        $this->lieux = new ArrayCollection();
+        $this->contacts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +103,66 @@ class Adresse
     public function setNumeroAppart(?int $numeroAppart): self
     {
         $this->numeroAppart = $numeroAppart;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Lieux>
+     */
+    public function getLieux(): Collection
+    {
+        return $this->lieux;
+    }
+
+    public function addLieux(Lieux $lieux): self
+    {
+        if (!$this->lieux->contains($lieux)) {
+            $this->lieux->add($lieux);
+            $lieux->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLieux(Lieux $lieux): self
+    {
+        if ($this->lieux->removeElement($lieux)) {
+            // set the owning side to null (unless already changed)
+            if ($lieux->getAdresse() === $this) {
+                $lieux->setAdresse(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): self
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+            $contact->setAdresse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): self
+    {
+        if ($this->contacts->removeElement($contact)) {
+            // set the owning side to null (unless already changed)
+            if ($contact->getAdresse() === $this) {
+                $contact->setAdresse(null);
+            }
+        }
 
         return $this;
     }

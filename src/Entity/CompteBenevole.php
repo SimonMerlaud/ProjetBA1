@@ -27,6 +27,10 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
     #[ORM\Column]
     private ?string $password = null;
 
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Contact $contact = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -95,5 +99,17 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(Contact $contact): self
+    {
+        $this->contact = $contact;
+
+        return $this;
     }
 }
