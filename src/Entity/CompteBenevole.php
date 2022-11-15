@@ -6,6 +6,7 @@ use App\Repository\CompteBenevoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CompteBenevoleRepository::class)]
 class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterface
@@ -16,6 +17,8 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email(message: "Cette email: {{ value }} n'est pas valid.")]
+    #[Assert\NotBlank(message: "L'email est obligatoire")]
     private ?string $mail = null;
 
     #[ORM\Column]
@@ -25,6 +28,16 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
+    #[Assert\Regex(
+        pattern: "#^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$#",
+        message: "le mot de passe doit contenir:
+                    - au moins 8 caractere
+                    - 1 majuscule
+                    - 1 minuscule
+                    - 1 chiffre
+                    - 1 caractere special",
+    )]
     private ?string $password = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

@@ -20,7 +20,7 @@ class CompteController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
          if ($this->getUser()) {
-             return $this->redirectToRoute('accueil');
+             return $this->redirectToRoute('compte_index');
          }
 
         // get the login error if there is one
@@ -35,6 +35,12 @@ class CompteController extends AbstractController
     public function logout(): void
     {
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
+    }
+
+    #[Route(path: '/index', name: '_index')]
+    public function accueilCompte(): Response
+    {
+        return $this->render('compte/index.html.twig');
     }
 
     #[Route(path: '/add', name: '_add')]
@@ -57,6 +63,7 @@ class CompteController extends AbstractController
             $em->persist($compte);
             $em->flush();
             $this->addFlash('add', "le compte a été ajouté");
+
             return $this->redirectToRoute("accueil");
         }
         return $this->render('compte/form.html.twig', [

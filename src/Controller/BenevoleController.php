@@ -16,9 +16,9 @@ use Symfony\Component\Routing\Annotation\Route;
 class BenevoleController extends AbstractController
 {
 
-    #[Route('')]
+    #[Route('', name: '')]
     public function index(): Response{
-        return $this->render('benevole/index.html.twig', [
+        return $this->render('benevole/doodle.html.twig', [
             'controller_name' => 'BenevoleController',
         ]);
     }
@@ -46,7 +46,7 @@ class BenevoleController extends AbstractController
             //faire un render sur une page pour dire que
             //le user est bien inscrit
 
-            return $this->render('benevole/index.html.twig', [
+            return $this->render('benevole/doodle.html.twig', [
                 'controller_name' => 'Bien inscrit',
             ]);
 
