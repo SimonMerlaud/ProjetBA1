@@ -18,7 +18,7 @@ class BenevoleController extends AbstractController
 
     #[Route('', name: '')]
     public function index(): Response{
-        return $this->render('benevole/doodle.html.twig', [
+        return $this->render('benevole/index.html.twig', [
             'controller_name' => 'BenevoleController',
         ]);
     }
@@ -37,18 +37,25 @@ class BenevoleController extends AbstractController
 
 
         if($form->isSubmitted() && $form->isValid()){
-            //mettre le formulaire
-            dump($benevole);
-            $em->persist($benevole);
-            $em->persist($adresse);
-            $em->flush();
+            if($benevole->getMail() || $benevole->getTelephone()){
+                $em->persist($benevole);
+                $em->persist($adresse);
+                $em->flush();
+
+                return $this->render('benevole/index.html.twig', [
+                    'controller_name' => 'Bien inscrit',
+                ]);
+
+            }else{
+                $this->addFlash('error', "Le téléphone ou le mail doit être renseigné");
+                return $this->redirectToRoute("benevole_inscription_");
+            }
+
 
             //faire un render sur une page pour dire que
             //le user est bien inscrit
 
-            return $this->render('benevole/doodle.html.twig', [
-                'controller_name' => 'Bien inscrit',
-            ]);
+
 
         }
 

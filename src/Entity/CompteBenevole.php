@@ -17,7 +17,7 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Assert\Email(message: "Cette email: {{ value }} n'est pas valid.")]
+    #[Assert\Email(message: "Cette email: {{ value }} n'est pas valide.")]
     #[Assert\NotBlank(message: "L'email est obligatoire")]
     private ?string $mail = null;
 

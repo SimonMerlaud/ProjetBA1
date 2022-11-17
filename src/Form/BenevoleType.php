@@ -18,15 +18,15 @@ class BenevoleType extends AbstractType
         $builder
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
-            ->add('mail', EmailType::class)
-            ->add('telephone', TelType::class)
+            ->add('mail', EmailType::class, ['required'=> false])
+            ->add('telephone', TelType::class, ['required'=> false])
             ->add('proximite', ChoiceType::class,[
                 'choices' => [
                     'Oui' => true,
                     'Non' => false,
                 ]
             ])
-            ->add('dateDisponibilite')
+            //->add('dateDisponibilite', CreneauxType::class)
             //Pouvoir mettre son adresse
             ->add('adresse', AdresseType::class)
 

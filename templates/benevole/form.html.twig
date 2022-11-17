@@ -4,6 +4,9 @@
 
 {% block h1 %}Inscription pour collecte{% endblock %}
 
+{% block javascripts %}{{ parent() }}
+    {% include 'doodle.html.twig' %}
+{% endblock %}
 {% block body %}
     <style>
         .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
@@ -11,7 +14,50 @@
     </style>
 
     <div class="example-wrapper">
-         {{ form(form) }}
+        {{ form_start(form) }}
+
+        <div class="mb-3">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="mb-3">
+        {{ form_label(form.prenom) }}
+        {{ form_widget(form.prenom) }}
+        {{ form_errors(form.prenom) }}
+        </div>
+
+        <div class="mb-3">
+        {{ form_label(form.mail) }}
+        {{ form_widget(form.mail, {}) }}
+        {{ form_errors(form.mail) }}
+        </div>
+
+        <div class="mb-3">
+        {{ form_label(form.telephone) }}
+        {{ form_widget(form.telephone) }}
+        {{ form_errors(form.telephone) }}
+        </div>
+
+        <div class="mb-3">
+        {{ form_label(form.proximite) }}
+        {{ form_widget(form.proximite) }}
+        {{ form_errors(form.proximite) }}
+        </div>
+
+        <div class="mb-3">
+        {{ form_widget(form.adresse) }}
+        {{ form_errors(form.adresse) }}
+        </div>
+
+
+
+
+         {{ form_end(form) }}
 
     </div>
+
+    {# <div id="calendar-holder"></div> #}
+
 {% endblock %}
