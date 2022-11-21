@@ -46,6 +46,14 @@ class Adresse
         $this->contacts = new ArrayCollection();
     }
 
+    public function __toString() {
+        $res = $this->codePostale . " " . $this->ville . ", " . $this->numeroRue . " " . $this->rue;
+        if($this->numeroAppart >0){
+            $res .= " Appart ". $this->numeroAppart;
+        }
+        return $res;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -99,12 +107,12 @@ class Adresse
         return $this;
     }
 
-    public function getNumeroAppart(): ?int
+    public function getNumeroAppart(): ?string
     {
         return $this->numeroAppart;
     }
 
-    public function setNumeroAppart(?int $numeroAppart): self
+    public function setNumeroAppart(?string $numeroAppart): self
     {
         $this->numeroAppart = $numeroAppart;
 

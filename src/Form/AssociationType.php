@@ -18,7 +18,7 @@ class AssociationType extends AbstractType
         $builder
             ->add('nom', TextType::class)
             ->add('nbPersonneNecessaire', IntegerType::class)
-            ->add('adresse', AdresseType::class)
+            ->add('adresse', AdresseType::class, array('label' => false))
             ->add('contacts',CollectionType::class,array('entry_type'=>ContactAssoType::class))
         ;
     }

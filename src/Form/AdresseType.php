@@ -18,7 +18,7 @@ class AdresseType extends AbstractType
             ->add('ville',TextType::class)
             ->add('rue',TextType::class)
             ->add('numeroRue',IntegerType::class)
-            ->add('numeroAppart',IntegerType::class)
+            ->add('numeroAppart',IntegerType::class,['required'=>false])
         ;
     }
 

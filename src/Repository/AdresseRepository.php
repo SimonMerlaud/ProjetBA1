@@ -20,7 +20,6 @@ class AdresseRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Adresse::class);
     }
-
     public function save(Adresse $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
@@ -39,20 +38,23 @@ class AdresseRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Adresse[] Returns an array of Adresse objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findAllWithParameter($codePost, $ville, $rue, $nbRue, $nbAppart): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.codePostale = :codePos')
+            ->setParameter('codePos', $codePost)
+            ->andWhere('a.ville = :ville')
+            ->setParameter('ville', $ville)
+            ->andWhere('a.rue = :rue')
+            ->setParameter('rue', $rue)
+            ->andWhere('a.numeroRue = :nbRue')
+            ->setParameter('nbRue', $nbRue)
+            ->andWhere('a.numeroAppart = :nbAppart')
+            ->setParameter('nbAppart',$nbAppart)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
 //    public function findOneBySomeField($value): ?Adresse
 //    {

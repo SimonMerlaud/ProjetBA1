@@ -1,20 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AssociationController!{% endblock %}
+{% block h1 %}
+    Liste des associations
+{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="justify-content-md-end text-center">
+        <form action="{{ url("association_add") }}" >
+            <button class="btn btn-secondary " type="submit" >Ajouter une association</button>
+        </form>
+        <div class="row d-flex justify-content-center">
+            <div class="col-4 mt-2">
+                {{ render(controller(
+                    'App\\Controller\\SearchController::searchAsso'
+                )) }}
+            </div>
+        </div>
+    </div>
+    {{ include('association/list.html.twig', {'associations': associations}) }}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {{ include('association/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/roule/OneDrive/Documents/WORK/Projet/ProjetBA1/src/Controller/AssociationController.php'|file_link(0) }}">src/Controller/AssociationController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/roule/OneDrive/Documents/WORK/Projet/ProjetBA1/templates/association/doodle.html.twig'|file_link(0) }}">templates/association/index.html.twig</a></code></li>
-    </ul>
-</div>
+
 {% endblock %}

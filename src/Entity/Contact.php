@@ -57,6 +57,10 @@ class Contact
     {
         $this->lieux = new ArrayCollection();
     }
+    public function __toString() {
+        $res = $this->nom . " " . $this->prenom . ", " . $this->mail . " " . $this->telephone ;
+        return $res;
+    }
 
     public function getId(): ?int
     {
