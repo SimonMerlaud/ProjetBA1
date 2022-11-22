@@ -18,7 +18,7 @@ class BenevoleController extends AbstractController
 
     #[Route('', name: '')]
     public function index(): Response{
-        return $this->render('benevole/index.html.twig', [
+        return $this->render('benevole/form.html.twig', [
             'controller_name' => 'BenevoleController',
         ]);
     }
@@ -42,7 +42,7 @@ class BenevoleController extends AbstractController
                 $em->persist($adresse);
                 $em->flush();
 
-                return $this->render('benevole/index.html.twig', [
+                return $this->render('benevole/form.html.twig', [
                     'controller_name' => 'Bien inscrit',
                 ]);
 

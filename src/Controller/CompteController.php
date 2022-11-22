@@ -40,7 +40,7 @@ class CompteController extends AbstractController
     #[Route(path: '/index', name: '_index')]
     public function accueilCompte(): Response
     {
-        return $this->render('compte/index.html.twig');
+        return $this->render('compte/form.html.twig');
     }
 
     #[Route(path: '/add', name: '_add')]
