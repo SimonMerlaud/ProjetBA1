@@ -1,0 +1,16 @@
+{% extends('base.html.twig') %}
+
+{% block h1 %}
+    Ajouter un contact
+{% endblock %}
+
+{% block body %}
+    <div class="container ">
+        <div class="row justify-content-center align-center">
+            <div class="col-8">
+                {{ form(form) }}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

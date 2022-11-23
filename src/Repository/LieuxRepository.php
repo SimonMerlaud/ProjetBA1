@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Lieux;
+use App\Entity\TypeLieux;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
@@ -43,7 +44,10 @@ class LieuxRepository extends ServiceEntityRepository
     public function myFindAllWithPaging(string $libelle, $currentPage): Paginator
     {
         $query = $this->createQueryBuilder('l')
-            ->where('l.type_lieux_id.libelle = :libelle')
+            ->join('l.TypeLieux', 'tl')
+            ->addSelect('tl')
+            ->where('tl.id = l.TypeLieux')
+            ->where('tl.libelle = :libelle')
             ->setParameter('libelle', $libelle)
             ->orderBy('l.id','DESC')
             ->getQuery()
@@ -56,7 +60,10 @@ class LieuxRepository extends ServiceEntityRepository
     {
         $args = array(explode(' ',$criteria->getNom()));
         $query = $this->createQueryBuilder('l')
-            ->where('l.type_lieux_id.libelle = :libelle')
+            ->join('l.TypeLieux', 'tl')
+            ->addSelect('tl')
+            ->where('tl.id = l.TypeLieux')
+            ->where('tl.libelle = :libelle')
             ->setParameter('libelle', $libelle)
             ->orderBy('l.id', 'DESC');
         for ($i=0; $i<=count($args) - 1; $i++) {

@@ -6,6 +6,7 @@ use App\Entity\Adresse;
 use App\Entity\Contact;
 use App\Entity\Lieux;
 use App\Entity\TypeLieux;
+use App\Form\ContactAssoType;
 use App\Form\LieuxType;
 use App\Form\SearchAssoType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -38,9 +39,9 @@ class MagasinController extends AbstractController
         if ($searchForm->handleRequest($request)->isSubmitted() && $searchForm->isValid()){
             $criteria = $searchForm->getData();
             $magasins = $em->getRepository(Lieux::class)->findWithKeyWord("magasin", $criteria);
-            return $this->render('magasin/index.html.twig',["magasin"=>$magasins,"currentPage"=>$page,"nbPage"=>$nbTotalPages]);
+            return $this->render('magasin/index.html.twig',["magasins"=>$magasins,"currentPage"=>$page,"nbPage"=>$nbTotalPages]);
         }else {
-            return $this->render('magasin/index.html.twig', ["magasin" => $magasins, "currentPage" => $page, "nbPage" => $nbTotalPages]);
+            return $this->render('magasin/index.html.twig', ["magasins" => $magasins, "currentPage" => $page, "nbPage" => $nbTotalPages]);
         }
     }
 
@@ -119,12 +120,93 @@ class MagasinController extends AbstractController
         ]);
     }
 
-    #[Route('/list', name: '_list')]
-    public function listMagasin(Request $request, EntityManagerInterface $em): Response
+    #[Route('/visualisation/{id}', name: '_view',
+        requirements:[ 'id'=>'\d+'])]
+    public function viewAction(EntityManagerInterface $em,$id):Response
     {
+        $magasin = $em->getRepository(Lieux::class)->find($id);
+        if($magasin == null){
+            $this->addFlash('error', 'Ce magasin n\'existe pas');
+            return $this->redirectToRoute('magasin_index');
+        }
+        return $this->render('magasin/view.html.twig',['magasin'=>$magasin]);
+    }
 
-        return $this->render('magasin/form.html.twig', [
-            'form' => $form->createView()
-        ]);
+    #[Route('/modifier/{id}', name: '_edit',
+        requirements:[ 'id'=>'\d+'])]
+    public function editAction(EntityManagerInterface $em,$id, \Symfony\Component\HttpFoundation\Request $request):Response
+    {
+        $mag = $em->getRepository(Lieux::class)->find($id);
+        if($mag == null){
+            $this->addFlash('error', 'Ce magasin n\'existe pas');
+            return $this->redirectToRoute('magasin_index');
+        }
+        $form = $this->createForm(LieuxType::class,$mag);
+        $form->add('send',SubmitType::class,['label'=>'Modifier']);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            $this->addFlash('add', 'Le magasin a été modifié');
+            return $this->redirectToRoute('magasin_index');
+        }
+        return $this->render('magasin/form.html.twig',['form'=>$form->createView()]);
+    }
+
+    #[Route('/delete/{id}', name: '_delete',
+        requirements:[ 'id'=>'\d+'])]
+    public function deleteAction(EntityManagerInterface $em,$id):Response
+    {
+        $mag = $em->getRepository(Lieux::class)->find($id);
+        if ($mag == NULL){
+            $this->addFlash('error', "Le magasin n'existe pas");
+            return $this->redirectToRoute('magasin_index');
+        }else {
+            foreach ($mag->getContacts() as $contact){
+                $em->getRepository(Contact::class)->remove($contact);
+            }
+            $em->getRepository(Lieux::class)->remove($mag);
+            $em->flush();
+            $this->addFlash('add', "Le magasin a été supprimer");
+            return $this->redirectToRoute('magasin_index');
+        }
+    }
+
+    #[Route('/addContact/{id}', name: '_addContact',
+        requirements:[ 'id'=>'\d+'])]
+    public function AddContactAction(EntityManagerInterface $em,$id, \Symfony\Component\HttpFoundation\Request $request): Response
+    {
+        $contact = new Contact();
+        $form = $this->createForm(ContactAssoType::class,$contact);
+        $form->add('send',SubmitType::class,['label'=>'Ajouter']);
+        $form->handleRequest($request);
+        $mag = $em->getRepository(Lieux::class)->find($id);
+        if($mag == null){
+            $this->addFlash('error', 'Le magasin n\'existe pas');
+            return $this->redirectToRoute('magasin_index');
+        }else {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $data = $form->getData();
+                $cont = $em->getRepository(Contact::class)->findBy(array('nom' => $data->getNom(), 'prenom' => $data->getPrenom(), 'mail' => $data->getMail()));
+                if ($cont != null) {
+                    $mag->addContact($cont);
+                } else {
+                    $contact = $data;
+                    $contact->setBenevole(false);
+                    $contact->setProximite(false);
+                    $mag->addContact($contact);
+                    $em->persist($contact);
+                }
+                $em->persist($mag);
+                $em->flush();
+                $this->addFlash('add', 'Le contact a été ajouté au magasin');
+                return $this->redirectToRoute('association_index');
+            }
+        }
+        return $this->render('magasin/formContact.html.twig',['form'=>$form->createView()]);
+    }
+
+    public function Pagination($currentPage, $nbPage):Response
+    {
+        return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
     }
 }
