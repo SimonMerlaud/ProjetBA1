@@ -1,0 +1,46 @@
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Adresse</th>
+                    <th scope="col">Modification</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if associations is null%}
+                        <h3>Il n'y a pas d'association a ce nom</h3>
+>                    {% endif %}
+
+                    {% for association in associations %}
+                        <tr class="table-light">
+                            <th scope="row">
+                                <form action="{{ url("association_view",{'id': association.id}) }}" >
+                                    <button class="btn btn" type="submit" >
+                                        {{ association.nom }}
+                                    </button>
+                                </form>
+                            </th>
+                            <td>{{ association.adresse }}</td>
+                            <td>
+                                <div class="button_view" style="position: relative">
+                                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                        <button class="btn btn-sm" type="submit" >🗑</button>
+                                    </form>
+                                    <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
+                                        <button class="btn btn-sm" type="submit">🛠</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

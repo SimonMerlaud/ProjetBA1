@@ -40,9 +40,11 @@ class LieuxRepository extends ServiceEntityRepository
         }
     }
 
-    public function myFindAllWithPaging($currentPage): Paginator
+    public function myFindAllWithPaging(string $libelle, $currentPage): Paginator
     {
         $query = $this->createQueryBuilder('l')
+            ->where('l.type_lieux_id.libelle = :libelle')
+            ->setParameter('libelle', $libelle)
             ->orderBy('l.id','DESC')
             ->getQuery()
             ->setFirstResult(($currentPage - 1) * 20) // Premier élément de la page
@@ -50,10 +52,12 @@ class LieuxRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
-    public function findWithKeyWord(Lieux $criteria )
+    public function findWithKeyWord(string $libelle, Lieux $criteria )
     {
         $args = array(explode(' ',$criteria->getNom()));
         $query = $this->createQueryBuilder('l')
+            ->where('l.type_lieux_id.libelle = :libelle')
+            ->setParameter('libelle', $libelle)
             ->orderBy('l.id', 'DESC');
         for ($i=0; $i<=count($args) - 1; $i++) {
             $query->andWhere('l.nom LIKE :searchTerm')
