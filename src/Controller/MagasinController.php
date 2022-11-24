@@ -113,7 +113,7 @@ class MagasinController extends AbstractController
             $em->flush();
             $this->addFlash('add', "le magasin a été ajouté");
 
-            return $this->redirectToRoute("accueil");
+            return $this->redirectToRoute("magasin_index");
         }
         return $this->render('magasin/form.html.twig', [
             'form' => $form->createView()
@@ -146,6 +146,8 @@ class MagasinController extends AbstractController
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
+            $em->persist($mag);
+            $em->flush();
             $this->addFlash('add', 'Le magasin a été modifié');
             return $this->redirectToRoute('magasin_index');
         }
@@ -185,8 +187,9 @@ class MagasinController extends AbstractController
             return $this->redirectToRoute('magasin_index');
         }else {
             if ($form->isSubmitted() && $form->isValid()) {
+
                 $data = $form->getData();
-                $cont = $em->getRepository(Contact::class)->findBy(array('nom' => $data->getNom(), 'prenom' => $data->getPrenom(), 'mail' => $data->getMail()));
+                $cont = $em->getRepository(Contact::class)->findOneBy(array('nom' => $data->getNom(), 'prenom' => $data->getPrenom(), 'mail' => $data->getMail()));
                 if ($cont != null) {
                     $mag->addContact($cont);
                 } else {
@@ -199,7 +202,7 @@ class MagasinController extends AbstractController
                 $em->persist($mag);
                 $em->flush();
                 $this->addFlash('add', 'Le contact a été ajouté au magasin');
-                return $this->redirectToRoute('association_index');
+                return $this->redirectToRoute('magasin_view', array('id' => $id));
             }
         }
         return $this->render('magasin/formContact.html.twig',['form'=>$form->createView()]);

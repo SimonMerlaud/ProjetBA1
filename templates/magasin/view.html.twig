@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block h1 %}
-    Association {{ association.nom }}
+    Magasin {{ magasin.nom }}
 {% endblock %}
 
 {% block body %}
@@ -10,67 +10,9 @@
         <div class="row">
             <div class="col-12">
                 <br><br>
-                <!-- Social media detail -->
-                <div class="row mb-5 gx-5">
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
-                        <div class="bg-light px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <h4 class="mb-4 mt-0">Contact</h4>
-                                <!-- Facebook -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
-                                    {% set contact = magasin.contacts.toArray %}
-                                    <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact[0].nom}}" disabled>
-                                </div>
-                                <!-- Twitter -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact[0].prenom }}" disabled>
-                                </div>
-                                <!-- Linkedin -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact[0].mail }}" disabled>
-                                </div>
-                                <!-- Instragram -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact[0].telephone }}" disabled>
-                                </div>
-                            </div> <!-- Row END -->
-                        </div>
-                    </div>
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
-                        <div class="bg-light px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <h4 class="mb-4 mt-0">Contact</h4>
-                                <!-- Facebook -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
-                                    {% set contact = magasin.contacts.toArray %}
-                                    <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact[0].nom}}" disabled>
-                                </div>
-                                <!-- Twitter -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact[0].prenom }}" disabled>
-                                </div>
-                                <!-- Linkedin -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact[0].mail }}" disabled>
-                                </div>
-                                <!-- Instragram -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact[0].telephone }}" disabled>
-                                </div>
-                            </div> <!-- Row END -->
-                        </div>
-                    </div>
 
-                    <!-- change password -->
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
+                <div class="row mb-5 gx-5">
+                    <div class="col-xxl-6 mb-5 ">
                         <div class="bg-light px-4 py-5 rounded">
                             <div class="row g-3">
                                 <h4 class="mb-4 mt-0">Information sur le magasin</h4>
@@ -94,8 +36,37 @@
                         </div>
                     </div>
 
+                    {% for contact in magasin.contacts|slice(0,2) %}
+                        <div class="col-xxl-6 mb-5">
+                            <div class="bg-light px-4 py-5 rounded">
+                                <div class="row g-3">
+                                    <h4 class="mb-4 mt-0">Contact</h4>
+                                    <!-- Facebook -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact.nom}}" disabled>
+                                    </div>
+                                    <!-- Twitter -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact.prenom }}" disabled>
+                                    </div>
+                                    <!-- Linkedin -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact.mail }}" disabled>
+                                    </div>
+                                    <!-- Instragram -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact.telephone }}" disabled>
+                                    </div>
+                                </div> <!-- Row END -->
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-                <div class="justify-content-md-end text-center">
+                <div class="justify-content-md-end text-center mb-5">
                     <form action="{{ url("magasin_addContact",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
                         <button class="btn btn-danger " type="submit" >Ajouter un contact</button>
                     </form>
@@ -105,7 +76,11 @@
                     <form action="{{ url("magasin_edit",{'id': magasin.id}) }}" style="display:inline-block; ">
                         <button class="btn btn-primary" type="submit">Modifier</button>
                     </form>
+                    <form action="{{ url("magasin_index") }}" style="display:inline-block; ">
+                        <button class="btn btn-primary" type="submit">Retour</button>
+                    </form>
                 </div>
+            </div>
         </div>
     </div>
 
