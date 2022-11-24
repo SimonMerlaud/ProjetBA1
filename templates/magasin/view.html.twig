@@ -40,7 +40,14 @@
                         <div class="col-xxl-6 mb-5">
                             <div class="bg-light px-4 py-5 rounded">
                                 <div class="row g-3">
-                                    <h4 class="mb-4 mt-0">Contact</h4>
+                                    <h4 class="dflex mb-4 mt-0">Contact
+                                            <form action="{{ url("magasin_deleteContact",{'AssoId':association.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                                <button class="btn btn-sm deleteBtn" type="submit" >🗑</button>
+                                            </form>
+                                            <form action="{{ url("contact_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
+                                                <button class="btn btn-sm" type="submit">🛠</button>
+                                            </form>
+                                    </h4>
                                     <!-- Facebook -->
                                     <div class="col-md-6">
                                         <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
@@ -68,7 +75,7 @@
                 </div>
                 <div class="justify-content-md-end text-center mb-5">
                     <form action="{{ url("magasin_addContact",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-danger " type="submit" >Ajouter un contact</button>
+                        <button class="btn btn-primary " type="submit" >Ajouter un contact</button>
                     </form>
                     <form action="{{ url("magasin_delete",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
                         <button class="btn btn-danger " type="submit" >Supprimer</button>

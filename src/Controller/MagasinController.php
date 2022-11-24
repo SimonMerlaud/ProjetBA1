@@ -8,6 +8,7 @@ use App\Entity\Lieux;
 use App\Entity\TypeLieux;
 use App\Form\ContactAssoType;
 use App\Form\LieuxType;
+use App\Form\ModifyLieuxType;
 use App\Form\SearchAssoType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -141,7 +142,7 @@ class MagasinController extends AbstractController
             $this->addFlash('error', 'Ce magasin n\'existe pas');
             return $this->redirectToRoute('magasin_index');
         }
-        $form = $this->createForm(LieuxType::class,$mag);
+        $form = $this->createForm(ModifyLieuxType::class,$mag);
         $form->add('send',SubmitType::class,['label'=>'Modifier']);
         $form->handleRequest($request);
 
@@ -151,7 +152,7 @@ class MagasinController extends AbstractController
             $this->addFlash('add', 'Le magasin a été modifié');
             return $this->redirectToRoute('magasin_index');
         }
-        return $this->render('magasin/form.html.twig',['form'=>$form->createView()]);
+        return $this->render('magasin/formModifyLieux.html.twig',['form'=>$form->createView(), 'id'=>$id]);
     }
 
     #[Route('/delete/{id}', name: '_delete',
@@ -211,5 +212,52 @@ class MagasinController extends AbstractController
     public function Pagination($currentPage, $nbPage):Response
     {
         return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
+    }
+
+    #[Route('/modifyContact/{AssoId}/{id}', name: '_modifyContact',
+        requirements:[ 'id'=>'\d+',
+            'AssoId'=>'\d+'
+        ])]
+    public function modifyContactAction(EntityManagerInterface $em,$id,$MagId,\Symfony\Component\HttpFoundation\Request $request):Response
+    {
+        $contact = $em->getRepository(Contact::class)->find($id);
+
+
+        if($contact== null){
+            $this->addFlash('error', 'Le contact n\'existe pas');
+            return $this->redirectToRoute('magasin_view',['id'=>$MagId]);
+        }
+        $form = $this->createForm(ContactAssoType::class,$contact);
+        $form->add('send',SubmitType::class,['label'=>'Modifier']);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            dump($form);
+            $em->persist($contact);
+            $em->flush();
+            $this->addFlash('add', 'Le contact a été modifié');
+            return $this->redirectToRoute('association_view',['id'=>$AssoId]);
+        }
+
+
+        return $this->render('association/formContact.html.twig',['form'=>$form->createView(),'id'=>$AssoId,'titre'=>'Modifier un contact']);
+
+    }
+
+    #[Route('/viewContacts/{id}', name: '_viewContacts',
+        requirements:[ 'id'=>'\d+'])]
+    public function viewAllContactAction(EntityManagerInterface $em,$id):Response
+    {
+        $asso = $em->getRepository(Lieux::class)->find($id);
+        if($asso == null){
+            $this->addFlash('error', 'L\'association n\'existe pas');
+            return $this->redirectToRoute('association_index');
+        }
+        return $this->render('association/viewContacts.html.twig',['association'=>$asso]);
+    }
+
+    public function Pagination($currentPage, $nbPage):Response
+    {
+        return $this->render('association/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
     }
 }

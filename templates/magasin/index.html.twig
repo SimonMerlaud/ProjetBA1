@@ -6,8 +6,11 @@
 
 {% block body %}
     <div class="justify-content-md-end text-center">
-        <form action="{{ url("magasin_add") }}" >
+        <form action="{{ url("magasin_add") }}" style="cursor: pointer;display:inline-block; ">
             <button class="btn btn-secondary " type="submit" >Ajouter un magasin</button>
+        </form>
+        <form action="{{ url("compte_index") }}" style="cursor: pointer;display:inline-block; ">
+            <button class="btn btn-secondary " type="submit" >Retour</button>
         </form>
         <div class="row d-flex justify-content-center">
             <div class="col-4 mt-2">
