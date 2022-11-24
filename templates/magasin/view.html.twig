@@ -41,10 +41,10 @@
                             <div class="bg-light px-4 py-5 rounded">
                                 <div class="row g-3">
                                     <h4 class="dflex mb-4 mt-0">Contact
-                                            <form action="{{ url("magasin_deleteContact",{'AssoId':association.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                            <form action="{{ url("magasin_deleteContact",{'magId':magasin.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
                                                 <button class="btn btn-sm deleteBtn" type="submit" >🗑</button>
                                             </form>
-                                            <form action="{{ url("contact_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
+                                            <form action="{{ url("magasin_modifyContact",{'MagId':magasin.id,'id': contact.id}) }}" style="display:inline-block; ">
                                                 <button class="btn btn-sm" type="submit">🛠</button>
                                             </form>
                                     </h4>
@@ -72,6 +72,18 @@
                             </div>
                         </div>
                     {% endfor %}
+
+                    {% if magasin.contacts.toArray|length >2%}
+                        <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
+                            <div class=" px-4 py-5 rounded">
+                                <div class="row g-3">
+                                    <form action="{{ url("magasin_viewContacts",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                        <button class="btn btn-primary " type="submit" >Voir tous les contacts</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 </div>
                 <div class="justify-content-md-end text-center mb-5">
                     <form action="{{ url("magasin_addContact",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
