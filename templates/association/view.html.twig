@@ -12,65 +12,7 @@
                 <br><br>
                 <!-- Social media detail -->
                 <div class="row mb-5 gx-5">
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
-                        <div class="bg-light px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <h4 class="mb-4 mt-0">Contact</h4>
-                                <!-- Facebook -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
-                                    {% set contact = association.contacts.toArray %}
-                                    <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact[0].nom}}" disabled>
-                                </div>
-                                <!-- Twitter -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact[0].prenom }}" disabled>
-                                </div>
-                                <!-- Linkedin -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact[0].mail }}" disabled>
-                                </div>
-                                <!-- Instragram -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact[0].telephone }}" disabled>
-                                </div>
-                            </div> <!-- Row END -->
-                        </div>
-                    </div>
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
-                        <div class="bg-light px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <h4 class="mb-4 mt-0">Contact</h4>
-                                <!-- Facebook -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
-                                    {% set contact = association.contacts.toArray %}
-                                    <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact[0].nom}}" disabled>
-                                </div>
-                                <!-- Twitter -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact[0].prenom }}" disabled>
-                                </div>
-                                <!-- Linkedin -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact[0].mail }}" disabled>
-                                </div>
-                                <!-- Instragram -->
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
-                                    <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact[0].telephone }}" disabled>
-                                </div>
-                            </div> <!-- Row END -->
-                        </div>
-                    </div>
-
-                    <!-- change password -->
-                    <div class="col-xxl-6 mb-5 mb-xxl-0">
+                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
                         <div class="bg-light px-4 py-5 rounded">
                             <div class="row g-3">
                                 <h4 class="mb-4 mt-0">Information sur l'association</h4>
@@ -93,17 +35,71 @@
                             </div>
                         </div>
                     </div>
+                    {% set compt = 0 %}
+                    {% set break = false %}
+
+                    {% for contact in association.contacts|slice(0,2)%}
+
+                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
+                        <div class="bg-light px-4 py-5 rounded">
+                            <div class="row g-3">
+                                <h4 class=" d-flex mb-4 mt-0">Contact
+                                <div class=" d-flex justify-content-end ">
+                                    <form action="{{ url("association_modifyContact",{'AssoId':association.id,'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                        <button class="btn btn-sm" type="submit" >🗑</button>
+                                    </form>
+                                    <form action="{{ url("association_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
+                                        <button class="btn btn-sm" type="submit">🛠</button>
+                                    </form>
+                                </div>
+                                </h4>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fab fa-fw me-2 "></i>Nom</label>
+
+                                    <input type="text" class="form-control" placeholder=""  value="{{ contact.nom}}" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Prénom</label>
+                                    <input type="text" class="form-control" placeholder=""  value="{{ contact.prenom }}" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Email</label>
+                                    <input type="text" class="form-control" placeholder="" value="{{ contact.mail }}" disabled>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Téléphone</label>
+                                    <input type="text" class="form-control" placeholder="" value="{{ contact.telephone }}" disabled>
+                                </div>
+                            </div> <!-- Row END -->
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% if association.contacts.toArray|length >2%}
+                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
+                        <div class=" px-4 py-5 rounded">
+                            <div class="row g-3">
+                                <form action="{{ url("association_viewContacts",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                    <button class="btn btn-primary " type="submit" >Voir tous les contacts</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
 
                 </div>
-                <div class="justify-content-md-end text-center">
-                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-danger " type="submit" >Ajouter un contact</button>
+                <div class="justify-content-md-end text-center mb-5">
+                    <form action="{{ url("association_addContact",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                        <button class="btn btn-primary " type="submit" >Ajouter un contact</button>
                     </form>
                     <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
                         <button class="btn btn-danger " type="submit" >Supprimer</button>
                     </form>
                     <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
                         <button class="btn btn-primary" type="submit">Modifier</button>
+                    </form>
+                    <form action="{{ url("association_index") }}" style="display:inline-block; ">
+                        <button class="btn btn-primary" type="submit">Retour</button>
                     </form>
                 </div>
         </div>

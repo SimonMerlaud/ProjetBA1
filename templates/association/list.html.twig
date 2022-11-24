@@ -7,7 +7,6 @@
                 <tr>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
-                    <th scope="col">Modification</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -17,30 +16,18 @@
 >                    {% endif %}
 
                     {% for association in associations %}
-                        <tr class="table-light">
-                            <th scope="row">
-                                <form action="{{ url("association_view",{'id': association.id}) }}" >
-                                    <button class="btn btn" type="submit" >
-                                        {{ association.nom }}
-                                    </button>
-                                </form>
+                            <tr class="table-light" style="cursor: pointer" onclick="window.location='{{ url("association_view",{'id': association.id}) }}'">
+                                <th scope="row">
+                                {{ association.nom }}
                             </th>
                             <td>{{ association.adresse }}</td>
-                            <td>
-                                <div class="button_view" style="position: relative">
-                                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit" >🗑</button>
-                                    </form>
-                                    <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit">🛠</button>
-                                    </form>
-                                </div>
-                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
+    {{ include('association/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
+
 {% endblock %}
 

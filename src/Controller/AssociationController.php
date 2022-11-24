@@ -8,6 +8,7 @@ use App\Entity\Lieux;
 use App\Entity\TypeLieux;
 use App\Form\AssociationType;
 use App\Form\ContactAssoType;
+use App\Form\ModifyLieuxType;
 use App\Form\SearchAssoType;
 use Doctrine\ORM\EntityManagerInterface;
 use http\Env\Request;
@@ -30,7 +31,7 @@ class AssociationController extends AbstractController
         {
         throw new NotFoundHttpException("La page $page n'existe pas");
         }
-        $associations = $em->getRepository("App\Entity\Lieux")->myFindAllWithPaging($page);
+        $associations = $em->getRepository("App\Entity\Lieux")->myFindAllWithPaging('association',$page);
         $nbTotalPages = intval(ceil(count($associations) / 20) ) ;
         if ($page >$nbTotalPages){
             throw new NotFoundHttpException("La page n'existe pas");
@@ -39,7 +40,7 @@ class AssociationController extends AbstractController
         $searchForm = $this->createForm(SearchAssoType::class);
         if ($searchForm->handleRequest($request)->isSubmitted() && $searchForm->isValid()){
             $criteria = $searchForm->getData();
-            $associations = $em->getRepository(Lieux::class)->findWithKeyWord($criteria);
+            $associations = $em->getRepository(Lieux::class)->findWithKeyWord('association',$criteria);
             return $this->render('association/index.html.twig',["associations"=>$associations,"currentPage"=>$page,"nbPage"=>$nbTotalPages]);
         }else {
             return $this->render('association/index.html.twig', ["associations" => $associations, "currentPage" => $page, "nbPage" => $nbTotalPages]);
@@ -98,10 +99,8 @@ class AssociationController extends AbstractController
                     return $this->redirectToRoute('association_index');
                 }
                 $asso->setAdresse($var[0]);
-                //$contact->setAdresse($var[0]);
             }else{
                 $asso->setAdresse($data->getAdresse());
-                //$contact->setAdresse($data->getAdresse());
                 $em->persist($data->getAdresse());
             }
             $em->persist($asso);
@@ -154,15 +153,17 @@ class AssociationController extends AbstractController
             $this->addFlash('error', 'Cette association n\'existe pas');
             return $this->redirectToRoute('association_index');
         }
-        $form = $this->createForm(AssociationType::class,$asso);
+        $form = $this->createForm(ModifyLieuxType::class,$asso);
         $form->add('send',SubmitType::class,['label'=>'Modifier']);
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
+            $em->persist($asso);
+            $em->flush();
             $this->addFlash('add', 'L\'association a été modifié');
-            return $this->redirectToRoute('association_index');
+            return $this->redirectToRoute('association_view',['id'=>$id]);
         }
-        return $this->render('association/form.html.twig',['form'=>$form->createView()]);
+        return $this->render('association/modifyForm.html.twig',['form'=>$form->createView(),'id'=>$id]);
     }
 
     #[Route('/addContact/{id}', name: '_addContact',
@@ -178,6 +179,7 @@ class AssociationController extends AbstractController
             $this->addFlash('error', 'L\'association n\'existe pas');
             return $this->redirectToRoute('association_index');
         }else {
+
             if ($form->isSubmitted() && $form->isValid()) {
                 $data = $form->getData();
                 dump($data);
@@ -193,14 +195,55 @@ class AssociationController extends AbstractController
                     $em->persist($asso);
                     $em->persist($contact);
                     $em->flush();
-                    $this->addFlash('add', 'L\'association a été ajouté');
-                    return $this->redirectToRoute('association_index');
+                    $this->addFlash('add', 'Le contact a été ajouté');
+                    return $this->redirectToRoute('association_view',['id'=>$id]);
                 }
             }
         }
-        return $this->render('association/formContact.html.twig',['form'=>$form->createView()]);
+        return $this->render('association/formContact.html.twig',['form'=>$form->createView(),'id'=>$id,'titre'=>'Ajouter un contact']);
     }
 
+    #[Route('/modifyContact/{AssoId}/{id}', name: '_modifyContact',
+        requirements:[ 'id'=>'\d+',
+                'AssoId'=>'\d+'
+            ])]
+    public function modifyContactAction(EntityManagerInterface $em,$id,$AssoId,\Symfony\Component\HttpFoundation\Request $request):Response
+    {
+        $contact = $em->getRepository(Contact::class)->find($id);
+
+
+        if($contact== null){
+            $this->addFlash('error', 'Le contact n\'existe pas');
+            return $this->redirectToRoute('association_view',['id'=>$AssoId]);
+        }
+        $form = $this->createForm(ContactAssoType::class,$contact);
+        $form->add('send',SubmitType::class,['label'=>'Modifier']);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+            dump($form);
+            $em->persist($contact);
+            $em->flush();
+            $this->addFlash('add', 'Le contact a été modifié');
+            return $this->redirectToRoute('association_view',['id'=>$AssoId]);
+        }
+
+
+        return $this->render('association/formContact.html.twig',['form'=>$form->createView(),'id'=>$AssoId,'titre'=>'Modifier un contact']);
+
+    }
+
+    #[Route('/viewContacts/{id}', name: '_viewContacts',
+        requirements:[ 'id'=>'\d+'])]
+    public function viewAllContactAction(EntityManagerInterface $em,$id):Response
+    {
+        $asso = $em->getRepository(Lieux::class)->find($id);
+        if($asso == null){
+            $this->addFlash('error', 'L\'association n\'existe pas');
+            return $this->redirectToRoute('association_index');
+        }
+        return $this->render('association/viewContacts.html.twig',['association'=>$asso]);
+    }
 
     public function Pagination($currentPage, $nbPage):Response
     {
