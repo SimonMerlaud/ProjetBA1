@@ -44,10 +44,15 @@
                     {{ form_widget(form.adresse.numeroAppart) }}
                 </div>
                 <br>
-                <div class="text-center">
-                {{ form_rest(form) }}
-                {{ form_end(form) }}
-                <br><br>
+                <div class="justify-content-md-end text-center mb-5 mt-2">
+                    {{ form_label(form.send) }}
+                    {{ form_widget(form.send) }}
+                    {{ form_end(form) }}
+
+                    <form action="{{ url("association_index") }}" style="display:inline-block; ">
+                        <button class="btn btn-primary " type="submit">Retour</button>
+                    </form>
+                    <br><br>
                 </div>
             </div>
         </div>
