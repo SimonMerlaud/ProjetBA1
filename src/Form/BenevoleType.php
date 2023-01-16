@@ -29,6 +29,7 @@ class BenevoleType extends AbstractType
             //->add('dateDisponibilite', CreneauxType::class)
             //Pouvoir mettre son adresse
             ->add('adresse', AdresseType::class)
+            ->add('dateDisponibilite', BookingType::class)
 
         ;
     }

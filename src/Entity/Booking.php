@@ -20,8 +20,13 @@ class Booking
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $endAt = null;
 
-    #[ORM\Column(length: 40)]
-    private ?string $titre = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    public function getBeginAtMonth(): ?\DateTimeInterface{
+        return $this->beginAt().getMonth();
+    }
 
     public function getId(): ?int
     {
@@ -52,14 +57,14 @@ class Booking
         return $this;
     }
 
-    public function getTitre(): ?string
+    public function getTitle(): ?string
     {
-        return $this->titre;
+        return $this->title;
     }
 
-    public function setTitre(string $titre): self
+    public function setTitle(string $title): self
     {
-        $this->titre = $titre;
+        $this->title = $title;
 
         return $this;
     }

@@ -16,12 +16,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class BenevoleController extends AbstractController
 {
 
+
     #[Route('', name: '')]
     public function index(): Response{
         return $this->render('benevole/form.html.twig', [
             'controller_name' => 'BenevoleController',
         ]);
     }
+
 
     #[Route('/inscription', name: 'inscription_')]
     public function inscriptionAction(EntityManagerInterface $em, Request $request): Response{

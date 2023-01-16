@@ -2,8 +2,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
-
+    <div style="text-align:center;">
+        <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
+    </div>
     <div id="calendar-holder"></div>
 {% endblock %}
 
@@ -14,7 +15,15 @@
             var calendarEl = document.getElementById('calendar-holder');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                defaultView: 'timeGridWeek',
+                locale: 'fr',
+                timeZone: 'UTC+1',
+                defaultView: 'timeGrid',
+                visibleRange: {
+                    start: '2023-01-15',
+                    end: '2023-01-18'
+                },
+                allDaySlot: false,
+                header: false,
                 editable: true,
                 eventSources: [
                     {
@@ -23,17 +32,19 @@
                         extraParams: {
                             filters: JSON.stringify({})
                         },
-                        failure: () => {
-                            // alert("There was an error while fetching FullCalendar!");
-                        },
                     },
                 ],
-                header: {
-                    left: 'prev,next',
-                    center: 'addEventButton',
-                    right: 'timeGridWeek,timeGridDay',
+                eventDrop: function(info) {
+                    console.log(info.event);
+                    {# "{{ path('booking_edit_auto', { 'id': info.event.id, 'start': info.event._instance.range.start, 'end': info.event._instance.range.end }) }}"
+                    #}
+                    console.log();
                 },
-                plugins: [ 'interaction', 'dayGrid', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
+                {#
+                eventResize: function(info) {
+                    "{{ path('booking_resize', { 'id': info.event.id }) }}"
+                },#}
+                plugins: [ 'interaction', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
             });
             calendar.render();
         });

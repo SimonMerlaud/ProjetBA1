@@ -5,7 +5,7 @@
 {% block h1 %}Inscription pour collecte{% endblock %}
 
 {% block javascripts %}{{ parent() }}
-    {% include 'doodle.html.twig' %}
+    {# { % include 'doodle.html.twig' % }#}
 {% endblock %}
 {% block body %}
     <style>
@@ -15,6 +15,7 @@
 
     <div class="example-wrapper">
         {{ form_start(form) }}
+
 
         <div class="mb-3">
             {{ form_label(form.nom) }}
@@ -51,6 +52,11 @@
         {{ form_errors(form.adresse) }}
         </div>
 
+
+        <div class="mb-3">
+            {{ form_widget(form.dateDisponibilite) }}
+            {{ form_errors(form.dateDisponibilite) }}
+        </div>
 
 
 

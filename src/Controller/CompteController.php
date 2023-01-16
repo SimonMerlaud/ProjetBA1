@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\CompteBenevole;
 use App\Entity\Contact;
+use App\Entity\Lieux;
+use App\Entity\TypeLieux;
 use App\Form\CompteType;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,5 +72,37 @@ class CompteController extends AbstractController
         return $this->render('compte/form.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    #[Route(path: '/affectation', name: '_affectation')]
+    public function assosiationMagBenevole(EntityManagerInterface $em): Response{
+
+        //afficher la liste des magasins
+        //quand on choisit un mag, on choisit un crénaux
+        //quand on a choisi un crénaux pour un mag, affiche la liste des bénévoles disponible (au nive des crénaux)
+        //Faire un drag and drop pour choisir des bénévoles
+
+        //affiche /magasin TODO demander si page de base de affecattion se fait dans /magasin (pour choisir les magasins)
+
+        //Recuperer tous les bénévoles
+        //afficher la liste des bénévoles
+        //drag and drop les bénévoles dans la deuxiemes liste (initialement vide) pour les séléctionner
+        //Réfléchir à quoi mettre comme informations pour identifier le béné (juste nom prenom, adresse mail, adresse, proximité,...)
+        //nom prenom code postale ville
+        //mettre bootsrap à la place du css
+        //Surement mettre de la pagination (Pas sur) ou une "fenetre" deroulante (un encadré diff de la page elle meme)
+        //Cliquer sur un bouton valider pour valider les affectations
+
+
+        $typeLieux = $em->getRepository(TypeLieux::class)->findOneBy(array('libelle'=>"magasin"));
+        $list_mag = $em->getRepository(Lieux::class)->findBy(array('TypeLieux' => $typeLieux));
+
+        $list_bene = $em->getRepository(Contact::class)->findBy(array('benevole' => true));
+
+        dump($list_bene);
+
+        dump($list_mag);
+        return $this->render('compte/affectation.html.twig', ['list_bene' => $list_bene]);
+        //return $this->render('benevole/test.html.twig');
     }
 }

@@ -49,7 +49,7 @@ class CalendarSubscriber implements EventSubscriberInterface
         foreach ($bookings as $booking) {
             // this create the events with your data (here booking data) to fill calendar
             $bookingEvent = new Event(
-                '', //Fallait mettre un titre vide car Event a besoin d'un titre mais booking n'en n'a pas
+                $booking->getTitle(), //Fallait mettre un titre vide car Event a besoin d'un titre mais booking n'en n'a pas
                 $booking->getBeginAt(),
                 $booking->getEndAt() // If the end date is null or not defined, a all day event is created.
             );
@@ -67,11 +67,14 @@ class CalendarSubscriber implements EventSubscriberInterface
             ]);
             $bookingEvent->addOption(
                 'url',
-                $this->router->generate('booking_show', [
+                $this->router->generate('booking_edit', [
                     'id' => $booking->getId(),
-                ])
+                ]),
             );
-
+            $bookingEvent->addOption(
+                'id',
+                $booking->getId(),
+            );
             // finally, add the event to the CalendarEvent to fill the calendar
             $calendar->addEvent($bookingEvent);
         }

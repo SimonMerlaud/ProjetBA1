@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+{% block javascripts %}{{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script>
+        $( function() {
+            $( "#sortable1, #sortable2" ).sortable({
+                axis: 'y',{# Probleme affichage quand changement elt d'une liste à l'autre à cause de ça (consolo...) #}
+                update: function (event, ui){
+                    var data = $(this).sortable('serialize');
+                    console.log(data);
+                },
+                connectWith: ".connectedSortable"
+            }).disableSelection();
+        } );
+    </script>
+{% endblock %}
+
+{% block stylesheets %}{{ parent() }}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <style>
+        #sortable1, #sortable2 {
+            border: 1px solid #eee;
+            width: 142px;
+            min-height: 20px;
+            list-style-type: none;
+            margin: 0;
+            padding: 5px 0 0 0;
+            float: left;
+            margin-right: 10px;
+        }
+        #sortable1 li, #sortable2 li {
+            margin: 0 5px 5px 5px;
+            padding: 5px;
+            font-size: 1.2em;
+            width: 120px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+
+
+
+
+        <ul id="sortable1" class="connectedSortable">
+            <li id="post-1" class="ui-state-default">Item 1</li>
+            <li id="post-2" class="ui-state-default">Item 2</li>
+            <li id="post-3" class="ui-state-default">Item 3</li>
+            <li id="post-4" class="ui-state-default">Item 4</li>
+            <li id="post-5" class="ui-state-default">Item 5</li>
+            <li id="post-6" class="ui-state-default">Item 6</li>
+            <li id="post-7" class="ui-state-default">Item 7</li>
+        </ul>
+
+        <ul id="sortable2" class="connectedSortable">
+            <li id="post-8" class="ui-state-highlight">Item 8</li>
+            <li id="post-9" class="ui-state-highlight">Item 9</li>
+            <li id="post-10" class="ui-state-highlight">Item 10</li>
+            <li id="post-11"  class="ui-state-highlight">Item 11</li>
+            <li id="post-12" class="ui-state-highlight">Item 12</li>
+            <li id="post-13" class="ui-state-highlight">Item 13</li>
+            <li id="post-14" class="ui-state-highlight">Item 14</li>
+        </ul>
+
+{%  endblock %}

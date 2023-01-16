@@ -1,20 +1,35 @@
+
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .sr-only {display:none}
 </style>
+
 
 <div class="example-wrapper">
 {{ form_start(form) }}
 
-    {{ form_label(form.beginAt, 'Date de début') }}
-    {{ form_widget(form.beginAt) }}
-    {{ form_errors(form.beginAt) }}
+    <div class="mb-3">
+        {{ form_label(form.beginAt, 'Date de début (yyyy-MM-dd  HH:mm)') }}
+        {{ form_widget(form.beginAt) }}
+        {{ form_errors(form.beginAt) }}
+    </div>
 
-    {{ form_label(form.endAt, 'Date de fin') }}
-    {{ form_widget(form.endAt) }}
-    {{ form_errors(form.endAt) }}
+    {#
+    <div class="mb-3">
+        {{ form_label(form.beginAt_date_month) }}
+        {{ form_widget(form.beginAt_date_month) }}
+        {{ form_errors(form.beginAt_date_month) }}
+    </div>
+    #}
 
-    <a class="btn btn-primary mt-2" href="{{ path('booking_calendar') }}">retour</a>
+    <div class="mb-3">
+        {{ form_label(form.endAt, 'Date de fin (yyyy-MM-dd  HH:mm)') }}
+        {{ form_widget(form.endAt) }}
+        {{ form_errors(form.endAt) }}
+    </div>
+
+    <a class="btn btn-primary mt-2" href="{{ path('booking_index') }}">retour</a>
     <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
 
 {{ form_end(form) }}
