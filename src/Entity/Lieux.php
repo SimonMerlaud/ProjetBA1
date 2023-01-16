@@ -19,7 +19,7 @@ class Lieux
     #[ORM\Column(length: 40)]
     private ?string $nom = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $nbPersonneNecessaire = null;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]

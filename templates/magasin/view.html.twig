@@ -1,0 +1,106 @@
+{% extends 'base.html.twig' %}
+
+{% block h1 %}
+    Magasin {{ magasin.nom }}
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <br><br>
+
+                <div class="row mb-5 gx-5">
+                    <div class="col-xxl-6 mb-5 ">
+                        <div class="bg-light px-4 py-5 rounded">
+                            <div class="row g-3">
+                                <h4 class="mb-4 mt-0">Information sur le magasin</h4>
+                                <!-- Old password -->
+                                <div class="col-md-6">
+                                    <label for="exampleInputPassword1" class="form-label">Nom</label>
+                                    <input type="text" class="form-control" id="exampleInputPassword1" value="{{ magasin.nom }}" disabled>
+                                </div>
+                                <!-- Confirm password -->
+                                <div class="col-md-6">
+                                    <label for="exampleInputPassword3" class="form-label">Nombre de bénévole Necessaire</label>
+                                    <input type="text" class="form-control" id="exampleInputPassword3" value="{{ magasin.nbPersonneNecessaire }}" disabled>
+                                </div>
+                                <!-- New password -->
+                                <div class="col-md-12">
+                                    {% set adresse = magasin.adresse.codePostale ~" "~ magasin.adresse.ville ~', '~ magasin.adresse.rue %}
+                                    <label for="exampleInputPassword2" class="form-label">Adresse</label>
+                                    <input type="text" class="form-control" id="exampleInputPassword3" value="{{ magasin.adresse }}" disabled>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% for contact in magasin.contacts|slice(0,2) %}
+                        <div class="col-xxl-6 mb-5">
+                            <div class="bg-light px-4 py-5 rounded">
+                                <div class="row g-3">
+                                    <h4 class="dflex mb-4 mt-0">Contact
+                                            <form action="{{ url("magasin_deleteContact",{'magId':magasin.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                                <button class="btn btn-sm deleteBtn" type="submit" >🗑</button>
+                                            </form>
+                                            <form action="{{ url("magasin_modifyContact",{'MagId':magasin.id,'id': contact.id}) }}" style="display:inline-block; ">
+                                                <button class="btn btn-sm" type="submit">🛠</button>
+                                            </form>
+                                    </h4>
+                                    <!-- Facebook -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-facebook me-2 text-facebook"></i>Nom</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Facebook" value="{{ contact.nom}}" disabled>
+                                    </div>
+                                    <!-- Twitter -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-twitter text-twitter me-2"></i>Prénom</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Twitter" value="{{ contact.prenom }}" disabled>
+                                    </div>
+                                    <!-- Linkedin -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-linkedin-in text-linkedin me-2"></i>Email</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Linkedin" value="{{ contact.mail }}" disabled>
+                                    </div>
+                                    <!-- Instragram -->
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="fab fa-fw fa-instagram text-instagram me-2"></i>Téléphone</label>
+                                        <input type="text" class="form-control" placeholder="" aria-label="Instragram" value="{{ contact.telephone }}" disabled>
+                                    </div>
+                                </div> <!-- Row END -->
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    {% if magasin.contacts.toArray|length >2%}
+                        <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
+                            <div class=" px-4 py-5 rounded">
+                                <div class="row g-3">
+                                    <form action="{{ url("magasin_viewContacts",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                        <button class="btn btn-primary " type="submit" >Voir tous les contacts</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="justify-content-md-end text-center mb-5">
+                    <form action="{{ url("magasin_addContact",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
+                        <button class="btn btn-primary " type="submit" >Ajouter un contact</button>
+                    </form>
+                    <form action="{{ url("magasin_delete",{'id': magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
+                        <button class="btn btn-danger " type="submit" >Supprimer</button>
+                    </form>
+                    <form action="{{ url("magasin_edit",{'id': magasin.id}) }}" style="display:inline-block; ">
+                        <button class="btn btn-primary" type="submit">Modifier</button>
+                    </form>
+                    <form action="{{ url("magasin_index") }}" style="display:inline-block; ">
+                        <button class="btn btn-primary" type="submit">Retour</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

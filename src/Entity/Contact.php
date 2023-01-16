@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
@@ -23,16 +24,18 @@ class Contact
     private ?string $prenom = null;
 
     #[ORM\Column(length: 100, nullable: true)]
+    #[Assert\Email(message: "Cette email: {{ value }} n'est pas valide.")]
     private ?string $mail = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Regex(pattern: "#\d{10}#",message: "Numéro de téléphone incorrect",)]
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $benevole = null;
+    private ?bool $benevole = false;
 
     #[ORM\Column]
-    private ?bool $proximite = null;
+    private ?bool $proximite = false;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $dateDisponibilite = [];
@@ -47,11 +50,16 @@ class Contact
     private Collection $lieux;
 
     #[ORM\ManyToOne(inversedBy: 'contacts')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Adresse $adresse = null;
 
     public function __construct()
     {
         $this->lieux = new ArrayCollection();
+    }
+    public function __toString() {
+        $res = $this->nom . " " . $this->prenom . ", " . $this->mail . " " . $this->telephone ;
+        return $res;
     }
 
     public function getId(): ?int

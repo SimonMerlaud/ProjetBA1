@@ -1,0 +1,55 @@
+{% extends('base.html.twig') %}
+
+{% block h1 %}
+    {{ titre }}
+{% endblock %}
+
+{% block body %}
+
+<div class="container ">
+    <div class="row justify-content-center align-center">
+        <div class="col-8">
+            {{ form_start(form) }}
+
+            {{ form_label(form.nom, 'Nom de l\'association') }}
+            {{ form_errors(form.nom) }}
+            {{ form_widget(form.nom) }}
+            {{ form_label(form.nbPersonneNecessaire, 'Nombre de bénévole') }}
+            {{ form_errors(form.nbPersonneNecessaire) }}
+            {{ form_widget(form.nbPersonneNecessaire) }}
+
+            {{ form_label(form.adresse.codePostale) }}
+            {{ form_errors(form.adresse.codePostale) }}
+            {{ form_widget(form.adresse.codePostale) }}
+
+            {{ form_label(form.adresse.ville) }}
+            {{ form_errors(form.adresse.ville) }}
+            {{ form_widget(form.adresse.ville) }}
+
+            {{ form_label(form.adresse.rue) }}
+            {{ form_errors(form.adresse.rue) }}
+            {{ form_widget(form.adresse.rue) }}
+
+            {{ form_label(form.adresse.numeroRue) }}
+            {{ form_errors(form.adresse.numeroRue) }}
+            {{ form_widget(form.adresse.numeroRue) }}
+
+            {{ form_label(form.adresse.numeroAppart) }}
+            {{ form_errors(form.adresse.numeroAppart) }}
+            {{ form_widget(form.adresse.numeroAppart) }}
+            <br>
+            <div class="justify-content-md-end text-center mb-5 mt-2">
+                {{ form_label(form.send) }}
+                {{ form_widget(form.send) }}
+                {{ form_end(form) }}
+
+                <form action="{{ url("association_view",{'id': id}) }}" style="display:inline-block; ">
+                    <button class="btn btn-primary " type="submit">Retour</button>
+                </form>
+            </div>
+                <br><br>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

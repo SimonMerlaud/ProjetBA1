@@ -6,6 +6,7 @@ use App\Repository\AdresseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AdresseRepository::class)]
 class Adresse
@@ -16,6 +17,7 @@ class Adresse
     private ?int $id = null;
 
     #[ORM\Column(length: 5)]
+    #[Assert\Regex(pattern: "#\d{5}#",message: "Code postale incorrect",)]
     private ?string $codePostale = null;
 
     #[ORM\Column(length: 50)]
@@ -25,10 +27,12 @@ class Adresse
     private ?string $rue = null;
 
     #[ORM\Column]
+    #[Assert\Regex(pattern: "#\d{3}#",message: "Numéro de rue incorrect",)]
+    #[Assert\NotBlank(message: 'Numéro de rue non renseigné')]
     private ?int $numeroRue = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $numeroAppart = null;
+    private ?string $numeroAppart = null;
 
     #[ORM\OneToMany(mappedBy: 'adresse', targetEntity: Lieux::class)]
     private Collection $lieux;
@@ -40,6 +44,14 @@ class Adresse
     {
         $this->lieux = new ArrayCollection();
         $this->contacts = new ArrayCollection();
+    }
+
+    public function __toString() {
+        $res = $this->codePostale . " " . $this->ville . ", " . $this->numeroRue . " " . $this->rue;
+        if($this->numeroAppart >0){
+            $res .= " Appart ". $this->numeroAppart;
+        }
+        return $res;
     }
 
     public function getId(): ?int
@@ -95,12 +107,12 @@ class Adresse
         return $this;
     }
 
-    public function getNumeroAppart(): ?int
+    public function getNumeroAppart(): ?string
     {
         return $this->numeroAppart;
     }
 
-    public function setNumeroAppart(?int $numeroAppart): self
+    public function setNumeroAppart(?string $numeroAppart): self
     {
         $this->numeroAppart = $numeroAppart;
 

@@ -1,0 +1,35 @@
+
+{% block body %}
+    <script text="text/javascript">
+
+    </script>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Adresse</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if magasins is null%}
+                        <h3>Il n'y a pas de magasin a ce nom</h3>
+>                    {% endif %}
+
+                    {% for magasin in magasins %}
+                        <tr class="table-light" style="cursor:pointer" onclick="window.location='{{ url("magasin_view", {'id':magasin.id}) }}'">
+                            <th scope="row">
+                                {{ magasin.nom }}
+                            </th>
+                            <td>{{ magasin.adresse }}</td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+

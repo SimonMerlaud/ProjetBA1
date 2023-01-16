@@ -1,0 +1,10 @@
+
+    {{ form_start(form) }}
+    {{ form_widget(form.nom, { 'attr': {
+        'class': 'form-control me-sm-2 mb-2',
+        'placeholder': 'Rechercher par nom'
+    }}) }}
+    {{ form_widget(form.send, {'attr': {'class':'btn btn-secondary me-sm-2 mb-3'}}) }}
+                {{ form_end(form) }}
+
+

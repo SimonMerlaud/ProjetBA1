@@ -1,0 +1,41 @@
+{# templates/booking/calendar.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
+
+    <div id="calendar-holder"></div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+    <script type="text/javascript" >
+        document.addEventListener('DOMContentLoaded', () => {
+            var calendarEl = document.getElementById('calendar-holder');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                defaultView: 'timeGridWeek',
+                editable: true,
+                eventSources: [
+                    {
+                        url: "{{ path('fc_load_events') }}",
+                        method: "POST",
+                        extraParams: {
+                            filters: JSON.stringify({})
+                        },
+                        failure: () => {
+                            // alert("There was an error while fetching FullCalendar!");
+                        },
+                    },
+                ],
+                header: {
+                    left: 'prev,next',
+                    center: 'addEventButton',
+                    right: 'timeGridWeek,timeGridDay',
+                },
+                plugins: [ 'interaction', 'dayGrid', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
+            });
+            calendar.render();
+        });
+    </script>
+{% endblock %}

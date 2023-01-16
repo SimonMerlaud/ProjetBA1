@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block h1 %}
+    Liste des magasins
+{% endblock %}
+
+{% block body %}
+    <div class="justify-content-md-end text-center">
+        <form action="{{ url("magasin_add") }}" style="cursor: pointer;display:inline-block; ">
+            <button class="btn btn-secondary " type="submit" >Ajouter un magasin</button>
+        </form>
+        <form action="{{ url("compte_index") }}" style="cursor: pointer;display:inline-block; ">
+            <button class="btn btn-secondary " type="submit" >Retour</button>
+        </form>
+        <div class="row d-flex justify-content-center">
+            <div class="col-4 mt-2">
+                {{ render(controller(
+                    'App\\Controller\\SearchController::searchMag'
+                )) }}
+            </div>
+        </div>
+    </div>
+    {{ include('magasin/list.html.twig', {'magasins': magasins}) }}
+
+    {{ include('magasin/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
+
+
+{% endblock %}
