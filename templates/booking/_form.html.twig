@@ -6,15 +6,46 @@
 </style>
 
 
+
 <div class="example-wrapper">
 {{ form_start(form) }}
 
-    <div class="mb-3">
-        {{ form_label(form.beginAt, 'Date de début (yyyy-MM-dd  HH:mm)') }}
-        {{ form_widget(form.beginAt) }}
-        {{ form_errors(form.beginAt) }}
-    </div>
+    <div class="text-center">
+    {{ form_label(form.beginAt, 'Date de début') }}
+    {#
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group date" id="datetimepicker1">
+                {{ form_widget(form.beginAt, {'attr': { 'data-date-format' : 'yyyy-MM-dd HH:mm'}}) }}
+                <span class="input-group-addon">
+                    <span class="glyphicon-calendar glyphicon">
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>#}
 
+    <div class="row justify-content-center">
+        <div class="form-group col-1 p-0 mx-1">
+            {{ form_widget(form.beginAt.date.day) }}
+        </div>
+        /
+        <div class="form-group col-1 p-0 mx-1">
+            {{ form_widget(form.beginAt.date.month) }}
+        </div>
+        /
+        <div class="form-group col-1 p-0 mx-1">
+            {{ form_widget(form.beginAt.date.year) }}
+        </div>
+        <br/>
+        <div class="form-group col-1 p-0 mx-1">
+            {{ form_widget(form.beginAt.time.hour) }}
+        </div>
+        :
+        <div class="form-group col-1 p-0 mx-1">
+            {{ form_widget(form.beginAt.time.minute) }}
+        </div>
+    </div>
     {#
     <div class="mb-3">
         {{ form_label(form.beginAt_date_month) }}
@@ -23,14 +54,36 @@
     </div>
     #}
 
-    <div class="mb-3">
-        {{ form_label(form.endAt, 'Date de fin (yyyy-MM-dd  HH:mm)') }}
-        {{ form_widget(form.endAt) }}
-        {{ form_errors(form.endAt) }}
+
+    <div class="mt-5">
+        {{ form_label(form.endAt, 'Date de fin') }}
+
+        <div class="row justify-content-center">
+            <div class="form-group col-1 p-0 mx-1">
+                {{ form_widget(form.endAt.date.day) }}
+            </div>
+            /
+            <div class="form-group col-1 p-0 mx-1">
+                {{ form_widget(form.endAt.date.month) }}
+            </div>
+            /
+            <div class="form-group col-1 p-0 mx-1">
+                {{ form_widget(form.endAt.date.year) }}
+            </div>
+            <br/>
+            <div class="form-group col-1 p-0 mx-1">
+                {{ form_widget(form.endAt.time.hour) }}
+            </div>
+            :
+            <div class="form-group col-1 p-0 mx-1">
+                {{ form_widget(form.endAt.time.minute) }}
+            </div>
+        </div>
     </div>
 
-    <a class="btn btn-primary mt-2" href="{{ path('booking_index') }}">retour</a>
-    <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
+    <a class="btn btn-primary mt-4" href="{{ path('booking_index') }}">retour</a>
+    <button class="btn btn-primary mt-4">{{ button_label|default('Valider') }}</button>
 
 {{ form_end(form) }}
+    </div>
 </div>

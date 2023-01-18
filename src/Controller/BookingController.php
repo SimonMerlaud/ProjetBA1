@@ -27,13 +27,11 @@ class BookingController extends AbstractController
     {
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
-        dump("ee");
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $booking->setTitle('Tmp');
             $bookingRepository->save($booking, true);
-
-            return $this->redirectToRoute('booking_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('booking_index');
         }
 
         return $this->renderForm('booking/new.html.twig', [
@@ -45,7 +43,6 @@ class BookingController extends AbstractController
     #[Route(path: '/show/{id}', name: '_show')]
     public function show(int $id, BookingRepository $bookingRepository): Response
     {
-        dump('ee');
         return $this->render('booking/show.html.twig', [
             'booking' => $bookingRepository->find($id),
         ]);
@@ -78,6 +75,6 @@ class BookingController extends AbstractController
             $bookingRepository->remove($booking, true);
         }
 
-        return $this->redirectToRoute('booking_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('booking_index');
     }
 }

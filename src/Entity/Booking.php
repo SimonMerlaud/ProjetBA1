@@ -20,7 +20,6 @@ class Booking
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $endAt = null;
 
-
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
