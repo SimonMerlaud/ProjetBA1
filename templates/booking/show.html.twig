@@ -23,8 +23,5 @@
     </table>
 
     <a href="{{ path('booking_index') }}">back to list</a>
-
-    <a href="{{ path('booking_edit', {'id': booking.id }) }}">edit</a>
-
     {{ include('booking/_delete_form.html.twig') }}
 {% endblock %}

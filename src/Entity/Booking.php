@@ -15,16 +15,16 @@ class Booking
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $beginAt = null;
+    private ?\DateTime $beginAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $endAt = null;
+    private ?\DateTime $endAt = null;
 
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
-    public function getBeginAtMonth(): ?\DateTimeInterface{
+    public function getBeginAtMonth(): ?\DateTime{
         return $this->beginAt().getMonth();
     }
 
@@ -33,24 +33,24 @@ class Booking
         return $this->id;
     }
 
-    public function getBeginAt(): ?\DateTimeInterface
+    public function getBeginAt(): ?\DateTime
     {
         return $this->beginAt;
     }
 
-    public function setBeginAt(?\DateTimeInterface $beginAt): self
+    public function setBeginAt(?\DateTime $beginAt): self
     {
         $this->beginAt = $beginAt;
 
         return $this;
     }
 
-    public function getEndAt(): ?\DateTimeInterface
+    public function getEndAt(): ?\DateTime
     {
         return $this->endAt;
     }
 
-    public function setEndAt(?\DateTimeInterface $endAt): self
+    public function setEndAt(?\DateTime $endAt): self
     {
         $this->endAt = $endAt;
 

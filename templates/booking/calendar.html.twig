@@ -11,8 +11,11 @@
 {% block javascripts %}
 {{ parent() }}
     <script type="text/javascript" >
+
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
+
+            var info = "";
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'fr',
@@ -35,15 +38,50 @@
                     },
                 ],
                 eventDrop: function(info) {
-                    console.log(info.event);
-                    {# "{{ path('booking_edit_auto', { 'id': info.event.id, 'start': info.event._instance.range.start, 'end': info.event._instance.range.end }) }}"
-                    #}
-                    console.log();
+                    var dateBegin = calendar.formatIso(info.event._instance.range.start);
+                    var dateEnd = calendar.formatIso(info.event._instance.range.end);
+
+                    $.ajax({
+                        async: "true",
+                        type: "POST",
+                        url: '{{ path('booking_edit_auto') }}',
+                        data: {
+                            id: info.event.id,
+                            start: dateBegin,
+                            end: dateEnd
+                        },
+                        dataType: "json",
+                        success : function (data){
+                            console.log(data);
+                        },
+                        error: function(data){
+                            console.log(data);
+                        }
+                    });
                 },
-                {#
+
                 eventResize: function(info) {
-                    "{{ path('booking_resize', { 'id': info.event.id }) }}"
-                },#}
+                    var dateBegin = calendar.formatIso(info.event._instance.range.start);
+                    var dateEnd = calendar.formatIso(info.event._instance.range.end);
+
+                    $.ajax({
+                        async: "true",
+                        type: "POST",
+                        url: '{{ path('booking_edit_auto') }}',
+                        data: {
+                            id: info.event.id,
+                            start: dateBegin,
+                            end: dateEnd
+                        },
+                        dataType: "json",
+                        success : function (data){
+                            console.log(data);
+                        },
+                        error: function(data){
+                            console.log(data);
+                        }
+                    });
+                },
                 plugins: [ 'interaction', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
             });
             calendar.render();
