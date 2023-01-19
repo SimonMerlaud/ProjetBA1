@@ -34,11 +34,11 @@
 
     <script type="text/javascript">
         jQuery.datetimepicker.setLocale('fr');
-        const event = new Date('{{ date }}');
         $(function () {
             $('.datetimepicker1').datetimepicker(
                 {
-                    defaultDate:'2023-01-15',
+                    defaultDate:'{{ date_start }}',
+                    defaultTime:'08:00',
                     allowTimes:[
                         '08:00',
                         '09:00',
@@ -54,10 +54,8 @@
                         '19:00',
                         '20:00',
                     ],
-                    allowDates:[
-                        '{{ date }}',
-                        '2023-01-16',
-                    ],
+                    minDate: '{{ date_start }}',
+                    maxDate: '{{ date_end }}',
                     format:'Y-m-d H:i'
                 }
             );
