@@ -23,6 +23,12 @@ class Booking
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[ORM\ManyToOne(inversedBy: 'bookings')]
+    private ?Contact $contact = null;
+
+    #[ORM\ManyToOne(inversedBy: 'bookings')]
+    private ?Lieux $lieux = null;
+
     public function getBeginAtMonth(): ?\DateTime{
         return $this->beginAt().getMonth();
     }
@@ -64,6 +70,30 @@ class Booking
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getContact(): ?Contact
+    {
+        return $this->contact;
+    }
+
+    public function setContact(?Contact $contact): self
+    {
+        $this->contact = $contact;
+
+        return $this;
+    }
+
+    public function getLieux(): ?Lieux
+    {
+        return $this->lieux;
+    }
+
+    public function setLieux(?Lieux $lieux): self
+    {
+        $this->lieux = $lieux;
 
         return $this;
     }

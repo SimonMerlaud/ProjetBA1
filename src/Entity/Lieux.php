@@ -22,9 +22,6 @@ class Lieux
     #[ORM\Column(nullable: true)]
     private ?int $nbPersonneNecessaire = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $datesMag = [];
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private ?TypeLieux $TypeLieux = null;
@@ -65,18 +62,6 @@ class Lieux
     public function setNbPersonneNecessaire(int $nbPersonneNecessaire): self
     {
         $this->nbPersonneNecessaire = $nbPersonneNecessaire;
-
-        return $this;
-    }
-
-    public function getDatesMag(): array
-    {
-        return $this->datesMag;
-    }
-
-    public function setDatesMag(array $datesMag): self
-    {
-        $this->datesMag = $datesMag;
 
         return $this;
     }

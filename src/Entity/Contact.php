@@ -38,12 +38,6 @@ class Contact
     private ?bool $proximite = false;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $dateDisponibilite = [];
-
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $dateAffectation = [];
-
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
     private array $fonction = [];
 
     #[ORM\ManyToMany(targetEntity: Lieux::class, mappedBy: 'contacts')]
@@ -53,9 +47,13 @@ class Contact
     #[ORM\JoinColumn(nullable: true)]
     private ?Adresse $adresse = null;
 
+    #[ORM\OneToMany(mappedBy: 'contact', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->lieux = new ArrayCollection();
+        $this->bookings = new ArrayCollection();
     }
     public function __toString() {
         $res = $this->nom . " " . $this->prenom . ", " . $this->mail . " " . $this->telephone ;
@@ -139,30 +137,6 @@ class Contact
         return $this;
     }
 
-    public function getDateDisponibilite(): array
-    {
-        return $this->dateDisponibilite;
-    }
-
-    public function setDateDisponibilite(?array $dateDisponibilite): self
-    {
-        $this->dateDisponibilite = $dateDisponibilite;
-
-        return $this;
-    }
-
-    public function getDateAffectation(): array
-    {
-        return $this->dateAffectation;
-    }
-
-    public function setDateAffectation(?array $dateAffectation): self
-    {
-        $this->dateAffectation = $dateAffectation;
-
-        return $this;
-    }
-
     public function getFonction(): array
     {
         return $this->fonction;
@@ -210,6 +184,36 @@ class Contact
     public function setAdresse(?Adresse $adresse): self
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setContact($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getContact() === $this) {
+                $booking->setContact(null);
+            }
+        }
 
         return $this;
     }
