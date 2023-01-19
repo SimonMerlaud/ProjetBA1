@@ -29,15 +29,6 @@ class CompteBenevole implements UserInterface, PasswordAuthenticatedUserInterfac
      */
     #[ORM\Column]
     #[Assert\NotBlank(message: 'Le mot de passe est obligatoire')]
-    #[Assert\Regex(
-        pattern: "#^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$#",
-        message: "le mot de passe doit contenir:
-                    - au moins 8 caractere
-                    - 1 majuscule
-                    - 1 minuscule
-                    - 1 chiffre
-                    - 1 caractere special",
-    )]
     private ?string $password = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]

@@ -11,6 +11,11 @@ class MainController extends AbstractController
     #[Route('/', name: 'accueil')]
     public function index(): Response
     {
-        return $this->render('base.html.twig');
+        if ($this->getUser()){
+            return $this->render('benevole/index.html.twig');
+        }
+        else {
+            return $this->redirectToRoute('compte_login');
+        }
     }
 }

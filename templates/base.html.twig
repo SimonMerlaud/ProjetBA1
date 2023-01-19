@@ -47,6 +47,11 @@
                                 <li class="nav-item h4">
                                     <a class="nav-link" href="{{ path('association_index') }}">Association</a>
                                 </li>
+
+                            {% elseif is_granted('ROLE_BENEVOLE') %}
+                                <li class="nav-item h4">
+                                    <a class="nav-link" href="{{ path('compte_modify', { 'id': app.user.id }) }}">Mon Compte</a>
+                                </li>
                             {% endif %}
                         </ul>
                         <!-- Left links -->

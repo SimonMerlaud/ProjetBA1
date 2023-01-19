@@ -1,22 +1,12 @@
-{# templates/booking/calendar.html.twig #}
-{% extends 'base.html.twig' %}
-
-{% block body %}
-    <div style="text-align:center;">
+<div style="text-align:center;">
         <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
-    </div>
-    <div id="calendar-holder"></div>
-{% endblock %}
+</div>
+<div id="calendar-holder"></div>
 
-{% block javascripts %}
-{{ parent() }}
     <script type="text/javascript" >
-
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
-
             var info = "";
-
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'fr',
                 timeZone: 'UTC+1',
@@ -40,7 +30,6 @@
                 eventDrop: function(info) {
                     var dateBegin = calendar.formatIso(info.event._instance.range.start);
                     var dateEnd = calendar.formatIso(info.event._instance.range.end);
-
                     $.ajax({
                         async: "true",
                         type: "POST",
@@ -63,7 +52,6 @@
                 eventResize: function(info) {
                     var dateBegin = calendar.formatIso(info.event._instance.range.start);
                     var dateEnd = calendar.formatIso(info.event._instance.range.end);
-
                     $.ajax({
                         async: "true",
                         type: "POST",
@@ -87,4 +75,3 @@
             calendar.render();
         });
     </script>
-{% endblock %}

@@ -25,9 +25,8 @@ class CompteController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
          if ($this->getUser()) {
-             return $this->redirectToRoute('compte_index');
+             return $this->redirectToRoute('accueil');
          }
-
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user

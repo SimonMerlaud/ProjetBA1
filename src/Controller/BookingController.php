@@ -22,21 +22,24 @@ class BookingController extends AbstractController
         return $this->render('booking/calendar.html.twig');
     }
 
-    #[Route(path: '/new', name: '_new')]
+    #[Route(path: '/new/', name: '_new')]
     public function new(Request $request, BookingRepository $bookingRepository): Response
     {
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
         $form->handleRequest($request);
+        dump($this->getUser());
         if ($form->isSubmitted() && $form->isValid()) {
-            $booking->setTitle('Tmp');
+            if($this->isGranted('ROLE_BENEVOLE')){
+                $booking->setContact($this->getUser()->getContact());
+            }
             $bookingRepository->save($booking, true);
-            return $this->redirectToRoute('booking_index');
+            return $this->redirectToRoute('accueil');
         }
 
         return $this->renderForm('booking/new.html.twig', [
             'booking' => $booking,
-            'form' => $form,
+            'form' => $form
         ]);
     }
 
