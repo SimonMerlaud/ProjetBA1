@@ -39,6 +39,18 @@ class ContactRepository extends ServiceEntityRepository
         }
     }
 
+    public function findBenevole(): array
+    {
+        return $query = $this->createQueryBuilder('c')
+            ->where('c.benevole = :benevole')
+            ->setParameter('benevole', true)
+            ->andWhere('c.proximite= :proximit')
+            ->setParameter('proximit', false)
+            ->orderBy('c.id','DESC')
+            ->getQuery()
+            ->getResult();
+
+    }
 //    /**
 //     * @return Contact[] Returns an array of Contact objects
 //     */

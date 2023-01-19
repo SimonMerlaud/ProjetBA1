@@ -32,7 +32,7 @@ class MagasinController extends AbstractController
         }
         $magasins = $em->getRepository("App\Entity\Lieux")->myFindAllWithPaging("magasin", $page);
         $nbTotalPages = intval(ceil(count($magasins) / 20) ) ;
-        if ($page >$nbTotalPages){
+        if ($page >$nbTotalPages && $page !=1){
             throw new NotFoundHttpException("La page n'existe pas");
         }
 
@@ -274,5 +274,31 @@ class MagasinController extends AbstractController
     public function Pagination($currentPage, $nbPage):Response
     {
         return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
+    }
+
+    #[Route('/affect/{magId}', name: '_affect')]
+    public function affectMagasin($magId, EntityManagerInterface $entityManager):Response
+    {
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        $benevoles = $entityManager->getRepository(Contact::class)->findBenevole();
+        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'benevoles'=>$benevoles]);
+    }
+
+    #[Route('/affectation/{idBenevoles}', name: '_affectation')]
+    public function affectation(string $idBenevoles,EntityManagerInterface $entityManager):Response
+    {
+        if(strstr( $idBenevoles, ',' )) {
+            $test = explode(',', $idBenevoles);
+            dump($test);
+            foreach ($test as $id){
+                $benevole = $entityManager->getRepository(Contact::class)->find($id);
+                dump($benevole);
+            }
+
+        }elseif($idBenevoles == "null"){
+            return $this->redirectToRoute('magasin_index');
+        }else{
+            dump($idBenevoles);
+        }
     }
 }

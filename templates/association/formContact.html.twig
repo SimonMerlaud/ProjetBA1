@@ -31,7 +31,7 @@
                     {{ form_widget(form.send) }}
                     {{ form_end(form) }}
 
-                    <form action="{{ url("association_view",{'id': id}) }}" style="display:inline-block; ">
+                    <form action="{{ url(url,{'id': id}) }}" style="display:inline-block; ">
                         <button class="btn btn-primary " type="submit">Retour</button>
                     </form>
                 </div>

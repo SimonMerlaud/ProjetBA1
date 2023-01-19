@@ -28,7 +28,7 @@
                             <td>{{ contact.telephone }}</td>
                             <td>
                                 <div class="button_view" style="position: relative">
-                                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                    <form action="{{ url("association_deleteContact",{'AssoId':association.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
                                         <button class="btn btn-sm" type="submit" >🗑</button>
                                     </form>
                                     <form action="{{ url("association_modifyContact",{'AssoId': association.id,'id': contact.id}) }}" style="display:inline-block; ">

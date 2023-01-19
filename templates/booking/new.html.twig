@@ -3,14 +3,8 @@
 {% block title %}New Booking{% endblock %}
 
 {% block h1 %}Nouveau créneaux{% endblock %}
-{% block javascripts %}
-    {#
-    {{ parent() }}
-    <script>
-        $('#datetimepicker1').datetimepicker();
-    </script>#}
-{% endblock %}
+
 {% block body %}
 
-    {{ include('booking/_form.html.twig') }}
+    {{ include('booking/_form.html.twig',{'date':'2023-01-15'}) }}
 {% endblock %}

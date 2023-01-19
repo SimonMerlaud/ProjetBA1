@@ -14,10 +14,11 @@ class BookingType extends AbstractType
     {
         $builder
             ->add('beginAt', DateTimeType::class, array(
-                //'widget' => 'single_text',
+                'widget' => 'single_text',
                 'html5' => false,
             ))
             ->add('endAt', DateTimeType::class,array(
+                'widget' => 'single_text',
                 'html5' => false,
             ));
     }

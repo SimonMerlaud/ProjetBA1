@@ -11,7 +11,8 @@
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/core@4.1.0/main.min.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@4.1.0/main.min.css">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@4.1.0/main.min.css">
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+            <link href="/css/jquery-ui.min.css" type="text/css" rel="StyleSheet">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
         {% endblock %}
 
         {% block javascripts %}
@@ -27,27 +28,45 @@
         {% endblock %}
         {% block menu %}
             <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-                <div class="container-fluid">
-                    <a class="navbar-brand" href="{{ path('accueil') }}">Accueil</a>
-                    {% if app.user %}
-                        <a class="navbar-brand" href="{{ path('compte_logout') }}">Deconnection</a>
-                    {% else %}
-                        <a class="navbar-brand" href="{{ path('compte_login') }}">Se connecter</a>
-                    {% endif %}
-
-                    <div class="navbar-collapse collapse show" id="navbarColor01" style="">
-                        <ul class="navbar-nav me-auto">
+                <!-- Container wrapper -->
+                    <!-- Navbar brand -->
+                    <!-- Collapsible wrapper -->
+                    <div class="collapse navbar-collapse" id="navbarButtonsExample">
+                        <!-- Left links -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item h4">
+                                <a class="nav-link " href="{{ path('accueil') }}">Accueil</a>
+                            </li>
                             {% if is_granted('ROLE_BA') %}
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('compte_add') }}">Creer un compte</a>
+                                <li class="nav-item h4">
+                                    <a class="nav-link" href="{{ path('compte_index') }}">Compte</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ path('magasin_list') }}">Ajouter un magasin</a>
+                                <li class="nav-item h4">
+                                    <a class="nav-link" href="{{ path('magasin_index') }}">Magasin</a>
+                                </li>
+                                <li class="nav-item h4">
+                                    <a class="nav-link" href="{{ path('association_index') }}">Association</a>
                                 </li>
                             {% endif %}
                         </ul>
+                        <!-- Left links -->
+
+                        <div class="d-flex align-items-center">
+                            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                                {% if app.user %}
+                                    <li class="nav-item h4">
+                                        <a class="nav-link my-2 my-md-0" href="{{ path('compte_logout') }}">Déconnexion</a>
+                                    </li>
+                                {% else %}
+                                    <li class="nav-item h4">
+                                        <a class="nav-link" href="{{ path('compte_login') }}">Se connecter</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                    <!-- Collapsible wrapper -->
+                <!-- Container wrapper -->
             </nav>
         {% endblock %}
         <h1 class="d-flex justify-content-center m-4">{% block h1 %}Bienvenue{% endblock %}</h1>

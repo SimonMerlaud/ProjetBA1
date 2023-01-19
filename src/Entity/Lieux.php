@@ -32,7 +32,7 @@ class Lieux
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     private ?Adresse $adresse = null;
 
-    #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'lieux')]
+    #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'lieux', cascade: ['persist'])]
     private Collection $contacts;
 
     public function __construct()

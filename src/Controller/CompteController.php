@@ -7,11 +7,13 @@ use App\Entity\Contact;
 use App\Entity\Lieux;
 use App\Entity\TypeLieux;
 use App\Form\CompteType;
-use Doctrine\ORM\EntityManager;
+use App\Form\ModifyLieuxType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -40,10 +42,21 @@ class CompteController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route(path: '/index', name: '_index')]
-    public function accueilCompte(): Response
+    #[Route('/{page}', name: '_index',
+        requirements: ['page' => '\d+' ],
+        defaults:[ 'page' => 1] )]
+    public function accueilCompte($page, EntityManagerInterface $entityManager): Response
     {
-        return $this->render('compte/index.html.twig');
+        if($page<1)
+        {
+            throw new NotFoundHttpException("La page $page n'existe pas");
+        }
+        $comptes = $entityManager->getRepository("App\Entity\CompteBenevole")->myFindAllWithPaging($page);
+        $nbTotalPages = intval(ceil(count($comptes) / 20) ) ;
+        if ($page >$nbTotalPages && $page !=1){
+            throw new NotFoundHttpException("La page n'existe pas");
+        }
+        return $this->render('compte/index.html.twig', ["comptes" => $comptes, "currentPage" => $page, "nbPage" => $nbTotalPages]);
     }
 
     #[Route(path: '/add', name: '_add')]
@@ -67,10 +80,10 @@ class CompteController extends AbstractController
             $em->flush();
             $this->addFlash('add', "le compte a été ajouté");
 
-            return $this->redirectToRoute("accueil");
+            return $this->redirectToRoute("compte_index");
         }
         return $this->render('compte/form.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),'title'=>"Création"
         ]);
     }
 
@@ -104,5 +117,43 @@ class CompteController extends AbstractController
         dump($list_mag);
         return $this->render('compte/affectation.html.twig', ['list_bene' => $list_bene]);
         //return $this->render('benevole/test.html.twig');
+    }
+
+    #[Route(path: '/modify/{id}', name: '_modify')]
+    public function editCompte($id,EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher,\Symfony\Component\HttpFoundation\Request $request):Response
+    {
+        $compte = $entityManager->getRepository("App\Entity\CompteBenevole")->find($id);
+        if($compte == null){
+            $this->addFlash('error', 'Ce compte n\'existe pas');
+            return $this->redirectToRoute('compte_index');
+        }
+        $form = $this->createForm(CompteType::class,$compte);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            $hashedPassword = $passwordHasher->hashPassword(
+                $compte,
+                $compte->getPassword()
+            );
+            $compte->setPassword($hashedPassword);
+            $entityManager->persist($compte);
+            $entityManager->flush();
+            $this->addFlash('add', 'Le compte a été modifié');
+            return $this->redirectToRoute('compte_index');
+        }
+        return $this->render('compte/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
+
+    }
+
+    #[Route(path: '/delete/{id}', name: '_delete')]
+    public function deleteCompte($id,EntityManagerInterface $entityManager){
+        $compte = $entityManager->getRepository("App\Entity\CompteBenevole")->find($id);
+        if($compte == null){
+            $this->addFlash('error', 'Ce compte n\'existe pas');
+            return $this->redirectToRoute('compte_index');
+        }
+        $entityManager->remove($compte);
+        $entityManager->flush();
+        $this->addFlash('add', 'Le compte a été supprimé');
+        return $this->redirectToRoute('compte_index');
     }
 }

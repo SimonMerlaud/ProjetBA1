@@ -20,7 +20,13 @@ class AssociationType extends AbstractType
             ->add('nom', TextType::class)
             ->add('nbPersonneNecessaire', IntegerType::class)
             ->add('adresse', AdresseType::class, array('label' => false))
-            ->add('contacts',CollectionType::class,array('entry_type'=>ContactAssoType::class))
+            ->add('contacts',CollectionType::class,[
+                'entry_type'=>ContactAssoType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'delete_empty' => true,
+                'by_reference' => false,
+            ])
             ->add('send',SubmitType::class);
         ;
     }

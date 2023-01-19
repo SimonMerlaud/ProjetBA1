@@ -28,15 +28,12 @@
                                 </div>
                                 <!-- New password -->
                                 <div class="col-md-12">
-                                    {% set adresse = association.adresse.codePostale ~" "~ association.adresse.ville ~', '~ association.adresse.rue %}
                                     <label for="exampleInputPassword2" class="form-label">Adresse</label>
                                     <input type="text" class="form-control" id="exampleInputPassword3" value="{{ association.adresse }}" disabled>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% set compt = 0 %}
-                    {% set break = false %}
 
                     {% for contact in association.contacts|slice(0,2)%}
 
@@ -45,9 +42,10 @@
                             <div class="row g-3">
                                 <h4 class=" d-flex mb-4 mt-0">Contact
                                 <div class=" d-flex justify-content-end ">
-                                    <form action="{{ url("association_deleteContact",{'AssoId':association.id,'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                    <form action="{{ url("association_deleteContact",{'AssoId':association.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
                                         <button class="btn btn-sm" type="submit" >🗑</button>
                                     </form>
+                                    {% set current_path = (app.request.get('_route')) %}
                                     <form action="{{ url("association_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
                                         <button class="btn btn-sm" type="submit">🛠</button>
                                     </form>
@@ -90,16 +88,16 @@
                 </div>
                 <div class="justify-content-md-end text-center mb-5">
                     <form action="{{ url("association_addContact",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-primary " type="submit" >Ajouter un contact</button>
+                        <button class="btn btn-primary mx-3" type="submit" >Ajouter un contact</button>
                     </form>
                     <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-danger " type="submit" >Supprimer</button>
+                        <button class="btn btn-danger mx-3" type="submit" >Supprimer</button>
                     </form>
                     <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
-                        <button class="btn btn-primary" type="submit">Modifier</button>
+                        <button class="btn btn-primary mx-3" type="submit">Modifier</button>
                     </form>
                     <form action="{{ url("association_index") }}" style="display:inline-block; ">
-                        <button class="btn btn-primary" type="submit">Retour</button>
+                        <button class="btn btn-primary mx-3" type="submit">Retour</button>
                     </form>
                 </div>
         </div>

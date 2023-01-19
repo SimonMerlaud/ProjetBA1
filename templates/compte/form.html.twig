@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Creation de compte{% endblock %}
-{% block h1 %}Creation de compte{% endblock %}
+{% block title %}{{ title }} de compte{% endblock %}
+{% block h1 %}{{ title }} de compte{% endblock %}
 {% block body %}
     <div class="container col-9">
         {{ form_start(form) }}
         <div class="col-12">
             <div class="form-group">
                 <label for="email" class="form-label mt-2">{{ form_label(form.mail) }}</label>
-                {{ form_widget(form.mail, {'attr': {'class': 'form-control'}}) }}
+                {{ form_widget(form.mail, {'attr': {'class': 'form-control '}}) }}
                 {{ form_errors(form.mail) }}
             </div>
             <div class="form-group">

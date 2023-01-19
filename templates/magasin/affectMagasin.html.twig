@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block h1 %}{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready(function(){
+            $(function () {
+                $("#sortable1, #sortable2").sortable({
+                    connectWith: ".connectedSortable"
+                }).disableSelection();
+            });
+        });
+        function myFunction() {
+            const ids = [];
+            var liste = document.getElementById("sortable2");
+            var inputs = liste.getElementsByTagName("li");
+            if(inputs.length === 0){
+                ids.push("null");
+            }
+            for (var i = 0; i < inputs.length; i++) {
+                ids.push(inputs[i].id);
+            }
+            var route = "{{ path('magasin_affectation', {idBenevoles:'idBenev'})|escape('js') }}";
+            route = route.replace('idBenev', ids);
+            window.location.href = route;
+        }
+    </script>
+{% endblock %}
+{% block stylesheets %}
+
+    {{ parent() }}
+    <style>
+        .connectedSortable li{
+            cursor: pointer;
+        }
+    </style>
+
+{% endblock %}
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-6"style="height:30vw">
+                <h3 class="text-center">Bénévoles libre(s) :</h3>
+                <ul class="list-group border h-100 connectedSortable" id="sortable1" >
+                    {% for benevole in benevoles %}
+                    <li class="list-group-item" id={{ benevole.id }}>{{ benevole.nom }} {{ benevole.prenom }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-6" style="height:30vw">
+                <h3 class="text-center">Bénévoles choisi(s) :</h3>
+                <ul id="sortable2" class="list-group border h-100 connectedSortable">
+                </ul>
+            </div>
+
+        </div>
+    </div>
+        <button class="btn btn-secondary" onclick="myFunction()" id="button_submit" type="submit" >Affectation</button>
+{% endblock %}
