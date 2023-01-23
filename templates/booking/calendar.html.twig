@@ -4,7 +4,6 @@
 <div id="calendar-holder"></div>
 
     <script type="text/javascript" >
-        console.log(JSON.stringify({ contact_id: {{ app.user.contact.id }} }));
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
             var info = "";
@@ -21,9 +20,9 @@
                 editable: true,
                 eventSources: [
                     {
-                        url: "{{ path('booking_load') }}",
+                        url: "{{ path('fc_load_events') }}",
                         method: "POST",
-                        eventSources: {
+                        extraParams: {
                             filters: JSON.stringify({ contact_id: {{ app.user.contact.id }} }),
                         },
                     },

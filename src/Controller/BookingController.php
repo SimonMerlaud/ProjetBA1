@@ -28,7 +28,6 @@ class BookingController extends AbstractController
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
         $form->handleRequest($request);
-        dump($this->getUser());
         if ($form->isSubmitted() && $form->isValid()) {
             if($this->isGranted('ROLE_BENEVOLE')){
                 $booking->setContact($this->getUser()->getContact());

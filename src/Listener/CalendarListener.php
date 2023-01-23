@@ -57,11 +57,6 @@ class CalendarListener
              * For more information see: https://fullcalendar.io/docs/event-object
              * and: https://github.com/fullcalendar/fullcalendar/blob/master/src/core/options.ts
              */
-            $bookingEvent->addOption(
-                'url',
-                $this->router->generate('', ['id' => $booking->getId(),])
-            )
-            ;
 
             // finally, add the event to the CalendarEvent to fill the calendar
             $calendar->addEvent($bookingEvent);

@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use App\Repository\BookingRepository;
+use App\Repository\ContactRepository;
 use CalendarBundle\CalendarEvents;
 use CalendarBundle\Entity\Event;
 use CalendarBundle\Event\CalendarEvent;
@@ -13,13 +14,16 @@ class CalendarSubscriber implements EventSubscriberInterface
 {
     private $bookingRepository;
     private $router;
+    private $contactRepository;
 
     public function __construct(
         BookingRepository $bookingRepository,
-        UrlGeneratorInterface $router
+        UrlGeneratorInterface $router,
+        ContactRepository $contactRepository
     ) {
         $this->bookingRepository = $bookingRepository;
         $this->router = $router;
+        $this->contactRepository = $contactRepository;
     }
 
     public static function getSubscribedEvents()
@@ -34,7 +38,7 @@ class CalendarSubscriber implements EventSubscriberInterface
         $start = $calendar->getStart();
         $end = $calendar->getEnd();
         $filters = $calendar->getFilters();
-
+        $contact = $this->contactRepository->find($filters['contact_id']);
         // Modify the query to fit to your entity and needs
         // Change booking.beginAt by your start date property
         $bookings = $this->bookingRepository
@@ -42,10 +46,11 @@ class CalendarSubscriber implements EventSubscriberInterface
             ->where('booking.beginAt BETWEEN :start and :end OR booking.endAt BETWEEN :start and :end')
             ->setParameter('start', $start->format('Y-m-d H:i:s'))
             ->setParameter('end', $end->format('Y-m-d H:i:s'))
+            ->andWhere('booking.contact = :contact')
+            ->setParameter('contact', $contact)
             ->getQuery()
             ->getResult()
         ;
-        dump($bookings);
         foreach ($bookings as $booking) {
             // this create the events with your data (here booking data) to fill calendar
             $bookingEvent = new Event(
