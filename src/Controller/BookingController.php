@@ -33,6 +33,7 @@ class BookingController extends AbstractController
             if($this->isGranted('ROLE_BENEVOLE')){
                 $booking->setContact($this->getUser()->getContact());
             }
+            $booking->setTitle('tmp');
             $bookingRepository->save($booking, true);
             return $this->redirectToRoute('accueil');
         }
