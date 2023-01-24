@@ -24,3 +24,8 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\EventSubscriber\CalendarSubscriber:
+
+    Symfony\Component\Serializer\Normalizer\DateTimeNormalizer:
+        arguments:
+            $defaultContext:
+                datetime_format: 'Y-m-d\TH:i:s.v\Z'

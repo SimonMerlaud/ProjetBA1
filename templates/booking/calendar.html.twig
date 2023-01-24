@@ -4,6 +4,7 @@
 {% block body %}
     <div style="text-align:center;">
         <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
+        <a class="btn btn-primary mb-2" href="{{ path('booking_export') }}">Export</a>
     </div>
     <div id="calendar-holder"></div>
 {% endblock %}
@@ -14,8 +15,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
-
-            var info = "";
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'fr',
@@ -85,6 +84,14 @@
                 plugins: [ 'interaction', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
             });
             calendar.render();
+            //var serialized = document.documentElement.innerHTML;
+            /*var serialized =
+                '<head>' +
+                document.getElementsByTagName('head')[0].innerHTML +
+                '</head><body>' +
+                document.body.innerHTML +
+                '</body>';
+            console.log(serialized);*/
         });
     </script>
 {% endblock %}

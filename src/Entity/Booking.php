@@ -29,13 +29,20 @@ class Booking
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?Lieux $lieux = null;
 
-    public function getBeginAtMonth(): ?\DateTime{
-        return $this->beginAt().getMonth();
-    }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getAdresse(): ?string
+    {
+        return $this->lieux->getAdresse();
+    }
+
+    public function getMail(): ?string
+    {
+        return $this->contact->getMail();
     }
 
     public function getBeginAt(): ?\DateTime
