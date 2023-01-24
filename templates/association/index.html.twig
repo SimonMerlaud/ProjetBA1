@@ -7,11 +7,9 @@
 {% block body %}
     <div class="justify-content-md-end text-center">
         <form action="{{ url("association_add") }}" style="cursor: pointer;display:inline-block; ">
-            <button class="btn btn-secondary " type="submit" >Ajouter un magasin</button>
+            <button class="btn btn-secondary " type="submit" >Ajouter une association</button>
         </form>
-        <form action="{{ url("accueil") }}" style="cursor: pointer;display:inline-block; ">
-            <button class="btn btn-secondary " type="submit" >Retour</button>
-        </form>
+        <a class="btn btn-secondary " type="submit" href="{{ path('accueil') }}" >Retour</a>
         <div class="row d-flex justify-content-center">
             <div class="col-4 mt-2">
                 {{ render(controller(

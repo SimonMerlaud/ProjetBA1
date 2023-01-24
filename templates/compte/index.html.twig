@@ -7,7 +7,7 @@
             $(document).ajaxStop(function(){
                 window.location.reload();
             });
-            if(confirm('etes vous sur')){
+            if(confirm('êtes vous sur de supprimer ce compte')){
                 $.ajax({
                     async: "true",
                     type: "POST",
@@ -27,6 +27,8 @@
         }
     </script>
 {% endblock %}
+
+{% block h1 %} Liste des comptes {% endblock %}
 {%  block body %}
     <div class="row justify-content-center">
         <div class="col-8">
@@ -42,6 +44,8 @@
                 <thead>
                 <tr>
                     <th scope="col">Mail</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
                     <th scope="col">Rôle(s)</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -57,9 +61,19 @@
                         <th scope="row">
                             {{ compte.mail }}
                         </th>
+                        <th scope="row">
+                            {{ compte.contact.nom }}
+                        </th>
+                        <th scope="row">
+                            {{ compte.contact.prenom }}
+                        </th>
                         <td>
                             {% for role in compte.roles %}
-                                {{ role }}
+                                {% if role == 'ROLE_BENEVOLE' %}
+                                    Bénévole
+                                {% elseif role == 'ROLE_BA' %}
+                                    Membre de la banque alimentaire
+                                {% endif %}
                             {% endfor %}
                         </td>
                         <td>
