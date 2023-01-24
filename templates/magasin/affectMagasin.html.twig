@@ -13,6 +13,7 @@
         });
         function myFunction() {
             const ids = [];
+            const params = [];
             var liste = document.getElementById("sortable2");
             var inputs = liste.getElementsByTagName("li");
             if(inputs.length === 0){
@@ -21,8 +22,12 @@
             for (var i = 0; i < inputs.length; i++) {
                 ids.push(inputs[i].id);
             }
-            var route = "{{ path('magasin_affectation', {idBenevoles:'idBenev'})|escape('js') }}";
+            params[0] = '{{start }}';
+            params[1] = '{{ end }}';
+            params[2] = '{{ magasin.id }}';
+            var route = "{{ path('magasin_affectation', {idBenevoles:'idBenev',params:'param'})|escape('js') }}";
             route = route.replace('idBenev', ids);
+            route = route.replace('param',params);
             window.location.href = route;
         }
     </script>
@@ -45,7 +50,9 @@
                 <h3 class="text-center">Bénévoles libre(s) :</h3>
                 <ul class="list-group border h-100 connectedSortable" id="sortable1" >
                     {% for benevole in benevoles %}
-                    <li class="list-group-item" id={{ benevole.id }}>{{ benevole.nom }} {{ benevole.prenom }}</li>
+                        {% for booking in benevole.bookings %}
+                    <li class="list-group-item" id="{{ benevole.id }}_{{ booking.id }}">{{ benevole.nom }} {{ benevole.prenom }} ({{ booking.beginAt|date('H:i')}}, {{ booking.endAt|date('H:i') }})</li>
+                    {% endfor %}
                     {% endfor %}
                 </ul>
             </div>

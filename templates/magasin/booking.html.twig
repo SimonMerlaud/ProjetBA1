@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Magasin - Booking{% endblock %}
+
+{% block h1 %}Calendrier d'affectation{% endblock %}
+
+{% block body %}
+    {% include 'booking/calendar.html.twig' with {'magasinId':  magId } %}
+{% endblock %}

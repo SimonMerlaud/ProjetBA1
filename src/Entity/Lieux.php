@@ -32,6 +32,9 @@ class Lieux
     #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'lieux', cascade: ['persist'])]
     private Collection $contacts;
 
+    #[ORM\OneToMany(mappedBy: 'lieux', targetEntity: Booking::class)]
+    private Collection $bookings;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -110,6 +113,36 @@ class Lieux
     public function removeContact(Contact $contact): self
     {
         $this->contacts->removeElement($contact);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setLieux($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getLieux() === $this) {
+                $booking->setLieux(null);
+            }
+        }
 
         return $this;
     }

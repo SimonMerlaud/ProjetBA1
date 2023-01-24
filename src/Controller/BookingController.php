@@ -3,8 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
+use App\Entity\Lieux;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
+use App\Repository\ContactRepository;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -19,11 +23,13 @@ class BookingController extends AbstractController
     #[Route(path: '/', name: '_index')]
     public function index(BookingRepository $bookingRepository): Response
     {
-        return $this->render('booking/calendar.html.twig');
+        return $this->render('booking/calendar.html.twig',['magasinId'=>0]);
     }
 
-    #[Route(path: '/new/', name: '_new')]
-    public function new(Request $request, BookingRepository $bookingRepository): Response
+    #[Route(path: '/new/{magId}', name: '_new',
+    defaults:[ 'magId' => 0]
+    )]
+    public function new(Request $request, BookingRepository $bookingRepository,EntityManagerInterface $entityManager, $magId): Response
     {
         $booking = new Booking();
         $form = $this->createForm(BookingType::class, $booking);
@@ -31,6 +37,8 @@ class BookingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if($this->isGranted('ROLE_BENEVOLE')){
                 $booking->setContact($this->getUser()->getContact());
+            }else{
+                $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
             }
             $booking->setTitle('tmp');
             $bookingRepository->save($booking, true);
@@ -43,11 +51,11 @@ class BookingController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/show/{id}', name: '_show')]
-    public function show(int $id, BookingRepository $bookingRepository): Response
+    #[Route(path: '/show/{id}/{magId}', name: '_show')]
+    public function show(int $id,$magId, BookingRepository $bookingRepository): Response
     {
         return $this->render('booking/show.html.twig', [
-            'booking' => $bookingRepository->find($id),
+            'booking' => $bookingRepository->find($id),'magId'=>$magId
         ]);
     }
 

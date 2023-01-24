@@ -6,6 +6,6 @@
 
 {% block body %}
     {% if is_granted('ROLE_BENEVOLE') %}
-        {% include 'booking/calendar.html.twig' %}
+        {% include 'booking/calendar.html.twig' with {'magasinId':0} %}
     {% endif %}
 {% endblock %}

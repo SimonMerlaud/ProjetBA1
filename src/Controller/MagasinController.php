@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Adresse;
+use App\Entity\Booking;
 use App\Entity\Contact;
 use App\Entity\Lieux;
 use App\Entity\TypeLieux;
@@ -10,6 +11,7 @@ use App\Form\ContactAssoType;
 use App\Form\LieuxType;
 use App\Form\ModifyLieuxType;
 use App\Form\SearchAssoType;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -276,29 +278,79 @@ class MagasinController extends AbstractController
         return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
     }
 
-    #[Route('/affect/{magId}', name: '_affect')]
-    public function affectMagasin($magId, EntityManagerInterface $entityManager):Response
+    #[Route('/booking/{id}', name: '_booking')]
+    public function bookingMagasin($id):Response
     {
-        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
-        $benevoles = $entityManager->getRepository(Contact::class)->findBenevole();
-        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'benevoles'=>$benevoles]);
+        return $this->render('magasin/booking.html.twig',['magId'=>$id]);
     }
 
-    #[Route('/affectation/{idBenevoles}', name: '_affectation')]
-    public function affectation(string $idBenevoles,EntityManagerInterface $entityManager):Response
+    #[Route('/affect/{magId}/{startDate}/{endDate}', name: '_affect')]
+    public function affectMagasin($magId,$startDate,$endDate, EntityManagerInterface $entityManager):Response
     {
-        if(strstr( $idBenevoles, ',' )) {
-            $test = explode(',', $idBenevoles);
-            dump($test);
-            foreach ($test as $id){
-                $benevole = $entityManager->getRepository(Contact::class)->find($id);
-                dump($benevole);
-            }
+        $start = new \DateTime($startDate);
+        $end = new \DateTime($endDate);
+        $contacts = array();
+        $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($start,$end);
 
+        foreach ($bookings as $booking) {
+            $contacts[] = ClassUtils::getRealClass($booking->getContact());
+        }
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'benevoles'=>$contacts, 'start'=>$startDate,'end'=>$endDate]);
+    }
+
+    #[Route('/affectation/{idBenevoles}/{params}', name: '_affectation')]
+    public function affectation(string $idBenevoles,EntityManagerInterface $entityManager,$params):Response
+    {
+        $parametres = explode(',', $params);
+        $start = new \DateTime($parametres[0]);
+        $end = new \DateTime($parametres[1]);
+        $magId = $parametres[2];
+
+        if(strstr( $idBenevoles, ',' )) {
+            $ids = explode(',', $idBenevoles);
+            foreach ($ids as $id) {
+                $idss = explode('_', $idBenevoles);
+                $benevole = $entityManager->getRepository(Contact::class)->find($id);
+                $bookings=$entityManager->getRepository(Booking::class)->findWithId($idss[0],$idss[1]);
+                foreach ($bookings as $booking) {
+                    $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
+                    $entityManager->persist($booking);
+                    if ($booking->getEndAt() > $end) {
+                        $creneau = new Booking();
+                        $creneau->setContact($benevole);
+                        $creneau->setBeginAt($end);
+                        $creneau->setEndAt($booking->getEndAt());
+                        $creneau->setTitle('Libre');
+                        $entityManager->persist($creneau);
+                        $entityManager->flush();
+                    }
+                    $entityManager->flush();
+                }
+            }
         }elseif($idBenevoles == "null"){
             return $this->redirectToRoute('magasin_index');
         }else{
-            dump($idBenevoles);
+            $benevole = $entityManager->getRepository(Contact::class)->find($idBenevoles);
+            $idss = explode('_', $idBenevoles);
+            $bookings=$entityManager->getRepository(Booking::class)->findWithId($idss[0],$idss[1]);
+            foreach ($bookings as $booking){
+                $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+                $booking->setLieux($magasin);
+                $booking->setTitle('Affecté à '.' '.$magasin->getNom());
+                $entityManager->persist($booking);
+                if($booking->getEndAt() > $end){
+                    $creneau = new Booking();
+                    $creneau->setContact($benevole);
+                    $creneau->setBeginAt($end);
+                    $creneau->setEndAt($booking->getEndAt());
+                    $creneau->setTitle('Libre');
+                    $entityManager->persist($creneau);
+                    $entityManager->flush();
+                }
+                $booking->setEndAt($end);
+                $entityManager->flush();
+            }
         }
     }
 }

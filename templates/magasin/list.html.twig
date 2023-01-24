@@ -28,7 +28,7 @@
                             <td>{{ magasin.adresse }}</td>
                             <td>{{ magasin.nbPersonneNecessaire }}</td>
                             <td>
-                                <form action="{{ url("magasin_affect",{'magId':magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
+                                <form action="{{ url("magasin_booking",{'id':magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
                                     <button class="btn btn-secondary " type="submit" >Affectation</button>
                                 </form>
                             </td>

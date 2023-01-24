@@ -2,10 +2,14 @@
 
 {% block title %}Booking{% endblock %}
 
+{% block h1 %}Booking{% endblock %}
 {% block body %}
     {% if booking.title %}
         <h1>{{ booking.title }}</h1>
     {% endif %}
+    <div class="container ">
+        <div class="row justify-content-center align-center">
+            <div class="col-8">
     <table class="table">
         <tbody>
             <tr>
@@ -18,6 +22,15 @@
             </tr>
         </tbody>
     </table>
-    {{ include('booking/_delete_form.html.twig') }}
-    <a href="{{ path('accueil') }}" class="btn btn-primary m-2">retour</a>
+                <div class="d-flex justify-content-center mt-2 mb-5">
+
+                    {% if is_granted('ROLE_BA') %}
+                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_affect',{'magId':  magId, 'startDate': booking.beginAt|date('Y-m-d H:i:s'), 'endDate': booking.endAt|date('Y-m-d H:i:s') }) }}">Affectation</a>
+                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_booking',{'id': magId}) }}">back to list</a>
+                    {% endif %}
+                    {{ include('booking/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
