@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\BookingRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -24,10 +26,15 @@ class Booking
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    private ?Contact $contact = null;
-
-    #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?Lieux $lieux = null;
+
+    #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'bookings')]
+    private Collection $contacts;
+
+    public function __construct()
+    {
+        $this->contacts = new ArrayCollection();
+    }
 
     public function getBeginAtMonth(): ?\DateTime{
         return $this->beginAt().getMonth();
@@ -74,18 +81,6 @@ class Booking
         return $this;
     }
 
-    public function getContact(): ?Contact
-    {
-        return $this->contact;
-    }
-
-    public function setContact(?Contact $contact): self
-    {
-        $this->contact = $contact;
-
-        return $this;
-    }
-
     public function getLieux(): ?Lieux
     {
         return $this->lieux;
@@ -94,6 +89,30 @@ class Booking
     public function setLieux(?Lieux $lieux): self
     {
         $this->lieux = $lieux;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Contact>
+     */
+    public function getContacts(): Collection
+    {
+        return $this->contacts;
+    }
+
+    public function addContact(Contact $contact): self
+    {
+        if (!$this->contacts->contains($contact)) {
+            $this->contacts->add($contact);
+        }
+
+        return $this;
+    }
+
+    public function removeContact(Contact $contact): self
+    {
+        $this->contacts->removeElement($contact);
 
         return $this;
     }

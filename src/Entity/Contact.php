@@ -47,7 +47,7 @@ class Contact
     #[ORM\JoinColumn(nullable: true)]
     private ?Adresse $adresse = null;
 
-    #[ORM\OneToMany(mappedBy: 'contact', targetEntity: Booking::class)]
+    #[ORM\ManyToMany(targetEntity: Booking::class, mappedBy: 'contacts')]
     private Collection $bookings;
 
     public function __construct()
@@ -200,7 +200,7 @@ class Contact
     {
         if (!$this->bookings->contains($booking)) {
             $this->bookings->add($booking);
-            $booking->setContact($this);
+            $booking->addContact($this);
         }
 
         return $this;
@@ -209,10 +209,7 @@ class Contact
     public function removeBooking(Booking $booking): self
     {
         if ($this->bookings->removeElement($booking)) {
-            // set the owning side to null (unless already changed)
-            if ($booking->getContact() === $this) {
-                $booking->setContact(null);
-            }
+            $booking->removeContact($this);
         }
 
         return $this;
