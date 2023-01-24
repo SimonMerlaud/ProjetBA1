@@ -5,5 +5,7 @@
 {% block h1 %}Bienvenue{% endblock %}
 
 {% block body %}
-    {% include 'booking/calendar.html.twig' %}
+    {% if is_granted('ROLE_BENEVOLE') %}
+        {% include 'booking/calendar.html.twig' %}
+    {% endif %}
 {% endblock %}

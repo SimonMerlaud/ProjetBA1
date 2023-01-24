@@ -36,7 +36,7 @@ class BenevoleController extends AbstractController
         $benevole->setAdresse($adresse);
         $compte->setContact($benevole);
         $form = $this->createForm(CompteBenevoleType::class, $compte);
-        $form->add('send', SubmitType::class, ['label' => 'Valider']);
+        $form->add('valider', SubmitType::class, ['label' => 'Valider']);
         $form->handleRequest($request);
         $benevole->setBenevole(true);
         $compte->setRoles(array("ROLE_BENEVOLE"));
@@ -60,14 +60,10 @@ class BenevoleController extends AbstractController
                 $this->addFlash('error', "Le téléphone ou le mail doit être renseigné");
                 return $this->redirectToRoute("benevole_inscription_");
             }
-
             //faire un render sur une page pour dire que
             //le user est bien inscrit
-
         }
-
         return $this->render('benevole/form.html.twig', ['form' => $form->createView()]);
-
 
     }
 

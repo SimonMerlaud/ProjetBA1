@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Adresse;
 use App\Entity\CompteBenevole;
 use App\Entity\Contact;
 use App\Entity\Lieux;
 use App\Entity\TypeLieux;
+use App\Form\CompteBenevoleType;
 use App\Form\CompteType;
 use App\Form\ModifyLieuxType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -62,19 +64,22 @@ class CompteController extends AbstractController
     public function addCompte(UserPasswordHasherInterface $passwordHasher, Request $request, EntityManagerInterface $em): Response
     {
         $compte = new CompteBenevole();
+        $benevole = new Contact();
+        $adresse = new Adresse();
+        $benevole->setAdresse($adresse);
+        $compte->setContact($benevole);
         $form = $this->createForm(CompteType::class, $compte);
+        $form->add('valider', SubmitType::class, ['label' => 'Valider']);
         $form->handleRequest($request);
+
         if($form->isSubmitted() && $form->isValid()) {
             $hashedPassword = $passwordHasher->hashPassword(
                 $compte,
                 $compte->getPassword()
             );
             $compte->setPassword($hashedPassword);
-            $contact = new Contact();
-            $contact->setPrenom('ba')
-                ->setNom('ba');
-
-            $compte->setContact($contact);
+            $em->persist($benevole);
+            $em->persist($adresse);
             $em->persist($compte);
             $em->flush();
             $this->addFlash('add', "le compte a été ajouté");
@@ -119,14 +124,20 @@ class CompteController extends AbstractController
     }
 
     #[Route(path: '/modify/{id}', name: '_modify')]
-    public function editCompte($id,EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher,\Symfony\Component\HttpFoundation\Request $request):Response
+    public function editCompte($id,EntityManagerInterface $entityManager,UserPasswordHasherInterface $passwordHasher,Request $request):Response
     {
         $compte = $entityManager->getRepository("App\Entity\CompteBenevole")->find($id);
         if($compte == null){
             $this->addFlash('error', 'Ce compte n\'existe pas');
             return $this->redirectToRoute('compte_index');
         }
-        $form = $this->createForm(CompteType::class,$compte);
+        if($this->isGranted('ROLE_BENEVOLE')){
+            $form = $this->createForm(CompteBenevoleType::class,$compte);
+        }
+        else{
+            $form = $this->createForm(CompteType::class,$compte);
+        }
+        $form->add('valider', SubmitType::class);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $hashedPassword = $passwordHasher->hashPassword(
@@ -139,20 +150,25 @@ class CompteController extends AbstractController
             $this->addFlash('add', 'Le compte a été modifié');
             return $this->redirectToRoute('compte_index');
         }
-        return $this->render('compte/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
-
+        if($this->isGranted('ROLE_BENEVOLE')){
+            return $this->render('benevole/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
+        }
+        else{
+            return $this->render('compte/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
+        }
     }
 
-    #[Route(path: '/delete/{id}', name: '_delete')]
-    public function deleteCompte($id,EntityManagerInterface $entityManager){
+    #[Route(path: '/delete', name: '_delete')]
+    public function deleteCompte(Request $request, EntityManagerInterface $entityManager){
+        $id = $request->request->get('id');
         $compte = $entityManager->getRepository("App\Entity\CompteBenevole")->find($id);
         if($compte == null){
             $this->addFlash('error', 'Ce compte n\'existe pas');
-            return $this->redirectToRoute('compte_index');
+            json_encode('error');
         }
         $entityManager->remove($compte);
         $entityManager->flush();
         $this->addFlash('add', 'Le compte a été supprimé');
-        return $this->redirectToRoute('compte_index');
+        json_encode('success');
     }
 }

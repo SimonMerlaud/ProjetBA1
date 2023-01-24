@@ -1,5 +1,32 @@
 {% extends 'base.html.twig' %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function delete_compte(id=0){
+            $(document).ajaxStop(function(){
+                window.location.reload();
+            });
+            if(confirm('etes vous sur')){
+                $.ajax({
+                    async: "true",
+                    type: "POST",
+                    url: '{{ path("compte_delete") }}',
+                    data: {
+                        id: id,
+                    },
+                    dataType: "json",
+                    success : function (data){
+                        console.log(data);
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}
 {%  block body %}
     <div class="row justify-content-center">
         <div class="col-8">
@@ -36,12 +63,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            <form action="{{ url("compte_modify",{'id':compte.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                <button class="btn btn-secondary " type="submit" >⚙</button>
-                            </form>
-                            <form action="{{ url("compte_delete",{'id':compte.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                <button class="btn btn-secondary " type="submit" >🗑</button>
-                            </form>
+                            <a class="btn btn-secondary " href="{{ url("compte_modify",{'id':compte.id}) }}">⚙</a>
+                            <a class="btn btn-secondary " onclick="delete_compte({{ compte.id }})">🗑</a>
                         </td>
                     </tr>
                 {% endfor %}

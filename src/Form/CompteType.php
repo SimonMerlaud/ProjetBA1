@@ -20,7 +20,7 @@ class CompteType extends AbstractType
             ->add('mail', TextType::class)
             ->add('roles', ChoiceType::class, ['choices' => [ 'benevole' => "ROLE_BENEVOLE", 'banque alimentaire' => "ROLE_BA" ]])
             ->add('password', PasswordType::class)
-            ->add('valider', SubmitType::class)
+            ->add('contact', BenevoleType::class)
         ;
 
         // Data transformer
