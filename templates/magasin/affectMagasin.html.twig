@@ -1,6 +1,5 @@
 {% extends 'base.html.twig' %}
 
-{% block h1 %}{% endblock %}
 {% block javascripts %}
     {{ parent() }}
     <script>
@@ -42,8 +41,11 @@
     </style>
 
 {% endblock %}
+
+
 {% block body %}
 
+    <h2 class="text-center m-4">Affectation de {{ magasin.nom }} ({{ start|date('j F') }})</h2>
     <div class="container">
         <div class="row">
             <div class="col-6"style="height:30vw">
@@ -62,7 +64,7 @@
                 </ul>
             </div>
 
+            <button class="btn btn-secondary" onclick="myFunction()" id="button_submit" type="submit" style="position: relative" >Affectation</button>
         </div>
     </div>
-        <button class="btn btn-secondary" onclick="myFunction()" id="button_submit" type="submit" >Affectation</button>
 {% endblock %}

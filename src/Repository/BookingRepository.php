@@ -45,13 +45,14 @@ class BookingRepository extends ServiceEntityRepository
     public function findBetweenDates($start, $end)
     {
         $query = $this->createQueryBuilder('b')
-            ->andWhere('b.beginAt BETWEEN :start and :end')
             ->andWhere('b.beginAt < :end')
             ->andWhere('b.endAt > :start')
-            ->leftJoin('b.contacts', 'contacts')
+            ->join('b.contacts', 'contacts')
             ->andWhere('contacts is NOT NULL')
-            ->andWhere('b.lieux is NULL');
+            ->andWhere('b.lieux is NULL')
+            ->andWhere('b.estAffecte= :affecte');
         $query->setParameter('start', $start)
+            ->setParameter('affecte', false)
             ->setParameter('end', $end);
         return $query->getQuery()->getResult();
     }
@@ -59,7 +60,8 @@ class BookingRepository extends ServiceEntityRepository
     public function findWithId($contactId,$bookingId)
     {
         $query = $this->createQueryBuilder('b')
-            ->andWhere('b.contact= :contact')
+            ->join('b.contacts','contacts')
+            ->andWhere('contacts= :contact')
             ->andWhere('b.lieux is NULL')
             ->andWhere('b.id= :booking')
             ->setParameter('contact',$contactId)

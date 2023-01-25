@@ -279,9 +279,10 @@ class MagasinController extends AbstractController
     }
 
     #[Route('/booking/{magId}', name: '_booking')]
-    public function bookingMagasin($magId):Response
+    public function bookingMagasin($magId,EntityManagerInterface $entityManager):Response
     {
-        return $this->render('magasin/booking.html.twig',['magId'=>$magId]);
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        return $this->render('magasin/booking.html.twig',['magasin'=>$magasin]);
     }
 
     #[Route('/affect/{magId}/{startDate}/{endDate}', name: '_affect')]
@@ -289,7 +290,6 @@ class MagasinController extends AbstractController
     {
         $start = new \DateTime($startDate);
         $end = new \DateTime($endDate);
-        $contacts = array();
         $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($start,$end);
 
         $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
@@ -303,26 +303,45 @@ class MagasinController extends AbstractController
         $start = new \DateTime($parametres[0]);
         $end = new \DateTime($parametres[1]);
         $magId = $parametres[2];
-
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        $magasinCreneau = $entityManager->getRepository(Booking::class)->findOneBy(['lieux'=>$magasin,'beginAt'=>$start,'endAt'=>$end]);
         if(strstr( $idBenevoles, ',' )) {
             $ids = explode(',', $idBenevoles);
             foreach ($ids as $id) {
-                $idss = explode('_', $idBenevoles);
-                $benevole = $entityManager->getRepository(Contact::class)->find($id);
+                $idss = explode('_', $id);
+                $benevole = $entityManager->getRepository(Contact::class)->find($idss[0]);
                 $bookings=$entityManager->getRepository(Booking::class)->findWithId($idss[0],$idss[1]);
                 foreach ($bookings as $booking) {
-                    $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
-                    $entityManager->persist($booking);
-                    if ($booking->getEndAt() > $end) {
-                        $creneau = new Booking();
-                        $creneau->addContact($benevole);
-                        $creneau->setBeginAt($end);
-                        $creneau->setEndAt($booking->getEndAt());
-                        $creneau->setTitle('Libre');
-                        $entityManager->persist($creneau);
-                        $entityManager->flush();
+
+                    if($booking->getEndAt() > $end  || $booking->getBeginAt() < $start) {
+                        if ($booking->getEndAt() > $end) {
+                            $creneauEnd = new Booking();
+                            $creneauEnd->addContact($benevole);
+                            $creneauEnd->setBeginAt($end);
+                            $creneauEnd->setEndAt($booking->getEndAt());
+                            $creneauEnd->setEstAffecte(false);
+                            $creneauEnd->setTitle('Libre');
+                            $booking->setEndAt($end);
+                        }
+                        if ($booking->getBeginAt() < $start) {
+                            $creneauStart = new Booking();
+                            $creneauStart->addContact($benevole);
+                            $creneauStart->setBeginAt($booking->getBeginAt());
+                            $creneauStart->setEndAt($start);
+                            $creneauStart->setEstAffecte(false);
+                            $creneauStart->setTitle('Libre');
+                            $booking->setBeginAt($start);
+                        }
+                        $entityManager->persist($creneauStart);
+                        $entityManager->persist($creneauEnd);
                     }
+                    $booking->setTitle('Affecté à ' . ' ' . $magasin->getNom());
+                    $booking->setEstAffecte(true);
+                    $magasinCreneau->addContact($benevole);
+                    $entityManager->persist($magasinCreneau);
+                    $entityManager->persist($booking);
                     $entityManager->flush();
+
                 }
             }
         }elseif($idBenevoles == "null"){
@@ -332,20 +351,36 @@ class MagasinController extends AbstractController
             $idss = explode('_', $idBenevoles);
             $bookings=$entityManager->getRepository(Booking::class)->findWithId($idss[0],$idss[1]);
             foreach ($bookings as $booking){
-                $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
-                $booking->setLieux($magasin);
                 $booking->setTitle('Affecté à '.' '.$magasin->getNom());
-                $entityManager->persist($booking);
-                if($booking->getEndAt() > $end){
-                    $creneau = new Booking();
-                    $creneau->setContact($benevole);
-                    $creneau->setBeginAt($end);
-                    $creneau->setEndAt($booking->getEndAt());
-                    $creneau->setTitle('Libre');
-                    $entityManager->persist($creneau);
-                    $entityManager->flush();
+
+                if($booking->getEndAt() > $end  || $booking->getBeginAt() < $start){
+                    if($booking->getEndAt() > $end) {
+                        $creneauEnd = new Booking();
+                        $creneauEnd->addContact($benevole);
+                        $creneauEnd->setBeginAt($end);
+                        $creneauEnd->setEndAt($booking->getEndAt());
+                        $creneauEnd->setEstAffecte(false);
+                        $creneauEnd->setTitle('Libre');
+                        $booking->setEndAt($end);
+                    }
+                    if($booking->getBeginAt() < $start){
+                        $creneauStart = new Booking();
+                        $creneauStart->addContact($benevole);
+                        $creneauStart->setBeginAt($booking->getBeginAt());
+                        $creneauStart->setEndAt($start);
+                        $creneauStart->setEstAffecte(false);
+                        $creneauStart->setTitle('Libre');
+                        $booking->setBeginAt($start);
+                    }
+
+                    $entityManager->persist($creneauStart);
+                    $entityManager->persist($creneauEnd);
                 }
-                $booking->setEndAt($end);
+                $booking->setTitle('Affecté à '.' '.$magasin->getNom());
+                $booking->setEstAffecte(true);
+                $magasinCreneau->addContact($benevole);
+                $entityManager->persist($magasinCreneau);
+                $entityManager->persist($booking);
                 $entityManager->flush();
             }
         }

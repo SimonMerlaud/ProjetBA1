@@ -53,6 +53,7 @@ class CalendarSubscriber implements EventSubscriberInterface
                 ->setParameter('end', $end->format('Y-m-d H:i:s'))
                 ->Join('booking.contacts','contacts')
                 ->andWhere('contacts = :contact')
+                ->andWhere('booking.lieux is NULL')
                 ->setParameter('contact', $contact)
                 ->getQuery()
                 ->getResult();

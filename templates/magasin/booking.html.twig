@@ -2,8 +2,8 @@
 
 {% block title %}Magasin - Booking{% endblock %}
 
-{% block h1 %}Calendrier d'affectation{% endblock %}
+{% block h1 %}Calendrier d'affectation {{ magasin.nom}} {% endblock %}
 
 {% block body %}
-    {% include 'booking/calendar.html.twig' with {'magId':magId } %}
+    {% include 'booking/calendar.html.twig' with {'magasin':  magasin } %}
 {% endblock %}
