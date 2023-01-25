@@ -31,6 +31,9 @@ class Booking
     #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'bookings')]
     private Collection $contacts;
 
+    #[ORM\Column]
+    private ?bool $estAffecte = false;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -113,6 +116,18 @@ class Booking
     public function removeContact(Contact $contact): self
     {
         $this->contacts->removeElement($contact);
+
+        return $this;
+    }
+
+    public function isEstAffecte(): ?bool
+    {
+        return $this->estAffecte;
+    }
+
+    public function setEstAffecte(bool $estAffecte): self
+    {
+        $this->estAffecte = $estAffecte;
 
         return $this;
     }

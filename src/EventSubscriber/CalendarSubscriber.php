@@ -51,7 +51,8 @@ class CalendarSubscriber implements EventSubscriberInterface
                 ->where('booking.beginAt BETWEEN :start and :end OR booking.endAt BETWEEN :start and :end')
                 ->setParameter('start', $start->format('Y-m-d H:i:s'))
                 ->setParameter('end', $end->format('Y-m-d H:i:s'))
-                ->andWhere('booking.contact = :contact')
+                ->Join('booking.contacts','contacts')
+                ->andWhere('contacts = :contact')
                 ->setParameter('contact', $contact)
                 ->getQuery()
                 ->getResult();

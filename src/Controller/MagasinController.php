@@ -292,11 +292,8 @@ class MagasinController extends AbstractController
         $contacts = array();
         $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($start,$end);
 
-        foreach ($bookings as $booking) {
-            $contacts[] = ClassUtils::getRealClass($booking->getContact());
-        }
         $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
-        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'benevoles'=>$contacts, 'start'=>$startDate,'end'=>$endDate]);
+        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'bookings'=>$bookings, 'start'=>$startDate,'end'=>$endDate]);
     }
 
     #[Route('/affectation/{idBenevoles}/{params}', name: '_affectation')]
@@ -318,7 +315,7 @@ class MagasinController extends AbstractController
                     $entityManager->persist($booking);
                     if ($booking->getEndAt() > $end) {
                         $creneau = new Booking();
-                        $creneau->setContact($benevole);
+                        $creneau->addContact($benevole);
                         $creneau->setBeginAt($end);
                         $creneau->setEndAt($booking->getEndAt());
                         $creneau->setTitle('Libre');

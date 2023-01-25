@@ -48,7 +48,8 @@ class BookingRepository extends ServiceEntityRepository
             ->andWhere('b.beginAt BETWEEN :start and :end')
             ->andWhere('b.beginAt < :end')
             ->andWhere('b.endAt > :start')
-            ->andWhere('b.contact is NOT NULL')
+            ->leftJoin('b.contacts', 'contacts')
+            ->andWhere('contacts is NOT NULL')
             ->andWhere('b.lieux is NULL');
         $query->setParameter('start', $start)
             ->setParameter('end', $end);

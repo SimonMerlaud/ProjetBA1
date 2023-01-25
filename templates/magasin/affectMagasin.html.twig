@@ -49,10 +49,10 @@
             <div class="col-6"style="height:30vw">
                 <h3 class="text-center">Bénévoles libre(s) :</h3>
                 <ul class="list-group border h-100 connectedSortable" id="sortable1" >
-                    {% for benevole in benevoles %}
-                        {% for booking in benevole.bookings %}
-                    <li class="list-group-item" id="{{ benevole.id }}_{{ booking.id }}">{{ benevole.nom }} {{ benevole.prenom }} ({{ booking.beginAt|date('H:i')}}, {{ booking.endAt|date('H:i') }})</li>
-                    {% endfor %}
+                    {% for booking in bookings %}
+                        {% for contact in booking.contacts %}
+                            <li class="list-group-item" id="{{ contact.id }}_{{ booking.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ booking.beginAt|date('H:i')}}, {{ booking.endAt|date('H:i') }})</li>
+                        {% endfor %}
                     {% endfor %}
                 </ul>
             </div>
