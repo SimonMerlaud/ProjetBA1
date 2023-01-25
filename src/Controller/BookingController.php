@@ -42,14 +42,20 @@ class BookingController extends AbstractController
                 $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
                 $booking->setEstAffecte(false);
             }
-            $booking->setTitle('tmp');
+            $booking->setTitle('Libre');
             $bookingRepository->save($booking, true);
-            return $this->redirectToRoute('accueil');
+            if($this->isGranted('ROLE_BENEVOLE')){
+                return $this->redirectToRoute('accueil');
+            }
+            else{
+                return $this->redirectToRoute('magasin_booking', ['magId' => $magId]);
+            }
         }
 
         return $this->renderForm('booking/new.html.twig', [
             'booking' => $booking,
-            'form' => $form
+            'form' => $form,
+            'magId' => $magId
         ]);
     }
 
@@ -80,14 +86,20 @@ class BookingController extends AbstractController
         return new Response(json_encode(''));
     }
 
-    #[Route(path: '/delete/{id}', name: '_delete')]
-    public function delete(Request $request, int $id, BookingRepository $bookingRepository): Response
+    #[Route(path: '/delete/{id}/{magId}', name: '_delete',
+        defaults:[ 'magId' => 0])]
+    public function delete($magId, Request $request, int $id, BookingRepository $bookingRepository): Response
     {
         $booking = $bookingRepository->find($id);
         if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
             $bookingRepository->remove($booking, true);
         }
+        if($this->isGranted('ROLE_BENEVOLE')){
+            return $this->redirectToRoute('accueil');
+        }
+        else{
+            return $this->redirectToRoute('magasin_booking', ['magId' => $magId]);
+        }
 
-        return $this->redirectToRoute('booking_index');
     }
 }

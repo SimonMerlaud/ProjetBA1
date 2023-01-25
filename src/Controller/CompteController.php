@@ -168,7 +168,7 @@ class CompteController extends AbstractController
         }
         $entityManager->remove($compte);
         $entityManager->flush();
-        $this->addFlash('add', 'Le compte a été supprimé');
+        $this->addFlash('error', 'Le compte a été supprimé');
         json_encode('success');
     }
 }

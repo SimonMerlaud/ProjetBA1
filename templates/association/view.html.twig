@@ -4,6 +4,58 @@
     Association {{ association.nom }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        function delete_assoCompte(assoId=0, id=0){
+            $(document).ajaxStop(function(){
+                window.location.reload();
+            });
+            if(confirm('Etes vous sur de supprimer ce contact de cette association')){
+                $.ajax({
+                    async: "true",
+                    type: "POST",
+                    url: '{{ path("association_deleteContact") }}',
+                    data: {
+                        assoId: assoId,
+                        id:id
+                    },
+                    dataType: "json",
+                    success : function (data){
+                        console.log(data);
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+        }
+
+        function delete_asso(id=0){
+            $(document).ajaxStop(function(){
+                var route = "{{ path('association_index')|escape('js') }}";
+            });
+            if(confirm('Etes vous sur de supprimer cette association')){
+                $.ajax({
+                    async: "true",
+                    type: "POST",
+                    url: '{{ path("association_delete") }}',
+                    data: {
+                        id: id
+                    },
+                    dataType: "json",
+                    success : function (data){
+                        console.log(data);
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                });
+            }
+        }
+    </script>
+{% endblock %}
+
 {% block body %}
 
     <div class="container">
@@ -42,13 +94,9 @@
                             <div class="row g-3">
                                 <h4 class=" d-flex mb-4 mt-0">Contact
                                 <div class=" d-flex justify-content-end ">
-                                    <form action="{{ url("association_deleteContact",{'AssoId':association.id,'id': contact.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit" >🗑</button>
-                                    </form>
+                                    <a class="btn btn-sm " onclick="delete_assoCompte({{ association.id }}, {{ contact.id }})">🗑</a>
                                     {% set current_path = (app.request.get('_route')) %}
-                                    <form action="{{ url("association_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit">🛠</button>
-                                    </form>
+                                    <a class="btn btn-sm" href="{{ url("association_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">🛠</a>
                                 </div>
                                 </h4>
                                 <div class="col-md-6">
@@ -87,18 +135,10 @@
 
                 </div>
                 <div class="justify-content-md-end text-center mb-5">
-                    <form action="{{ url("association_addContact",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-primary mx-3" type="submit" >Ajouter un contact</button>
-                    </form>
-                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-danger mx-3" type="submit" >Supprimer</button>
-                    </form>
-                    <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
-                        <button class="btn btn-primary mx-3" type="submit">Modifier</button>
-                    </form>
-                    <form action="{{ url("association_index") }}" style="display:inline-block; ">
-                        <button class="btn btn-primary mx-3" type="submit">Retour</button>
-                    </form>
+                    <a href="{{ url("association_addContact",{'id': association.id}) }}" class="btn btn-primary mx-3" type="submit" >Ajouter un contact</a>
+                    <a class="btn btn-danger mx-3" onclick="delete_asso({{ association.id }})">Supprimer</a>
+                    <a href="{{ url("association_edit",{'id': association.id}) }}" class="btn btn-primary mx-3" type="submit">Modifier</a>
+                    <a href="{{ url("association_index") }}" class="btn btn-primary mx-3" type="submit">Retour</a>
                 </div>
         </div>
     </div>

@@ -278,10 +278,10 @@ class MagasinController extends AbstractController
         return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
     }
 
-    #[Route('/booking/{id}', name: '_booking')]
-    public function bookingMagasin($id):Response
+    #[Route('/booking/{magId}', name: '_booking')]
+    public function bookingMagasin($magId):Response
     {
-        return $this->render('magasin/booking.html.twig',['magId'=>$id]);
+        return $this->render('magasin/booking.html.twig',['magId'=>$magId]);
     }
 
     #[Route('/affect/{magId}/{startDate}/{endDate}', name: '_affect')]

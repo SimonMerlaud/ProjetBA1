@@ -4,31 +4,33 @@
 
 {% block h1 %}Booking{% endblock %}
 {% block body %}
-    {% if booking.title %}
-        <h1>{{ booking.title }}</h1>
-    {% endif %}
     <div class="container ">
         <div class="row justify-content-center align-center">
             <div class="col-8">
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Date de debut</th>
-                <td>{{ booking.beginAt ? booking.beginAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date de fin</th>
-                <td>{{ booking.endAt ? booking.endAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+                {% if booking.title %}
+                    <h1>{{ booking.title }}</h1>
+                {% endif %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Date de debut</th>
+                            <td>{{ booking.beginAt ? booking.beginAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date de fin</th>
+                            <td>{{ booking.endAt ? booking.endAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
                 <div class="d-flex justify-content-center mt-2 mb-5">
-
                     {% if is_granted('ROLE_BA') %}
                         <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_affect',{'magId':  magId, 'startDate': booking.beginAt|date('Y-m-d H:i:s'), 'endDate': booking.endAt|date('Y-m-d H:i:s') }) }}">Affectation</a>
-                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_booking',{'id': magId}) }}">back to list</a>
+                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_booking',{'magId': magId}) }}">Retour</a>
+                    {% else %}
+                        <a class="btn  btn-primary m-2" href="{{ path('accueil') }}">Retour</a>
                     {% endif %}
                     {{ include('booking/_delete_form.html.twig') }}
+
                 </div>
             </div>
         </div>

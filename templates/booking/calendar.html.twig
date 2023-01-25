@@ -1,5 +1,5 @@
 <div style="text-align:center;">
-        <a class="btn btn-primary mb-2" href="{{ path('booking_new',{'magId': magasinId}) }}">Nouveau Creneaux</a>
+        <a class="btn btn-primary mb-2" href="{{ path('booking_new',{'magId': magId}) }}">Nouveau Creneaux</a>
 </div>
 <div id="calendar-holder"></div>
 
@@ -24,7 +24,7 @@
                         url: "{{ path('fc_load_events') }}",
                         method: "POST",
                         extraParams: {
-                            filters: JSON.stringify({ contact_id: {{ app.user.contact.id }},magasin_id: {{ magasinId }} }),
+                            filters: JSON.stringify({ contact_id: {{ app.user.contact.id }},magasin_id: {{ magId }} }),
                         },
                     },
                 ],

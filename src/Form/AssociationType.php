@@ -25,7 +25,7 @@ class AssociationType extends AbstractType
                 'allow_add' => true,
                 'allow_delete' => true,
                 'delete_empty' => true,
-                'by_reference' => false,
+                'by_reference' => false
             ])
             ->add('send',SubmitType::class);
         ;
