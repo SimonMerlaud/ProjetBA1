@@ -42,26 +42,16 @@ class BookingRepository extends ServiceEntityRepository
     /**
      * @return Booking[]
      */
-    public function findBetweenDatesOutput($start, $end)
+    public function findBetweenDates($start, $end, $magId=0)
     {
         $query = $this->createQueryBuilder('b')
             ->andWhere('b.beginAt < :end')
             ->andWhere('b.endAt > :start')
-            ->join('b.contacts', 'contacts')
-            ->andWhere('contacts is NOT NULL')
             ->andWhere('b.lieux is NULL')
-            ->andWhere('b.MagasinId= :magasin_id');
-        $query->setParameter('start', $start)
-            ->setParameter('magasin_id', 0)
-            ->setParameter('end', $end);
-        return $query->getQuery()->getResult();
-    }
-
-    public function findBetweenDatesInput($magId)
-    {
-        $query = $this->createQueryBuilder('b')
             ->andWhere('b.MagasinId = :magasin_id')
-            ->setParameter('magasin_id', $magId);
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+        ->setParameter('magasin_id', $magId);
         return $query->getQuery()->getResult();
     }
 

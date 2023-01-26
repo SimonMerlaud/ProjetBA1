@@ -63,9 +63,12 @@ class BookingController extends AbstractController
     {
 
         $booking = $entityManager->getRepository(Booking::class)->find($id);
-        $bookingsOutput = $entityManager->getRepository(Booking::class)->findBetweenDatesOutput($booking->getBeginAt(),$booking->getEndAt());
-        $bookingsInput = $entityManager->getRepository(Booking::class)->findBetweenDatesInput($magId);
-        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        $bookingsOutput = $entityManager->getRepository(Booking::class)->findBetweenDates($booking->getBeginAt(),$booking->getEndAt());
+        $bookingsInput = $entityManager->getRepository(Booking::class)->findBetweenDates($booking->getBeginAt(),$booking->getEndAt(), $magId);
+        if($this->isGranted('ROLE_BA'))
+            $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        else
+            $magasin = $entityManager->getRepository(Lieux::class)->find($booking->getMagasinId());
         return $this->render('booking/show.html.twig', [
             'magId' => $magId,
             'booking' => $booking,
@@ -120,23 +123,19 @@ class BookingController extends AbstractController
 
     }
 
-    #[Route(path: '/export/{mag}', name: '_export')]
-    public function export($mag): Response
+    #[Route(path: '/export/{magId}', name: '_export')]
+    public function export($magId, EntityManagerInterface $em): Response
     {
-
-        if($this->isGranted('ROLE_BENEVOLE')){
+        if($magId == '0'){
             $bookings = $this->getUser()->getContact()->getBookings();
         }else{
-            $bookings = $mag->getBookings();
+            $magasin = $em->getRepository(Lieux::class)->find($magId);
+            $bookings = $em->getRepository(Booking::class)->findBy(['lieux' => $magasin]);
         }
         $bookingsExport = array();
 
         foreach ($bookings as $booking){
-            if($this->isGranted('ROLE_BENEVOLE')){
-                $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(),'Titre' => $booking->getTitle()];
-            }else {
-                $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Titre' => $booking->getTitle()];
-            }
+            $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Titre' => $booking->getTitle()];
         }
 
         $normalizer = array(new DateTimeNormalizer(), new ObjectNormalizer());
