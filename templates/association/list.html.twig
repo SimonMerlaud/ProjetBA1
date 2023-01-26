@@ -7,6 +7,7 @@
                 <tr>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
+                    <th scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -16,12 +17,15 @@
 >                    {% endif %}
 
                     {% for association in associations %}
-                            <tr class="table-light" style="cursor: pointer" onclick="window.location='{{ url("association_view",{'id': association.id}) }}'">
+                            <tr class="table-light" >
                                 <th scope="row">
                                 {{ association.nom }}
                             </th>
                             <td>{{ association.adresse }}</td>
-                        </tr>
+                            <td>
+                                <a class="btn btn-secondary" href="{{ url("association_view",{'id': association.id}) }}">Voir</a>
+                            </td>
+                            </tr>
                     {% endfor %}
                 </tbody>
             </table>

@@ -60,10 +60,14 @@ class BenevoleController extends AbstractController
                 $this->addFlash('error', "Le téléphone ou le mail doit être renseigné");
                 return $this->redirectToRoute("benevole_inscription_");
             }
+
             //faire un render sur une page pour dire que
             //le user est bien inscrit
+
         }
-        return $this->render('benevole/form.html.twig', ['form' => $form->createView()]);
+
+        return $this->render('benevole/form.html.twig', ['form' => $form->createView(),'title'=>'Inscription pour la collecte']);
+
 
     }
 

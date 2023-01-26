@@ -4,8 +4,8 @@
     {% else %}
         {% set magasinId =  magasin.id  %}
     {% endif %}
-    <a class="btn btn-primary m-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
-    <a class="btn btn-primary m-2"
+    <a class="btn btn-primary mx-1" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
+    <a class="btn btn-primary mx-1"
             {% if is_granted('ROLE_BENEVOLE') %}
         href="{{ path('booking_export',{'mag': magasinId}) }}"
     {% elseif is_granted('ROLE_BA') %}

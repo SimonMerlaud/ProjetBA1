@@ -136,22 +136,21 @@ class AssociationController extends AbstractController
         return $this->render('association/view.html.twig',['association'=>$asso,'url'=>$url]);
     }
 
-    #[Route('/delete', name: '_delete')]
-    public function deleteAction(EntityManagerInterface $em,\Symfony\Component\HttpFoundation\Request $request):Response
+    #[Route('/delete/{id}', name: '_delete')]
+    public function deleteAction($id,EntityManagerInterface $em,\Symfony\Component\HttpFoundation\Request $request):Response
     {
-        $id = $request->request->get('id');
         $asso = $em->getRepository(Lieux::class)->find($id);
         if ($asso == NULL){
             $this->addFlash('error', "L'association n'existe pas");
-            json_encode('association_index');
+            return $this->redirectToRoute('association_index');
         }else {
             foreach ($asso->getContacts() as $contact){
                 $em->getRepository(Contact::class)->remove($contact);
             }
             $em->getRepository(Lieux::class)->remove($asso);
             $em->flush();
-            $this->addFlash('add', "L'association a été supprimer");
-            json_encode('association_index');
+            $this->addFlash('warning', "L'association a été supprimer");
+            return $this->redirectToRoute('association_index');
         }
     }
 
@@ -215,23 +214,6 @@ class AssociationController extends AbstractController
         return $this->render('association/formContact.html.twig',['form'=>$form->createView(),'id'=>$id,'titre'=>'Ajouter un contact','url'=>$url]);
     }
 
-
-    #[Route('/viewContacts/{id}', name: '_viewContacts',
-        requirements:[ 'id'=>'\d+'])]
-    public function viewAllContactAction(EntityManagerInterface $em,$id, \Symfony\Component\HttpFoundation\Request $request):Response
-    {
-        $session = $request->getSession();
-        $url = $request->get('_route');
-        $session->set('current_url',$url);
-        $asso = $em->getRepository(Lieux::class)->find($id);
-        if($asso == null){
-            $this->addFlash('error', 'L\'association n\'existe pas');
-            return $this->redirectToRoute('association_index');
-        }
-        return $this->render('association/viewContacts.html.twig',['association'=>$asso]);
-    }
-
-
     #[Route('/modifyContact/{AssoId}/{id}', name: '_modifyContact',
         requirements:[ 'id'=>'\d+',
                 'AssoId'=>'\d+'
@@ -261,11 +243,10 @@ class AssociationController extends AbstractController
 
     }
 
-    #[Route('/deleteContact', name: '_deleteContact')]
-    public function deleteContactAction(EntityManagerInterface $em, \Symfony\Component\HttpFoundation\Request $request):Response
+    #[Route('/deleteContact/{AssoId}/{id}', name: '_deleteContact')]
+    public function deleteContactAction($AssoId,$id,EntityManagerInterface $em, \Symfony\Component\HttpFoundation\Request $request):Response
     {
-        $AssoId = $request->request->get('assoId');
-        $id = $request->request->get('id');
+
         $session = $request->getSession();
         $url = $session->get('current_url');
         $asso = $em->getRepository(Lieux::class)->find($AssoId);
@@ -282,7 +263,7 @@ class AssociationController extends AbstractController
         $asso->removeContact($cont);
         $em->persist($asso);
         $em->flush();
-
+        $this->addFlash('warning', 'Le contact a été supprimer');
         return $this->redirectToRoute($url,['id'=>$AssoId]);
     }
 

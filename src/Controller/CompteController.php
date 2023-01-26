@@ -87,7 +87,7 @@ class CompteController extends AbstractController
             return $this->redirectToRoute("compte_index");
         }
         return $this->render('compte/form.html.twig', [
-            'form' => $form->createView(),'title'=>"Création"
+            'form' => $form->createView(),'title'=>"Création du compte"
         ]);
     }
 
@@ -151,16 +151,15 @@ class CompteController extends AbstractController
             return $this->redirectToRoute('compte_index');
         }
         if($this->isGranted('ROLE_BENEVOLE')){
-            return $this->render('benevole/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
+            return $this->render('benevole/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification du compte']);
         }
         else{
-            return $this->render('compte/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification']);
+            return $this->render('compte/form.html.twig',['form'=>$form->createView(),'id'=>$id,'title'=>'Modification du compte']);
         }
     }
 
-    #[Route(path: '/delete', name: '_delete')]
-    public function deleteCompte(Request $request, EntityManagerInterface $entityManager){
-        $id = $request->request->get('id');
+    #[Route(path: '/delete/{id}', name: '_delete')]
+    public function deleteCompte($id,Request $request, EntityManagerInterface $entityManager){
         $compte = $entityManager->getRepository("App\Entity\CompteBenevole")->find($id);
         if($compte == null){
             $this->addFlash('error', 'Ce compte n\'existe pas');
@@ -168,7 +167,7 @@ class CompteController extends AbstractController
         }
         $entityManager->remove($compte);
         $entityManager->flush();
-        $this->addFlash('error', 'Le compte a été supprimé');
+        $this->addFlash('warning', 'Le compte a été supprimé');
         json_encode('success');
     }
 }

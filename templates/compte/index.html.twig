@@ -1,44 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-        function delete_compte(id=0){
-            $(document).ajaxStop(function(){
-                window.location.reload();
-            });
-            if(confirm('Etes vous sur de supprimer ce compte')){
-                $.ajax({
-                    async: "true",
-                    type: "POST",
-                    url: '{{ path("compte_delete") }}',
-                    data: {
-                        id: id,
-                    },
-                    dataType: "json",
-                    success : function (data){
-                        console.log(data);
-                    },
-                    error: function(data){
-                        console.log(data);
-                    }
-                });
-            }
-        }
-    </script>
-{% endblock %}
-
 {% block h1 %} Liste des comptes {% endblock %}
 {%  block body %}
     <div class="row justify-content-center">
         <div class="col-8">
             <div class="justify-content-md-end text-center">
-                <form action="{{ url("compte_add") }}" style="cursor: pointer;display:inline-block; ">
-                    <button class="btn btn-secondary " type="submit" >Créer un compte</button>
-                </form>
-                <form action="{{ url("accueil") }}" style="cursor: pointer;display:inline-block; ">
-                    <button class="btn btn-secondary " type="submit" >Retour</button>
-                </form>
+                <a class="btn btn-secondary mx-1" type="submit" href="{{ url("compte_add") }}">Créer un compte</a>
+                <a class="btn btn-secondary " type="submit" href="{{ url("accueil") }}">Retour</a>
             </div>
             <table class="table table-hover text-center">
                 <thead>
@@ -77,8 +45,8 @@
                             {% endfor %}
                         </td>
                         <td>
-                            <a class="btn btn-secondary " href="{{ url("compte_modify",{'id':compte.id}) }}">⚙</a>
-                            <a class="btn btn-secondary " onclick="delete_compte({{ compte.id }})">🗑</a>
+                            <a class="btn btn-light " href="{{ url("compte_modify",{'id':compte.id}) }}">⚙</a>
+                            <a class="btn btn-light " href="{{ url("compte_delete",{'id':compte.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?');">🗑</a>
                         </td>
                     </tr>
                 {% endfor %}

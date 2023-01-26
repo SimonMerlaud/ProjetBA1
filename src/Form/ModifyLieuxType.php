@@ -15,7 +15,6 @@ class ModifyLieuxType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class)
-            ->add('nbPersonneNecessaire', IntegerType::class)
             ->add('adresse', AdresseType::class)
         ;
     }

@@ -17,7 +17,6 @@ class LieuxType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class)
-            ->add('nbPersonneNecessaire', IntegerType::class)
             ->add('adresse', AdresseType::class)
             ->add('contacts', CollectionType::class,array('entry_type'=>ContactAssoType::class))
         ;

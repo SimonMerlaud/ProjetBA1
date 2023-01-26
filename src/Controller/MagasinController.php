@@ -171,7 +171,7 @@ class MagasinController extends AbstractController
             }
             $em->getRepository(Lieux::class)->remove($mag);
             $em->flush();
-            $this->addFlash('add', "Le magasin a été supprimer");
+            $this->addFlash('warning', "Le magasin a été supprimer");
             return $this->redirectToRoute('magasin_index');
         }
     }
@@ -211,30 +211,18 @@ class MagasinController extends AbstractController
         return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$id,'titre'=>'Ajouter un contact']);
     }
 
-    #[Route('/viewContacts/{id}', name: '_viewContacts',
-        requirements:[ 'id'=>'\d+'])]
-    public function viewAllContactAction(EntityManagerInterface $em,$id):Response
-    {
-        $mag = $em->getRepository(Lieux::class)->find($id);
-        if($mag == null){
-            $this->addFlash('error', 'Le magasin n\'existe pas');
-            return $this->redirectToRoute('magasin_index');
-        }
-        return $this->render('magasin/viewContacts.html.twig',['magasin'=>$mag]);
-    }
-
-    #[Route('/modifyContact/{MagId}/{id}', name: '_modifyContact',
+    #[Route('/modifyContact/{magId}/{id}', name: '_modifyContact',
         requirements:[ 'id'=>'\d+',
             'MagId'=>'\d+'
         ])]
-    public function modifyContactAction(EntityManagerInterface $em,$id,$MagId,\Symfony\Component\HttpFoundation\Request $request):Response
+    public function modifyContactAction(EntityManagerInterface $em,$id,$magId,\Symfony\Component\HttpFoundation\Request $request):Response
     {
         $contact = $em->getRepository(Contact::class)->find($id);
 
 
         if($contact== null){
             $this->addFlash('error', 'Le contact n\'existe pas');
-            return $this->redirectToRoute('magasin_view',['id'=>$MagId]);
+            return $this->redirectToRoute('magasin_view',['id'=>$magId]);
         }
         $form = $this->createForm(ContactAssoType::class,$contact);
         $form->add('send',SubmitType::class,['label'=>'Modifier']);
@@ -244,9 +232,9 @@ class MagasinController extends AbstractController
             $em->persist($contact);
             $em->flush();
             $this->addFlash('add', 'Le contact a été modifié');
-            return $this->redirectToRoute('magasin_viewContacts',['id'=>$MagId]);
+            return $this->redirectToRoute('magasin_view',['id'=>$magId]);
         }
-        return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$MagId,'titre'=>'Modifier un contact']);
+        return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$magId,'titre'=>'Modifier un contact']);
     }
 
     #[Route('/deleteContact/{magId}/{id}', name: '_deleteContact',
@@ -269,8 +257,8 @@ class MagasinController extends AbstractController
         $mag->removeContact($cont);
         $em->persist($mag);
         $em->flush();
-
-        return $this->render('magasin/viewContacts.html.twig',['magasin'=>$mag]);
+        $this->addFlash('warning', 'Le contact a été supprimer');
+        return $this->redirectToRoute('magasin_view',['id'=>$magId]);
     }
 
     public function Pagination($currentPage, $nbPage):Response
