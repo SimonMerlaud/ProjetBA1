@@ -50,9 +50,9 @@ class BookingRepository extends ServiceEntityRepository
             ->join('b.contacts', 'contacts')
             ->andWhere('contacts is NOT NULL')
             ->andWhere('b.lieux is NULL')
-            ->andWhere('b.estAffecte= :affecte');
+            ->andWhere('b.MagasinId= :magasin_id');
         $query->setParameter('start', $start)
-            ->setParameter('affecte', false)
+            ->setParameter('MagasinId', null)
             ->setParameter('end', $end);
         return $query->getQuery()->getResult();
     }

@@ -37,10 +37,10 @@ class BookingController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if($this->isGranted('ROLE_BENEVOLE')){
                 $booking->addContact($this->getUser()->getContact());
-                $booking->setEstAffecte(false);
+                $booking->setMagasinId(0);
             }else{
                 $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
-                $booking->setEstAffecte(false);
+                $booking->setMagasinId(0);
             }
             $booking->setTitle('Libre');
             $bookingRepository->save($booking, true);
