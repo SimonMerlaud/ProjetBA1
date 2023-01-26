@@ -31,8 +31,8 @@ class Booking
     #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'bookings')]
     private Collection $contacts;
 
-    #[ORM\Column]
-    private ?bool $estAffecte = false;
+    #[ORM\Column(nullable: true)]
+    private ?int $MagasinId = null;
 
     public function __construct()
     {
@@ -120,14 +120,14 @@ class Booking
         return $this;
     }
 
-    public function isEstAffecte(): ?bool
+    public function getMagasinId(): ?int
     {
-        return $this->estAffecte;
+        return $this->MagasinId;
     }
 
-    public function setEstAffecte(bool $estAffecte): self
+    public function setMagasinId(?int $MagasinId): self
     {
-        $this->estAffecte = $estAffecte;
+        $this->MagasinId = $MagasinId;
 
         return $this;
     }
