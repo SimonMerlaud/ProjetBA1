@@ -59,10 +59,18 @@ class BookingController extends AbstractController
     }
 
     #[Route(path: '/show/{id}/{magId}', name: '_show')]
-    public function show(int $id,$magId, BookingRepository $bookingRepository): Response
+    public function show(int $id,$magId, EntityManagerInterface $entityManager): Response
     {
+        $booking = $entityManager->getRepository(Booking::class)->find($id);
+        $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($booking->getBeginAt(),$booking->getEndAt());
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
         return $this->render('booking/show.html.twig', [
-            'booking' => $bookingRepository->find($id),'magId'=>$magId
+            'magId' => $magId,
+            'booking' => $booking,
+            'magasin'=>$magasin,
+            'bookings' => $bookings,
+            'startDate' => $booking->getBeginAt(),
+            'endDate' =>$booking->getEndAt()
         ]);
     }
 
@@ -87,11 +95,18 @@ class BookingController extends AbstractController
 
     #[Route(path: '/delete/{id}/{magId}', name: '_delete',
         defaults:[ 'magId' => 0])]
-    public function delete($magId, Request $request, int $id, BookingRepository $bookingRepository): Response
+    public function delete($magId, Request $request, int $id, EntityManagerInterface $em): Response
     {
-        $booking = $bookingRepository->find($id);
+        $booking = $em->getRepository(Booking::class)->find($id);
+        $contacts = $booking->getContacts();
         if ($this->isCsrfTokenValid('delete'.$booking->getId(), $request->request->get('_token'))) {
-            $bookingRepository->remove($booking, true);
+            foreach ($contacts as $contact){
+                $booking->removeContact($contact);
+            }
+            $em->persist($booking);
+            $em->flush();
+            $em->remove($booking);
+            $em->flush();
         }
         if($this->isGranted('ROLE_BENEVOLE')){
             return $this->redirectToRoute('accueil');

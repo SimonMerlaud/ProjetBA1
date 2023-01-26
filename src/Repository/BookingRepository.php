@@ -52,7 +52,7 @@ class BookingRepository extends ServiceEntityRepository
             ->andWhere('b.lieux is NULL')
             ->andWhere('b.MagasinId= :magasin_id');
         $query->setParameter('start', $start)
-            ->setParameter('MagasinId', null)
+            ->setParameter('magasin_id', 0)
             ->setParameter('end', $end);
         return $query->getQuery()->getResult();
     }

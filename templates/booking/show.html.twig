@@ -2,14 +2,11 @@
 
 {% block title %}Booking{% endblock %}
 
-{% block h1 %}Booking{% endblock %}
+{% block h1 %}Affectation de {{ magasin.nom }} ({{ startDate|date('j F') }}){% endblock %}
 {% block body %}
     <div class="container ">
         <div class="row justify-content-center align-center">
             <div class="col-8">
-                {% if booking.title %}
-                    <h1>{{ booking.title }}</h1>
-                {% endif %}
                 <table class="table">
                     <tbody>
                         <tr>
@@ -24,15 +21,14 @@
                 </table>
                 <div class="d-flex justify-content-center mt-2 mb-5">
                     {% if is_granted('ROLE_BA') %}
-                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_affect',{'magId':  magId, 'startDate': booking.beginAt|date('Y-m-d H:i:s'), 'endDate': booking.endAt|date('Y-m-d H:i:s') }) }}">Affectation</a>
                         <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_booking',{'magId': magId}) }}">Retour</a>
                     {% else %}
-                        <a class="btn  btn-primary m-2" href="{{ path('accueil') }}">Retour</a>
+                        <a class="btn btn-lg btn-primary m-2" href="{{ path('accueil') }}">Retour</a>
                     {% endif %}
                     {{ include('booking/_delete_form.html.twig') }}
-
                 </div>
             </div>
         </div>
     </div>
+    {% include 'magasin/affectMagasin.html.twig' with { 'magasin' : magasin,'bookings' : bookings, 'start' : startDate|date('Y-m-d H:i:s'),'end' : endDate|date('Y-m-d H:i:s') } %}
 {% endblock %}

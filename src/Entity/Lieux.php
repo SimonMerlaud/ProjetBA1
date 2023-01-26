@@ -19,9 +19,6 @@ class Lieux
     #[ORM\Column(length: 40)]
     private ?string $nom = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nbPersonneNecessaire = null;
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private ?TypeLieux $TypeLieux = null;
@@ -53,18 +50,6 @@ class Lieux
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getNbPersonneNecessaire(): ?int
-    {
-        return $this->nbPersonneNecessaire;
-    }
-
-    public function setNbPersonneNecessaire(int $nbPersonneNecessaire): self
-    {
-        $this->nbPersonneNecessaire = $nbPersonneNecessaire;
 
         return $this;
     }

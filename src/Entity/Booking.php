@@ -34,6 +34,9 @@ class Booking
     #[ORM\Column(nullable: true)]
     private ?int $MagasinId = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $nbPersonneNecessaire = null;
+
     public function __construct()
     {
         $this->contacts = new ArrayCollection();
@@ -128,6 +131,18 @@ class Booking
     public function setMagasinId(?int $MagasinId): self
     {
         $this->MagasinId = $MagasinId;
+
+        return $this;
+    }
+
+    public function getNbPersonneNecessaire(): ?int
+    {
+        return $this->nbPersonneNecessaire;
+    }
+
+    public function setNbPersonneNecessaire(?int $nbPersonneNecessaire): self
+    {
+        $this->nbPersonneNecessaire = $nbPersonneNecessaire;
 
         return $this;
     }

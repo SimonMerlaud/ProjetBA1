@@ -285,17 +285,6 @@ class MagasinController extends AbstractController
         return $this->render('magasin/booking.html.twig',['magasin'=>$magasin]);
     }
 
-    #[Route('/affect/{magId}/{startDate}/{endDate}', name: '_affect')]
-    public function affectMagasin($magId,$startDate,$endDate, EntityManagerInterface $entityManager):Response
-    {
-        $start = new \DateTime($startDate);
-        $end = new \DateTime($endDate);
-        $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($start,$end);
-
-        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
-        return $this->render('magasin/affectMagasin.html.twig',['magasin'=>$magasin,'bookings'=>$bookings, 'start'=>$startDate,'end'=>$endDate]);
-    }
-
     #[Route('/affectation/{idBenevoles}/{params}', name: '_affectation')]
     public function affectation(string $idBenevoles,EntityManagerInterface $entityManager,$params):Response
     {
@@ -319,7 +308,7 @@ class MagasinController extends AbstractController
                             $creneauEnd->addContact($benevole);
                             $creneauEnd->setBeginAt($end);
                             $creneauEnd->setEndAt($booking->getEndAt());
-                            $creneauEnd->setEstAffecte(false);
+                            $creneauEnd->setMagasinId(0);
                             $creneauEnd->setTitle('Libre');
                             $booking->setEndAt($end);
                         }
@@ -328,7 +317,7 @@ class MagasinController extends AbstractController
                             $creneauStart->addContact($benevole);
                             $creneauStart->setBeginAt($booking->getBeginAt());
                             $creneauStart->setEndAt($start);
-                            $creneauStart->setEstAffecte(false);
+                            $creneauStart->setMagasinId(0);
                             $creneauStart->setTitle('Libre');
                             $booking->setBeginAt($start);
                         }
@@ -336,7 +325,7 @@ class MagasinController extends AbstractController
                         $entityManager->persist($creneauEnd);
                     }
                     $booking->setTitle('Affecté à ' . ' ' . $magasin->getNom());
-                    $booking->setEstAffecte(true);
+                    $booking->setMagasinId($magId);
                     $magasinCreneau->addContact($benevole);
                     $entityManager->persist($magasinCreneau);
                     $entityManager->persist($booking);
@@ -359,7 +348,7 @@ class MagasinController extends AbstractController
                         $creneauEnd->addContact($benevole);
                         $creneauEnd->setBeginAt($end);
                         $creneauEnd->setEndAt($booking->getEndAt());
-                        $creneauEnd->setEstAffecte(false);
+                        $creneauEnd->setMagasinId(0);
                         $creneauEnd->setTitle('Libre');
                         $booking->setEndAt($end);
                     }
@@ -368,7 +357,7 @@ class MagasinController extends AbstractController
                         $creneauStart->addContact($benevole);
                         $creneauStart->setBeginAt($booking->getBeginAt());
                         $creneauStart->setEndAt($start);
-                        $creneauStart->setEstAffecte(false);
+                        $creneauStart->setMagasinId(0);
                         $creneauStart->setTitle('Libre');
                         $booking->setBeginAt($start);
                     }
@@ -377,12 +366,13 @@ class MagasinController extends AbstractController
                     $entityManager->persist($creneauEnd);
                 }
                 $booking->setTitle('Affecté à '.' '.$magasin->getNom());
-                $booking->setEstAffecte(true);
+                $booking->setMagasinId($magId);
                 $magasinCreneau->addContact($benevole);
                 $entityManager->persist($magasinCreneau);
                 $entityManager->persist($booking);
                 $entityManager->flush();
             }
         }
+        return $this->redirectToRoute('magasin_booking', ['magId' =>$magId]);
     }
 }
