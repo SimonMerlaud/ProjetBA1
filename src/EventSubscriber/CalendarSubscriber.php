@@ -88,9 +88,9 @@ class CalendarSubscriber implements EventSubscriberInterface
                 'borderColor' => 'red',
             ]);
             if($magasin != null) {
+
                 $bookingEvent->addOption(
                     'url',
-
                     $this->router->generate('booking_show', [
                             'id' => $booking->getId(),
                             'magId'=> $magasin->getId()

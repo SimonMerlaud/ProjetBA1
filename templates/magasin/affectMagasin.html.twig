@@ -6,28 +6,40 @@
                 }).disableSelection();
             });
         });
-        function myFunction() {
-            const ids = [];
+        function AffectationBookingInMagasin() {
+            const idBenevsInput = [];
+            const idBenevsOutput = [];
             const params = [];
-            var liste = document.getElementById("sortable2");
-            var inputs = liste.getElementsByTagName("li");
+
+            var listeOutput = document.getElementById("sortable1");
+            var outputs = listeOutput.getElementsByTagName("li");
+            if(outputs.length === 0){
+                idBenevsOutput.push("null");
+            }
+            for (var i = 0; i < outputs.length; i++) {
+                idBenevsOutput.push(outputs[i].id);
+            }
+
+            var listeInput = document.getElementById("sortable2");
+            var inputs = listeInput.getElementsByTagName("li");
             if(inputs.length === 0){
-                ids.push("null");
+                idBenevsInput.push("null");
             }
-            for (var i = 0; i < inputs.length; i++) {
-                ids.push(inputs[i].id);
+            for (var y = 0; y < inputs.length; y++) {
+                idBenevsInput.push(inputs[y].id);
             }
-            params[0] = '{{start }}';
+            params[0] = '{{ start }}';
             params[1] = '{{ end }}';
             params[2] = '{{ magasin.id }}';
-            var route = "{{ path('magasin_affectation', {idBenevoles:'idBenev',params:'param'})|escape('js') }}";
-            route = route.replace('idBenev', ids);
+            var route = "{{ path('magasin_affectation', {idBenevsOutput:'idBenevsOutput', idBenevsInput:'idBenevsInput',params:'param' })|escape('js') }}";
+            route = route.replace('idBenevsOutput', idBenevsOutput);
+            route = route.replace('idBenevsInput', idBenevsInput);
             route = route.replace('param',params);
             window.location.href = route;
         }
     </script>
     <style>
-        .connectedSortable li{
+        .connectedSortable li-input li-output{
             cursor: pointer;
         }
     </style>
@@ -36,9 +48,9 @@
             <div class="col-6"style="height:30vw">
                 <h3 class="text-center">Bénévoles libre(s) :</h3>
                 <ul class="list-group border h-100 connectedSortable" id="sortable1" >
-                    {% for booking in bookings %}
-                        {% for contact in booking.contacts %}
-                            <li class="list-group-item" id="{{ contact.id }}_{{ booking.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ booking.beginAt|date('H:i')}}, {{ booking.endAt|date('H:i') }})</li>
+                    {% for BookingOutput in bookingsOutput %}
+                        {% for contact in BookingOutput.contacts %}
+                            <li class="list-group-item" id="{{ contact.id }}_{{ BookingOutput.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ BookingOutput.beginAt|date('H:i')}}, {{ BookingOutput.endAt|date('H:i') }})</li>
                         {% endfor %}
                     {% endfor %}
                 </ul>
@@ -46,9 +58,14 @@
             <div class="col-6" style="height:30vw">
                 <h3 class="text-center">Bénévoles choisi(s) :</h3>
                 <ul id="sortable2" class="list-group border h-100 connectedSortable">
+                    {% for BookingInput in bookingsInput %}
+                        {% for contact in BookingInput.contacts %}
+                            <li class="list-group-item" id="{{ contact.id }}_{{ BookingInput.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ BookingInput.beginAt|date('H:i')}}, {{ BookingInput.endAt|date('H:i') }})</li>
+                        {% endfor %}
+                    {% endfor %}
                 </ul>
             </div>
 
-            <button class="btn btn-secondary mt-5" onclick="myFunction()" id="button_submit" type="submit" style="position: relative" >Affectation</button>
+            <button class="btn btn-secondary mt-5" onclick="AffectationBookingInMagasin()" id="button_submit" type="submit" style="position: relative" >Affectation</button>
         </div>
     </div>

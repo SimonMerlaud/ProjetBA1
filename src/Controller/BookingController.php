@@ -61,14 +61,17 @@ class BookingController extends AbstractController
     #[Route(path: '/show/{id}/{magId}', name: '_show')]
     public function show(int $id,$magId, EntityManagerInterface $entityManager): Response
     {
+
         $booking = $entityManager->getRepository(Booking::class)->find($id);
-        $bookings = $entityManager->getRepository(Booking::class)->findBetweenDates($booking->getBeginAt(),$booking->getEndAt());
+        $bookingsOutput = $entityManager->getRepository(Booking::class)->findBetweenDatesOutput($booking->getBeginAt(),$booking->getEndAt());
+        $bookingsInput = $entityManager->getRepository(Booking::class)->findBetweenDatesInput($magId);
         $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
         return $this->render('booking/show.html.twig', [
             'magId' => $magId,
             'booking' => $booking,
             'magasin'=>$magasin,
-            'bookings' => $bookings,
+            'bookingsInput' => $bookingsInput,
+            'bookingsOutput' =>$bookingsOutput,
             'startDate' => $booking->getBeginAt(),
             'endDate' =>$booking->getEndAt()
         ]);

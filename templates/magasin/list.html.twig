@@ -10,7 +10,6 @@
                 <tr>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
-                    <th scope="col">Bénévole(s) nécessaire(s)</th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -26,7 +25,6 @@
                                 {{ magasin.nom }}
                             </th>
                             <td>{{ magasin.adresse }}</td>
-                            <td>{{ magasin.nbPersonneNecessaire }}</td>
                             <td>
                                 <form action="{{ url("magasin_booking",{'magId':magasin.id}) }}" style="cursor: pointer;display:inline-block; ">
                                     <button class="btn btn-secondary " type="submit" >Affectation</button>
