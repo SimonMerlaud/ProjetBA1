@@ -39,9 +39,10 @@
         }
     </script>
     <style>
-        .connectedSortable li-input li-output{
-            cursor: pointer;
+        .connectedSortable li:hover {
+            cursor: grabbing;
         }
+
     </style>
     <div class="container">
         <div class="row">
@@ -50,7 +51,7 @@
                 <ul class="list-group border h-100 connectedSortable" id="sortable1" >
                     {% for BookingOutput in bookingsOutput %}
                         {% for contact in BookingOutput.contacts %}
-                            <li class="list-group-item" id="{{ contact.id }}_{{ BookingOutput.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ BookingOutput.beginAt|date('H:i')}}, {{ BookingOutput.endAt|date('H:i') }})</li>
+                            <li class="list-group-item" style="cursor: grab" id="{{ contact.id }}_{{ BookingOutput.id }}">{{ contact.nom }} {{ contact.prenom }} ({{ BookingOutput.beginAt|date('H:i')}}, {{ BookingOutput.endAt|date('H:i') }})</li>
                         {% endfor %}
                     {% endfor %}
                 </ul>
@@ -65,7 +66,8 @@
                     {% endfor %}
                 </ul>
             </div>
-
-            <button class="btn btn-secondary mt-5" onclick="AffectationBookingInMagasin()" id="button_submit" type="submit" style="position: relative" >Affectation</button>
+            <div class="d-flex justify-content-center mt-2 mb-5">
+                <button class="btn  btn-lg btn-primary mt-5 mb-5" onclick="AffectationBookingInMagasin()" id="button_submit" type="submit" style="position: relative" >Affectation</button>
+            </div>
         </div>
     </div>

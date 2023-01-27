@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Booking;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +21,8 @@ class BookingType extends AbstractType
             ->add('endAt', DateTimeType::class,array(
                 'widget' => 'single_text',
                 'html5' => false,
-            ));
+            ))
+            ->add('nbPersonneNecessaire', IntegerType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

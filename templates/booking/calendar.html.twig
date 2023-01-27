@@ -4,8 +4,11 @@
     {% else %}
         {% set magasinId =  magasin.id  %}
     {% endif %}
-    <a class="btn btn-primary m-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
-    <a class="btn btn-primary m-2" href="{{ path('booking_export',{'magId': magasinId}) }}">Export</a>
+    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
+    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_export',{'magId': magasinId}) }}">Export</a>
+    {% if is_granted('ROLE_BA') %}
+        <a class="btn btn-primary mx-1 mb-2" href="{{ path('magasin_index') }}">Retour</a>
+    {% endif %}
 </div>
 <div id="calendar-holder"></div>
 

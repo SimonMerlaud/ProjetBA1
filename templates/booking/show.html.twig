@@ -4,9 +4,9 @@
 
 {% block h1 %}
     {% if(magasin) %}
-    Affecté à {{ magasin.nom }} ({{ startDate|date('j/m') }})
+    Affectation pour {{ magasin.nom }} ({{ startDate|date('j/m') }})
     {% else %}
-    Libre
+    {{ booking.title }}
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -38,12 +38,12 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-center mt-2 mb-5">
-                    {% if is_granted('ROLE_BA') %}
-                        <a class="btn btn-lg btn-primary m-2" href="{{ path('magasin_booking',{'magId': magId}) }}">Retour</a>
-                    {% else %}
-                        <a class="btn btn-lg btn-primary m-2" href="{{ path('accueil') }}">Retour</a>
-                    {% endif %}
                     {{ include('booking/_delete_form.html.twig') }}
+                    {% if is_granted('ROLE_BA') %}
+                        <a class="btn btn-lg btn-primary mx-1" href="{{ path('magasin_booking',{'magId': magId}) }}">Retour</a>
+                    {% else %}
+                        <a class="btn btn-lg btn-primary mx-1" href="{{ path('accueil') }}">Retour</a>
+                    {% endif %}
                 </div>
             </div>
         </div>

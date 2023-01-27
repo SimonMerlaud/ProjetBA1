@@ -28,13 +28,22 @@
         {{ form_widget(form.endAt,{'attr': {'class': 'datetimepicker1'}}) }}
         {{ form_errors(form.endAt) }}
     </div>
-    {% if is_granted('ROLE_BENEVOLE') %}
-        <a class="btn btn-primary mt-2" href="{{ path('accueil') }}">retour</a>
-    {% else %}
-        <a class="btn btn-primary mt-2" href="{{ path('magasin_booking', {'magId':magId}) }}">retour</a>
-    {% endif %}
-    <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
+    <div class="mb-3">
+        {{ form_label(form.nbPersonneNecessaire, 'Nombre de personnes nécessaires') }}
+        {{ form_widget(form.nbPersonneNecessaire) }}
+        {{ form_errors(form.nbPersonneNecessaire) }}
+    </div>
 
+    <div class="justify-content-md-end text-center mb-5">
+
+        <button class="btn btn-primary mx-1">{{ button_label|default('Valider') }}</button>
+
+        {% if is_granted('ROLE_BENEVOLE') %}
+            <a class="btn btn-primary mx-1" href="{{ path('accueil') }}">retour</a>
+        {% else %}
+            <a class="btn btn-primary mx-1" href="{{ path('magasin_booking', {'magId':magId}) }}">retour</a>
+        {% endif %}
+    </div>
     <script type="text/javascript">
         jQuery.datetimepicker.setLocale('fr');
         $(function () {
