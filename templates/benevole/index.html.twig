@@ -7,5 +7,8 @@
 {% block body %}
     {% if is_granted('ROLE_BENEVOLE') %}
         {% include 'booking/calendar.html.twig' with {'magasin':null} %}
+    {% elseif is_granted('ROLE_BA') %}
+        <h4 class="d-flex justify-content-center mt-5">Veuillez entrez la date de debut et de fin de la collecte</h4>
+        {{ include('benevole/formDateCollecte.html.twig') }}
     {% endif %}
 {% endblock %}

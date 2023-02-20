@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Booking;
 use App\Entity\Lieux;
+use App\Entity\MainStart;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -20,9 +21,12 @@ use Symfony\Component\Serializer\Serializer;
 class BookingController extends AbstractController
 {
     #[Route(path: '/', name: '_index')]
-    public function index(BookingRepository $bookingRepository): Response
+    public function index(BookingRepository $bookingRepository, EntityManagerInterface $em): Response
     {
-        return $this->render('booking/calendar.html.twig',['magasinId'=>0]);
+        $dateCollecte =$em->getRepository(MainStart::class)->find(1);
+        $startCollecte = $dateCollecte->getBeginAt();
+        $endCollecte = $dateCollecte->getEndAt();
+        return $this->render('booking/calendar.html.twig',['magasinId'=>0, 'startCollecte' => $startCollecte, 'endCollecte' => $endCollecte]);
     }
 
     #[Route(path: '/new/{magId}', name: '_new',

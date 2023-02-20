@@ -15,14 +15,6 @@
         {{ form_errors(form.beginAt) }}
     </div>
 
-    {#
-    <div class="mb-3">
-        {{ form_label(form.beginAt_date_month) }}
-        {{ form_widget(form.beginAt_date_month) }}
-        {{ form_errors(form.beginAt_date_month) }}
-    </div>
-    #}
-
     <div class="mb-3">
         {{ form_label(form.endAt, 'Date de fin (yyyy-MM-dd  HH:mm)') }}
         {{ form_widget(form.endAt,{'attr': {'class': 'datetimepicker1'}}) }}
