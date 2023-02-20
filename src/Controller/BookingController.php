@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -41,7 +42,7 @@ class BookingController extends AbstractController
                 $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
                 $booking->setMagasinId(0);
             }
-            $booking->setTitle('Libre');
+            $booking->setTitle('Libre ');
             $bookingRepository->save($booking, true);
             if($this->isGranted('ROLE_BENEVOLE')){
                 return $this->redirectToRoute('accueil');
@@ -127,29 +128,69 @@ class BookingController extends AbstractController
     public function export($magId, EntityManagerInterface $em): Response
     {
         if($magId == '0'){
-            $bookings = $this->getUser()->getContact()->getBookings();
+            $contact =  $this->getUser()->getContact();
+            $bookings = $em->getRepository(Booking::class)->findBookingBene($contact->getId());
         }else{
             $magasin = $em->getRepository(Lieux::class)->find($magId);
             $bookings = $em->getRepository(Booking::class)->findBy(['lieux' => $magasin]);
         }
         $bookingsExport = array();
 
-        foreach ($bookings as $booking){
-            $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Titre' => $booking->getTitle()];
+        //$bookings[0]->setTitle("mail (08:00,10:00)\nmail2 (10:00,12:00)\nmail3 (12:00,14:00)");
+        //$bookings[1]->setTitle("Libre ");
+
+        foreach ($bookings as $booking) {
+
+            $dataBene = explode("\n",$booking->getTitle());
+            $beneString = '';
+            $horaireString = '';
+            foreach($dataBene as $bene){
+                if($bene != ''){
+                    $data = explode(' ', $bene);
+                    dump($data);
+                    $beneString .= $data[0] . "\n";
+                    $horaireString .= $data[1] . "\n";
+                }
+            }
+
+
+            if ($magId == '0') {
+                if($booking->getMagasinId() != 0) {
+                    $magInfo = $em->getRepository(Lieux::class)->find($booking->getMagasinId());
+                    $bookingsExport[] = ['Date de début' => $booking->getBeginAt(),
+                        'Date de fin' => $booking->getEndAt(),
+                        'Titre' => $booking->getTitle(),
+                        'adresse' => $magInfo->getAdresseS(),
+                        'mail' => $magInfo->getContacts()[0]->getMail(),
+                        'numéro de téléphone' => $magInfo->getContacts()[0]->getTelephone()];
+                }else{
+
+                    $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Bénévole' => $beneString, 'Horaire' => $horaireString];
+                }
+            }else{
+                $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Bénévole' => $beneString, 'Horaire' => $horaireString];
+
+            }
         }
 
         $normalizer = array(new DateTimeNormalizer(), new ObjectNormalizer());
 
         $serializer = new Serializer($normalizer, [new CsvEncoder()]);// Les 2 lignes pour avoir la date dans le bon format
-        $context = [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s'];
+        $context = [DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s', AbstractNormalizer::IGNORED_ATTRIBUTES => ['TypeLieux', 'adresse', 'lieux']];
 
         $serializedBooking = $serializer->serialize($bookingsExport,'csv', $context);
+
+        $fileName = "export";
+
+        if($magId != 0) {
+            $fileName = str_replace(' ', '_', $magasin->getNom());// met le nom du magasin comme nom du fichier
+        }
 
         $response = new Response($serializedBooking);
         $response->headers->set('Content-Encoding', 'UTF-8');
         $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename=export.csv');
-        return $response;
+        $response->headers->set('Content-Disposition', 'attachment; filename="'.$fileName.'"');
+        //return $response;
     }
 
 }

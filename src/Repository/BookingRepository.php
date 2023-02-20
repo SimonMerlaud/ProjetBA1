@@ -66,6 +66,15 @@ class BookingRepository extends ServiceEntityRepository
             ->setParameter('booking', $bookingId);
         return $query->getQuery()->getResult();
     }
+
+    public function findBookingBene($contactId){
+        $query = $this->createQueryBuilder('b')
+            ->join('b.contacts', 'contacts')
+            ->andWhere('contacts.id= :contactId')
+            ->andWhere('b.lieux is NULL')
+            ->setParameter('contactId', $contactId);
+        return $query->getQuery()->getResult();
+    }
 //    /**
 //     * @return Booking[] Returns an array of Booking objects
 //     */

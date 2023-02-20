@@ -314,7 +314,7 @@ class MagasinController extends AbstractController
         $creneauStart->setBeginAt($booking->getBeginAt());
         $creneauStart->setEndAt($start);
         $creneauStart->setMagasinId(0);
-        $creneauStart->setTitle('Libre');
+        $creneauStart->setTitle('Libre ');
         $booking->setBeginAt($start);
         return $creneauStart;
     }
@@ -325,7 +325,7 @@ class MagasinController extends AbstractController
         $creneauEnd->setBeginAt($end);
         $creneauEnd->setEndAt($booking->getEndAt());
         $creneauEnd->setMagasinId(0);
-        $creneauEnd->setTitle('Libre');
+        $creneauEnd->setTitle('Libre ');
         $booking->setEndAt($end);
         return $creneauEnd;
     }
@@ -379,7 +379,7 @@ class MagasinController extends AbstractController
         $bookings=$entityManager->getRepository(Booking::class)->findWithId($idBenevOutput[0],$idBenevOutput[1]);
         foreach ($bookings as $booking) {
             if ($booking->getMagasinId() != 0) {
-                $booking->setTitle('Libre');
+                $booking->setTitle('Libre ');
                 $booking->setMagasinId(0);
                 $magasinCreneau->setNbPersonneNecessaire($magasinCreneau->getNbPersonneNecessaire() + 1);
                 $titles = $magasinCreneau->getTitle();

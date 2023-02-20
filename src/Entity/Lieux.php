@@ -71,6 +71,11 @@ class Lieux
         return $this->adresse;
     }
 
+    public function getAdresseS(): ?String
+    {
+        return $this->adresse;
+    }
+
     public function setAdresse(?Adresse $adresse): self
     {
         $this->adresse = $adresse;
