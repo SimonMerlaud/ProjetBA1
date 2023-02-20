@@ -26,6 +26,7 @@ class BookingController extends AbstractController
         $dateCollecte =$em->getRepository(MainStart::class)->find(1);
         $startCollecte = $dateCollecte->getBeginAt();
         $endCollecte = $dateCollecte->getEndAt();
+        dump($startCollecte);
         return $this->render('booking/calendar.html.twig',['magasinId'=>0, 'startCollecte' => $startCollecte, 'endCollecte' => $endCollecte]);
     }
 

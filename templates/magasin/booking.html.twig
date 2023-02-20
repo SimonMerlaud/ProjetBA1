@@ -5,5 +5,5 @@
 {% block h1 %}Calendrier d'affectation {{ magasin.nom}} {% endblock %}
 
 {% block body %}
-    {% include 'booking/calendar.html.twig' with {'magasin':  magasin } %}
+    {% include 'booking/calendar.html.twig' with {'magasin':  magasin, 'startCollecte' : startCollecte, 'endCollecte': endCollecte } %}
 {% endblock %}

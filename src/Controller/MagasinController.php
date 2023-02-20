@@ -6,6 +6,7 @@ use App\Entity\Adresse;
 use App\Entity\Booking;
 use App\Entity\Contact;
 use App\Entity\Lieux;
+use App\Entity\MainStart;
 use App\Entity\TypeLieux;
 use App\Form\ContactAssoType;
 use App\Form\LieuxType;
@@ -270,7 +271,10 @@ class MagasinController extends AbstractController
     public function bookingMagasin($magId,EntityManagerInterface $entityManager):Response
     {
         $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
-        return $this->render('magasin/booking.html.twig',['magasin'=>$magasin]);
+        $dateCollecte = $entityManager->getRepository(MainStart::class)->find(1);
+        $startCollecte = $dateCollecte->getBeginAt()->format('Y-m-d');
+        $endCollecte = $dateCollecte->getEndAt()->format('Y-m-d');
+        return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte'=>$startCollecte, 'endCollecte'=>$endCollecte]);
     }
 
     #[Route('/affectation/{idBenevsOutput}/{idBenevsInput}/{params}/', name: '_affectation')]
