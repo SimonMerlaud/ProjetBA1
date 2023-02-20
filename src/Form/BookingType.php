@@ -22,7 +22,7 @@ class BookingType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
             ))
-            ->add('nbPersonneNecessaire', IntegerType::class);
+            ->add('nbPersonneNecessaire', IntegerType::class, array('required'=>false));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
