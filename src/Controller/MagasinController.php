@@ -386,7 +386,6 @@ class MagasinController extends AbstractController
                 $title = explode("\n",$titles);
                 $nbItem = count($title);
                 for ($i = 0; $i < $nbItem; $i++){
-                    dump($i);
                     $startText = $booking->getBeginAt()->format('H:i');
                     $endText = $booking->getEndAt()->format('H:i');
                     if($title[$i] == $benevole->getMail()." (".$startText.",".$endText.")"){

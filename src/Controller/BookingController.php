@@ -38,11 +38,13 @@ class BookingController extends AbstractController
             if($this->isGranted('ROLE_BENEVOLE')){
                 $booking->addContact($this->getUser()->getContact());
                 $booking->setMagasinId(0);
+                $booking->setTitle('Libre ');
+
             }else{
                 $booking->setLieux($entityManager->getRepository(Lieux::class)->find($magId));
                 $booking->setMagasinId(0);
+                $booking->setTitle("");
             }
-            $booking->setTitle('Libre ');
             $bookingRepository->save($booking, true);
             if($this->isGranted('ROLE_BENEVOLE')){
                 return $this->redirectToRoute('accueil');

@@ -22,7 +22,7 @@ class Booking
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTime $endAt = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
