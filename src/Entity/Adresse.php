@@ -17,7 +17,7 @@ class Adresse
     private ?int $id = null;
 
     #[ORM\Column(length: 5)]
-    #[Assert\Regex(pattern: "#\d{5}#",message: "Code postale incorrect",)]
+    #[Assert\Regex(pattern: "#\d{5}#",message: "Code postal incorrect",)]
     private ?string $codePostale = null;
 
     #[ORM\Column(length: 50)]

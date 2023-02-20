@@ -4,19 +4,86 @@
     Liste des associations
 {% endblock %}
 
+{% block javascripts %}
+{{ parent() }}
+<script type="text/javascript" >
+    $('#searchbar').on('input', function() {
+        demanderListe($(this).val());
+    });
+
+    function demanderListe(recherche) {
+        $.ajax({
+            async: "true",
+            type: "POST",
+            url: '{{ path('searchAsso') }}',
+            data: {
+                search: recherche,
+            },
+            dataType: "json",
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function remplirListe(responseJSON){
+        $("#list").html("");
+
+        responseJSON.forEach(element => {
+            $("#list").append("<li>"+element+"</li>");
+        });
+    }
+</script>
+{% endblock %}
 {% block body %}
     <div class="justify-content-md-end text-center">
         <a class="btn btn-secondary mx-1" type="submit " href="{{ url("association_add") }}">Ajouter une association</a>
         <a class="btn btn-secondary mx-1" type="submit" href="{{ path('accueil') }}" >Retour</a>
         <div class="row d-flex justify-content-center">
             <div class="col-4 mt-2">
+                <input type="text" class="form-control me-sm-2 mb-2" id="searchbar" placeholder="Rechercher par nom">
                 {{ render(controller(
                     'App\\Controller\\SearchController::searchAsso'
                 )) }}
             </div>
         </div>
     </div>
-    {{ include('association/list.html.twig', {'associations': associations,'nbPage': nbPage,'currentPage': currentPage}) }}
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table table-hover text-center" id="list">
+                <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Adresse</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if associations is null%}
+                    <h3>Il n'y a pas d'association a ce nom</h3>
+                {% endif %}
+
+                {% for association in associations %}
+                    <tr class="table-light" >
+                        <th scope="row">
+                            {{ association.nom }}
+                        </th>
+                        <td>{{ association.adresse }}</td>
+                        <td>
+                            <a class="btn btn-secondary" href="{{ url("association_view",{'id': association.id}) }}">Voir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ include('compte/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
 
 
 

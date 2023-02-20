@@ -336,12 +336,22 @@ class MagasinController extends AbstractController
         $bookings=$entityManager->getRepository(Booking::class)->findWithId($idBenevInput[0],$idBenevInput[1]);
         foreach ($bookings as $booking) {
             if ($booking->getMagasinId() == 0) {
+                $startText = $booking->getBeginAt()->format('H:i');
+                $endText = $booking->getEndAt()->format('H:i');
+                $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
                 if ($booking->getEndAt() > $end || $booking->getBeginAt() < $start) {
                     if ($booking->getEndAt() > $end) {
                         $creneauEnd = $this->createEndBooking($benevole, $booking, $end);
+                        $startText = $creneauEnd->getBeginAt()|date('H:i:s');
+                        $endText = $creneauEnd->getEndAt()|date('H:i:s');
+                        $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
                     }
                     if ($booking->getBeginAt() < $start) {
                         $creneauStart = $this->createBeginBooking($benevole, $booking, $start);
+                        $startText = $creneauStart->getBeginAt()|date('H:i:s');
+                        $endText = $creneauStart->getEndAt()|date('H:i:s');
+                        $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+
                     }
                     $entityManager->persist($creneauStart);
                     $entityManager->persist($creneauEnd);
@@ -372,6 +382,27 @@ class MagasinController extends AbstractController
                 $booking->setTitle('Libre');
                 $booking->setMagasinId(0);
                 $magasinCreneau->setNbPersonneNecessaire($magasinCreneau->getNbPersonneNecessaire() + 1);
+                $titles = $magasinCreneau->getTitle();
+                $title = explode("\n",$titles);
+                $nbItem = count($title);
+                for ($i = 0; $i < $nbItem; $i++){
+                    dump($i);
+                    $startText = $booking->getBeginAt()->format('H:i');
+                    $endText = $booking->getEndAt()->format('H:i');
+                    if($title[$i] == $benevole->getMail()." (".$startText.",".$endText.")"){
+                        unset($title[$i]);
+                    }
+                }
+                $nbItem = count($title);
+                $newTitle="";
+                $title = array_values($title);
+                dump($title);
+                for($i = 0; $i < $nbItem; $i++){
+                    if($title[$i] != "") {
+                        $newTitle = $newTitle . "\n" . $title[$i];
+                    }
+                }
+                $magasinCreneau->setTitle($newTitle);
                 $magasinCreneau->removeContact($benevole);
                 $entityManager->persist($magasinCreneau);
                 $entityManager->persist($booking);

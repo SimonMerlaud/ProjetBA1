@@ -28,11 +28,18 @@
         {{ form_widget(form.endAt,{'attr': {'class': 'datetimepicker1'}}) }}
         {{ form_errors(form.endAt) }}
     </div>
-    <div class="mb-3">
-        {{ form_label(form.nbPersonneNecessaire, 'Nombre de personnes nécessaires') }}
-        {{ form_widget(form.nbPersonneNecessaire) }}
-        {{ form_errors(form.nbPersonneNecessaire) }}
-    </div>
+    {% if is_granted('ROLE_BA') %}
+        <div class="mb-3">
+            {{ form_label(form.nbPersonneNecessaire, 'Nombre de personnes nécessaires') }}
+            {{ form_widget(form.nbPersonneNecessaire) }}
+            {{ form_errors(form.nbPersonneNecessaire) }}
+        </div>
+    {% else %}
+        <div class="mb-3">
+            {{ form_widget(form.nbPersonneNecessaire,{'attr':{'class':'d-none'}}) }}
+            {{ form_errors(form.nbPersonneNecessaire) }}
+        </div>
+    {% endif %}
 
     <div class="justify-content-md-end text-center mb-5">
 
