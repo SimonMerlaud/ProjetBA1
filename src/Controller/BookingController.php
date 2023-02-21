@@ -160,13 +160,13 @@ class BookingController extends AbstractController
                     $magInfo = $em->getRepository(Lieux::class)->find($booking->getMagasinId());
                     $bookingsExport[] = ['Date de début' => $booking->getBeginAt(),
                         'Date de fin' => $booking->getEndAt(),
-                        'Titre' => $booking->getTitle(),
+                        'État' => $booking->getTitle(),
                         'adresse' => $magInfo->getAdresseS(),
                         'mail' => $magInfo->getContacts()[0]->getMail(),
                         'numéro de téléphone' => $magInfo->getContacts()[0]->getTelephone()];
                 }else{
 
-                    $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Bénévole' => $beneString, 'Horaire' => $horaireString];
+                    $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'État' => $booking->getTitle()];
                 }
             }else{
                 $bookingsExport[] = ['Date de début' => $booking->getBeginAt(), 'Date de fin' => $booking->getEndAt(), 'Bénévole' => $beneString, 'Horaire' => $horaireString];
