@@ -272,9 +272,14 @@ class MagasinController extends AbstractController
     {
         $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
         $dateCollecte = $entityManager->getRepository(MainStart::class)->find(1);
-        $startCollecte = $dateCollecte->getBeginAt()->format('Y-m-d');
-        $endCollecte = $dateCollecte->getEndAt()->format('Y-m-d');
-        return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte'=>$startCollecte, 'endCollecte'=>$endCollecte]);
+        if ($dateCollecte->getBeginAt() != null){
+            $startCollecte = $dateCollecte->getBeginAt()->format('Y-m-d');
+            $endCollecte = $dateCollecte->getEndAt()->format('Y-m-d');
+            return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte' => $startCollecte, 'endCollecte' => $endCollecte]);
+        }
+        else{
+            return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte' => null, 'endCollecte' => null]);
+        }
     }
 
     #[Route('/affectation/{idBenevsOutput}/{idBenevsInput}/{params}/', name: '_affectation')]
@@ -303,7 +308,6 @@ class MagasinController extends AbstractController
         if(strstr( $idBenevsOutput, ',' )) {
             $idBenevsOutput = explode(',', $idBenevsOutput);
             foreach ($idBenevsOutput as $idBenevOutput) {
-                dump($idBenevOutput);
                 $this->AffectationOutput($magasinCreneau, $idBenevOutput, $entityManager);
             }
         }elseif($idBenevsOutput != "null"){
@@ -390,7 +394,6 @@ class MagasinController extends AbstractController
                 $title = explode("\n",$titles);
                 $nbItem = count($title);
                 for ($i = 0; $i < $nbItem; $i++){
-                    dump($i);
                     $startText = $booking->getBeginAt()->format('H:i');
                     $endText = $booking->getEndAt()->format('H:i');
                     if($title[$i] == $benevole->getMail()." (".$startText.",".$endText.")"){
@@ -400,7 +403,6 @@ class MagasinController extends AbstractController
                 $nbItem = count($title);
                 $newTitle="";
                 $title = array_values($title);
-                dump($title);
                 for($i = 0; $i < $nbItem; $i++){
                     if($title[$i] != "") {
                         $newTitle = $newTitle . "\n" . $title[$i];

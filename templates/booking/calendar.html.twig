@@ -10,22 +10,18 @@
         <a class="btn btn-primary mx-1 mb-2" href="{{ path('magasin_index') }}">Retour</a>
     {% endif %}
 </div>
-{{ startCollecte }}
-{{ endCollecte }}
 <div id="calendar-holder"></div>
 
     <script type="text/javascript" >
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
-            var info = "";
-
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 locale: 'fr',
                 timeZone: 'UTC+1',
                 defaultView: 'timeGrid',
                 visibleRange: {
-                    start: {{ startCollecte }},
-                    end: {{ endCollecte }}
+                    start: "{{ startCollecte }}",
+                    end: "{{ endCollecte }}"
                 },
                 allDaySlot: false,
                 header: false,

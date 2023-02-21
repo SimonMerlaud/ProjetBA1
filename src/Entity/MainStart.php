@@ -11,8 +11,8 @@ class MainStart
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(options:['autoincrement'=>false])]
+    private ?int $id = 1;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $beginAt = null;

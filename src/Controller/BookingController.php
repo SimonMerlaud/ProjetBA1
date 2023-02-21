@@ -55,12 +55,27 @@ class BookingController extends AbstractController
                 return $this->redirectToRoute('magasin_booking', ['magId' => $magId]);
             }
         }
-
-        return $this->renderForm('booking/new.html.twig', [
-            'booking' => $booking,
-            'form' => $form,
-            'magId' => $magId
-        ]);
+        $dateCollecte = $entityManager->getRepository(MainStart::class)->find(1);
+        if ($dateCollecte->getBeginAt() != null){
+            $startCollecte = $dateCollecte->getBeginAt()->format('Y-m-d');
+            $endCollecte = $dateCollecte->getEndAt()->format('Y-m-d');
+            return $this->renderForm('booking/new.html.twig', [
+                'booking' => $booking,
+                'form' => $form,
+                'magId' => $magId,
+                'startCollecte' => $startCollecte,
+                'endCollecte' => $endCollecte
+            ]);
+        }
+        else{
+            return $this->renderForm('booking/new.html.twig', [
+                'booking' => $booking,
+                'form' => $form,
+                'magId' => $magId,
+                'startCollecte' => null,
+                'endCollecte' => null
+            ]);
+        }
     }
 
     #[Route(path: '/show/{id}/{magId}', name: '_show')]

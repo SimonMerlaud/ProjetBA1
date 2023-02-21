@@ -5,5 +5,5 @@
 {% block h1 %}Nouveau créneaux{% endblock %}
 
 {% block body %}
-    {{ include('booking/_form.html.twig',{'date_start':'2023-01-15','date_end':'2023-01-17','magId':magId}) }}
+    {{ include('booking/_form.html.twig',{'date_start': startCollecte,'date_end': endCollecte ,'magId':magId}) }}
 {% endblock %}

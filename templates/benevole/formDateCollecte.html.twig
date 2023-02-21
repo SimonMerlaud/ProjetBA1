@@ -24,14 +24,14 @@
     <div class="mb-3">
         {{ form_label(formStart.endAt, 'Date de fin de collecte (yyyy-MM-dd)') }}
         {% if disabled %}
-            {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled'}}) }}
+            {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled', 'value': formStart.vars.value.endAt|date_modify('-1 day')|date('Y-m-d') }}) }}
         {% else %}
             {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1'}}) }}
         {% endif %}
         {{ form_errors(formStart.endAt) }}
     </div>
     {% if disabled %}
-        <a class="btn btn-primary mt-2" href="{{ path('accueil', {'restart' : true}) }}">Fin de collecte</a>
+        <a class="btn btn-primary mt-2" href="{{ path('accueil', {'restart' : 'vrai'}) }}">Fin de collecte</a>
     {% else %}
         <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
     {% endif %}
