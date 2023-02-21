@@ -8,6 +8,7 @@ use App\Form\BookingType;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +17,8 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 #[Route(path: '/booking', name: 'booking')]
 class BookingController extends AbstractController
@@ -138,9 +141,6 @@ class BookingController extends AbstractController
         }
         $bookingsExport = array();
 
-        //$bookings[0]->setTitle("mail (08:00,10:00)\nmail2 (10:00,12:00)\nmail3 (12:00,14:00)");
-        //$bookings[1]->setTitle("Libre ");
-
         foreach ($bookings as $booking) {
 
             $dataBene = explode("\n",$booking->getTitle());
@@ -149,7 +149,6 @@ class BookingController extends AbstractController
             foreach($dataBene as $bene){
                 if($bene != ''){
                     $data = explode(' ', $bene);
-                    dump($data);
                     $beneString .= $data[0] . "\n";
                     $horaireString .= $data[1] . "\n";
                 }
@@ -182,17 +181,36 @@ class BookingController extends AbstractController
 
         $serializedBooking = $serializer->serialize($bookingsExport,'csv', $context);
 
-        $fileName = "export";
+        $fileName = "Planning_collecte";
 
         if($magId != 0) {
             $fileName = str_replace(' ', '_', $magasin->getNom());// met le nom du magasin comme nom du fichier
         }
 
-        $response = new Response($serializedBooking);
-        $response->headers->set('Content-Encoding', 'UTF-8');
-        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
-        $response->headers->set('Content-Disposition', 'attachment; filename="'.$fileName.'"');
-        //return $response;
+        $fileCSV = $fileName . '.csv';
+        file_put_contents($fileCSV, $serializedBooking);// créer un export en csv
+
+        $spreadsheet = new Spreadsheet();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+
+        /* Set CSV parsing options */
+
+        $reader->setDelimiter(',');
+        $reader->setEnclosure('"');
+        $reader->setSheetIndex(0);
+
+        /* Load a CSV file and save as a XLSX */
+
+        $spreadsheet = $reader->load($fileCSV);
+        $writer = new Xlsx($spreadsheet);
+        $writer->save($fileName . '.xlsx');
+
+        $spreadsheet->disconnectWorksheets();
+        unset($spreadsheet);
+
+        unlink($fileCSV);//supprimer le fichier csv
+
+        return $this->file($fileName . '.xlsx')->deleteFileAfterSend(true);//Supprime le fichier après le téléchargement
     }
 
 }
