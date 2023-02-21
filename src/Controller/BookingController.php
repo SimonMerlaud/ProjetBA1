@@ -188,6 +188,8 @@ class BookingController extends AbstractController
         }
 
         $fileCSV = $fileName . '.csv';
+
+
         file_put_contents($fileCSV, $serializedBooking);// créer un export en csv
 
         $spreadsheet = new Spreadsheet();
@@ -202,8 +204,11 @@ class BookingController extends AbstractController
         /* Load a CSV file and save as a XLSX */
 
         $spreadsheet = $reader->load($fileCSV);
+        $spreadsheet->getDefaultStyle()->getAlignment()->setWrapText(true);
         $writer = new Xlsx($spreadsheet);
         $writer->save($fileName . '.xlsx');
+
+
 
         $spreadsheet->disconnectWorksheets();
         unset($spreadsheet);
