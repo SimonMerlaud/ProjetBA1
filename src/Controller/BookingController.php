@@ -106,17 +106,23 @@ class BookingController extends AbstractController
         $id = $request->request->get('id');
         $start = $request->request->get('start');
         $end = $request->request->get('end');
+        $benevole = $request->request->get('benevole');
         $start = str_replace('T',' ', $start);
         $end = str_replace('T',' ', $end);
 
         $start = new \DateTime($start);
         $end = new \DateTime($end);
         $booking = $bookingRepository->find($id);
-        $booking->setBeginAt($start);
-        $booking->setEndAt($end);
-        $bookingRepository->save($booking, true);
+        if($benevole && $booking->getMagasinId() != 0){
+            return new Response(json_encode('Creneaux non modifiable car il est attribuer a un magasin'));
+        }else{
+            $booking->setBeginAt($start);
+            $booking->setEndAt($end);
+            $bookingRepository->save($booking, true);
+            return new Response(json_encode(''));
+        }
 
-        return new Response(json_encode(''));
+
     }
 
     #[Route(path: '/delete/{id}/{magId}', name: '_delete',

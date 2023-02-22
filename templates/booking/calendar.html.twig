@@ -45,11 +45,13 @@
                         data: {
                             id: info.event.id,
                             start: dateBegin,
-                            end: dateEnd
+                            end: dateEnd,
+                            benevole: '{{ benevole }}',
                         },
                         dataType: "json",
                         success : function (data){
                             console.log(data);
+                            alert(data);
                         },
                         error: function(data){
                             console.log(data);
@@ -67,7 +69,8 @@
                         data: {
                             id: info.event.id,
                             start: dateBegin,
-                            end: dateEnd
+                            end: dateEnd,
+                            benevole: '{{ benevole }}',
                         },
                         dataType: "json",
                         success : function (data){
