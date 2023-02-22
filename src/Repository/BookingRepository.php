@@ -39,6 +39,50 @@ class BookingRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Booking[]
+     */
+    public function findBetweenDates($start, $end, $magId=0)
+    {
+        $query = $this->createQueryBuilder('b')
+            ->andWhere('b.beginAt < :end')
+            ->andWhere('b.endAt > :start')
+            ->andWhere('b.lieux is NULL')
+            ->andWhere('b.MagasinId = :magasin_id')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+        ->setParameter('magasin_id', $magId);
+        return $query->getQuery()->getResult();
+    }
+
+    public function findWithId($contactId,$bookingId)
+    {
+        $query = $this->createQueryBuilder('b')
+            ->join('b.contacts','contacts')
+            ->andWhere('contacts= :contact')
+            ->andWhere('b.lieux is NULL')
+            ->andWhere('b.id= :booking')
+            ->setParameter('contact',$contactId)
+            ->setParameter('booking', $bookingId);
+        return $query->getQuery()->getResult();
+    }
+
+    public function findBookingBene($contactId){
+        $query = $this->createQueryBuilder('b')
+            ->join('b.contacts', 'contacts')
+            ->andWhere('contacts.id= :contactId')
+            ->andWhere('b.lieux is NULL')
+            ->setParameter('contactId', $contactId);
+        return $query->getQuery()->getResult();
+    }
+
+    public function findAllWithMagId($magId){
+        return $this->createQueryBuilder('b')
+            ->where('b.MagasinId= :magId')
+            ->setParameter('magId',$magId)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Booking[] Returns an array of Booking objects
 //     */

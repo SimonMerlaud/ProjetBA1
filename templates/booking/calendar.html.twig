@@ -1,41 +1,89 @@
-{# templates/booking/calendar.html.twig #}
-{% extends 'base.html.twig' %}
+<div style="text-align:center;">
+    {% if magasin is null %}
+        {% set magasinId = '0' %}
+    {% else %}
+        {% set magasinId =  magasin.id  %}
+    {% endif %}
+    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
+    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_export',{'magId': magasinId}) }}">Export</a>
+    {% if is_granted('ROLE_BA') %}
+        <a class="btn btn-primary mx-1 mb-2" href="{{ path('magasin_index') }}">Retour</a>
+    {% endif %}
+</div>
+<div id="calendar-holder"></div>
 
-{% block body %}
-    <a class="btn btn-primary mb-2" href="{{ path('booking_new') }}">Nouveau Creneaux</a>
-
-    <div id="calendar-holder"></div>
-{% endblock %}
-
-{% block javascripts %}
-{{ parent() }}
     <script type="text/javascript" >
         document.addEventListener('DOMContentLoaded', () => {
             var calendarEl = document.getElementById('calendar-holder');
-
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                defaultView: 'timeGridWeek',
+                locale: 'fr',
+                timeZone: 'UTC+1',
+                defaultView: 'timeGrid',
+                contentHeight:"auto",
+                visibleRange: {
+                    start: "{{ startCollecte }}",
+                    end: "{{ endCollecte }}"
+                },
+                allDaySlot: false,
+                header: false,
                 editable: true,
                 eventSources: [
                     {
                         url: "{{ path('fc_load_events') }}",
                         method: "POST",
                         extraParams: {
-                            filters: JSON.stringify({})
-                        },
-                        failure: () => {
-                            // alert("There was an error while fetching FullCalendar!");
+                            filters: JSON.stringify({ contact_id: {{ app.user.contact.id }},magasin_id: {{ magasinId}} }),
                         },
                     },
                 ],
-                header: {
-                    left: 'prev,next',
-                    center: 'addEventButton',
-                    right: 'timeGridWeek,timeGridDay',
+                eventDrop: function(info) {
+                    var dateBegin = calendar.formatIso(info.event._instance.range.start);
+                    var dateEnd = calendar.formatIso(info.event._instance.range.end);
+                    $.ajax({
+                        async: "true",
+                        type: "POST",
+                        url: '{{ path('booking_edit_auto') }}',
+                        data: {
+                            id: info.event.id,
+                            start: dateBegin,
+                            end: dateEnd,
+                            benevole: '{{ benevole }}',
+                        },
+                        dataType: "json",
+                        success : function (data){
+                            console.log(data);
+                            alert(data);
+                        },
+                        error: function(data){
+                            console.log(data);
+                        }
+                    });
                 },
-                plugins: [ 'interaction', 'dayGrid', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
+
+                eventResize: function(info) {
+                    var dateBegin = calendar.formatIso(info.event._instance.range.start);
+                    var dateEnd = calendar.formatIso(info.event._instance.range.end);
+                    $.ajax({
+                        async: "true",
+                        type: "POST",
+                        url: '{{ path('booking_edit_auto') }}',
+                        data: {
+                            id: info.event.id,
+                            start: dateBegin,
+                            end: dateEnd,
+                            benevole: '{{ benevole }}',
+                        },
+                        dataType: "json",
+                        success : function (data){
+                            console.log(data);
+                        },
+                        error: function(data){
+                            console.log(data);
+                        }
+                    });
+                },
+                plugins: [ 'interaction', 'timeGrid' ], // https://fullcalendar.io/docs/plugin-index
             });
             calendar.render();
         });
     </script>
-{% endblock %}

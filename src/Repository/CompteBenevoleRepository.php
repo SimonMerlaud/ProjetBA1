@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CompteBenevole;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -55,7 +56,15 @@ class CompteBenevoleRepository extends ServiceEntityRepository implements Passwo
 
         $this->save($user, true);
     }
-
+    public function myFindAllWithPaging($currentPage): Paginator
+    {
+        $query = $this->createQueryBuilder('c')
+            ->orderBy('c.id','DESC')
+            ->getQuery()
+            ->setFirstResult(($currentPage - 1) * 20) // Premier élément de la page
+            ->setMaxResults(20); // Nombre d'éléments par page
+        return new Paginator($query);
+    }
 //    /**
 //     * @return CompteBenevole[] Returns an array of CompteBenevole objects
 //     */

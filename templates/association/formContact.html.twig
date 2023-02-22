@@ -28,12 +28,10 @@
                     {{ form_widget(form.telephone) }}
                 <div class="justify-content-md-end text-center mb-5 mt-2">
                  {{ form_label(form.send) }}
-                    {{ form_widget(form.send) }}
+                    {{ form_widget(form.send , {'attr': {'class': 'btn btn-primary mx-1'}}) }}
                     {{ form_end(form) }}
 
-                    <form action="{{ url("association_view",{'id': id}) }}" style="display:inline-block; ">
-                        <button class="btn btn-primary " type="submit">Retour</button>
-                    </form>
+                    <a class="btn btn-primary mx-1" type="submit" href="{{ url(url,{'id': id}) }}">Retour</a>
                 </div>
                 <br>
                     <br><br>

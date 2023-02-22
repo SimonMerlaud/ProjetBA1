@@ -1,6 +1,58 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello AssociationController!{% endblock %}
+{% block h1 %} Liste des comptes {% endblock %}
+{%  block body %}
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="justify-content-md-end text-center">
+                <a class="btn btn-secondary mx-1" type="submit" href="{{ url("compte_add") }}">Créer un compte</a>
+                <a class="btn btn-secondary " type="submit" href="{{ url("accueil") }}">Retour</a>
+            </div>
+            <table class="table table-hover text-center">
+                <thead>
+                <tr>
+                    <th scope="col">Mail</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Rôle(s)</th>
+                    <th scope="col">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
 
-{% block body %}
+                {% if comptes is null%}
+                    <h3>Il n'y a pas de compte a ce nom</h3>
+                {% endif %}
+
+                {% for compte in comptes %}
+                    <tr class="table-light">
+                        <th scope="row">
+                            {{ compte.mail }}
+                        </th>
+                        <th scope="row">
+                            {{ compte.contact.nom }}
+                        </th>
+                        <th scope="row">
+                            {{ compte.contact.prenom }}
+                        </th>
+                        <td>
+                            {% for role in compte.roles %}
+                                {% if role == 'ROLE_BENEVOLE' %}
+                                    Bénévole
+                                {% elseif role == 'ROLE_BA' %}
+                                    Membre de la banque alimentaire
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <a class="btn btn-light " href="{{ url("compte_modify",{'id':compte.id}) }}">⚙</a>
+                            <a class="btn btn-light " href="{{ url("compte_delete",{'id':compte.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?');">🗑</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {{ include('association/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
 {% endblock %}

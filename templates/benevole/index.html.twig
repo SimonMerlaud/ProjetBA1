@@ -1,20 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BenevoleController!{% endblock %}
+{% block title %}Bienvenue{% endblock %}
+
+{% block h1 %}Bienvenue{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/simon/Documents/Projet_BA1/ProjetBA1/src/Controller/BenevoleController.php'|file_link(0) }}">src/Controller/BenevoleController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/simon/Documents/Projet_BA1/ProjetBA1/templates/benevole/doodle.html.twig'|file_link(0) }}">templates/benevole/index.html.twig</a></code></li>
-    </ul>
-</div>
+    {% if is_granted('ROLE_BENEVOLE') %}
+        {% if startCollecte is not null %}
+            {% include 'booking/calendar.html.twig' with {'magasin':null, 'benevole': true,'startCollecte' : startCollecte, 'endCollecte' : endCollecte} %}
+        {% else %}
+            <h4 class="d-flex justify-content-center mt-5">Le weekend de collecte n'a pa encore été définies</h4>
+        {% endif %}
+    {% elseif is_granted('ROLE_BA') %}
+        <h4 class="d-flex justify-content-center mt-5">Veuillez entrez la date de debut et de fin de la collecte</h4>
+        {{ include('benevole/formDateCollecte.html.twig') }}
+    {% endif %}
 {% endblock %}

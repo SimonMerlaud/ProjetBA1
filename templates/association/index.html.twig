@@ -6,12 +6,8 @@
 
 {% block body %}
     <div class="justify-content-md-end text-center">
-        <form action="{{ url("association_add") }}" style="cursor: pointer;display:inline-block; ">
-            <button class="btn btn-secondary " type="submit" >Ajouter un magasin</button>
-        </form>
-        <form action="{{ url("compte_index") }}" style="cursor: pointer;display:inline-block; ">
-            <button class="btn btn-secondary " type="submit" >Retour</button>
-        </form>
+        <a class="btn btn-secondary mx-1" type="submit " href="{{ url("association_add") }}">Ajouter une association</a>
+        <a class="btn btn-secondary mx-1" type="submit" href="{{ path('accueil') }}" >Retour</a>
         <div class="row d-flex justify-content-center">
             <div class="col-4 mt-2">
                 {{ render(controller(
@@ -20,7 +16,39 @@
             </div>
         </div>
     </div>
-    {{ include('association/list.html.twig', {'associations': associations,'nbPage': nbPage,'currentPage': currentPage}) }}
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <table class="table table-hover text-center" id="list">
+                <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Adresse</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% if associations is null%}
+                    <h3>Il n'y a pas d'association a ce nom</h3>
+                {% endif %}
+
+                {% for association in associations %}
+                    <tr class="table-light" >
+                        <th scope="row">
+                            {{ association.nom }}
+                        </th>
+                        <td>{{ association.adresse }}</td>
+                        <td>
+                            <a class="btn btn-secondary" href="{{ url("association_view",{'id': association.id}) }}">Voir</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{ include('compte/pagination.html.twig', {'nbPage': nbPage,'currentPage': currentPage}) }}
 
 
 

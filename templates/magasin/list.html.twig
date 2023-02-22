@@ -10,6 +10,7 @@
                 <tr>
                     <th scope="col">Nom</th>
                     <th scope="col">Adresse</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -19,17 +20,21 @@
 >                    {% endif %}
 
                     {% for magasin in magasins %}
-                        <tr class="table-light" style="cursor:pointer" onclick="window.location='{{ url("magasin_view", {'id':magasin.id}) }}'">
+                        <tr class="table-light">
                             <th scope="row">
                                 {{ magasin.nom }}
                             </th>
                             <td>{{ magasin.adresse }}</td>
-
+                            <td>
+                                <a class="btn btn-secondary mx-1" type="submit" href="{{ url("magasin_booking",{'magId':magasin.id}) }}">Planning</a>
+                                <a class="btn btn-secondary mx-1" href="{{ url("magasin_view", {'id':magasin.id}) }}">Voir</a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+    </div>
     </div>
 {% endblock %}
 

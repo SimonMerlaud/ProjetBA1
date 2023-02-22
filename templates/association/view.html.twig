@@ -4,6 +4,25 @@
     Association {{ association.nom }}
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        $(document).ready(function () {
+            $('#dtDynamicVerticalScrollExample').DataTable({
+                "scrollX": true,
+                "scrollY": "16vw",
+                "paging":false,
+                "searching":false,
+                "info": false,
+                "language": {
+                    "emptyTable": "Aucun contact associé"
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
 
     <div class="container">
@@ -21,86 +40,56 @@
                                     <label for="exampleInputPassword1" class="form-label">Nom</label>
                                     <input type="text" class="form-control" id="exampleInputPassword1" value="{{ association.nom }}" disabled>
                                 </div>
-                                <!-- Confirm password -->
-                                <div class="col-md-6">
-                                    <label for="exampleInputPassword3" class="form-label">Nombre de bénévole</label>
-                                    <input type="text" class="form-control" id="exampleInputPassword3" value="{{ association.nbPersonneNecessaire }}" disabled>
-                                </div>
                                 <!-- New password -->
                                 <div class="col-md-12">
-                                    {% set adresse = association.adresse.codePostale ~" "~ association.adresse.ville ~', '~ association.adresse.rue %}
                                     <label for="exampleInputPassword2" class="form-label">Adresse</label>
                                     <input type="text" class="form-control" id="exampleInputPassword3" value="{{ association.adresse }}" disabled>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    {% set compt = 0 %}
-                    {% set break = false %}
 
-                    {% for contact in association.contacts|slice(0,2)%}
 
-                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
-                        <div class="bg-light px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <h4 class=" d-flex mb-4 mt-0">Contact
-                                <div class=" d-flex justify-content-end ">
-                                    <form action="{{ url("association_deleteContact",{'AssoId':association.id,'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit" >🗑</button>
-                                    </form>
-                                    <form action="{{ url("association_modifyContact",{'AssoId':association.id,'id': contact.id}) }}" style="display:inline-block; ">
-                                        <button class="btn btn-sm" type="submit">🛠</button>
-                                    </form>
-                                </div>
-                                </h4>
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw me-2 "></i>Nom</label>
-
-                                    <input type="text" class="form-control" placeholder=""  value="{{ contact.nom}}" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Prénom</label>
-                                    <input type="text" class="form-control" placeholder=""  value="{{ contact.prenom }}" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Email</label>
-                                    <input type="text" class="form-control" placeholder="" value="{{ contact.mail }}" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label"><i class="fab fa-fw me-2"></i>Téléphone</label>
-                                    <input type="text" class="form-control" placeholder="" value="{{ contact.telephone }}" disabled>
-                                </div>
-                            </div> <!-- Row END -->
-                        </div>
-                    </div>
-                    {% endfor %}
-
-                    {% if association.contacts.toArray|length >2%}
-                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0">
-                        <div class=" px-4 py-5 rounded">
-                            <div class="row g-3">
-                                <form action="{{ url("association_viewContacts",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                                    <button class="btn btn-primary " type="submit" >Voir tous les contacts</button>
-                                </form>
+                    <div class="col-xxl-6 mb-5 mt-5 mb-xxl-0" style="height: 20vw">
+                        <div class="bg-light px-2 py-2 rounded" style="height: 100%;">
+                                <table id="dtDynamicVerticalScrollExample" class="table table-hover table-sm" cellspacing="0"
+                                       width="100%">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Nom</th>
+                                        <th scope="col">Prénom</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Téléphone</th>
+                                        <th scope="col">Modification</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for contact in association.contacts%}
+                                                <tr class="table-light">
+                                                    <th scope="col">{{ contact.nom }}</th>
+                                                    <td>{{ contact.prenom }}</td>
+                                                    <td>{{ contact.mail }}</td>
+                                                    <td>{{ contact.telephone }}</td>
+                                                    <td>
+                                                        <div class="button_view" style="position: relative">
+                                                            <a href="{{ url("association_modifyContact",{'AssoId': association.id,'id': contact.id}) }}" class="btn btn-sm btn-light">⚙</a>
+                                                            <a class="btn btn-sm btn-light" href="{{ url("association_deleteContact",{'AssoId': association.id,'id': contact.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?');">🗑</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
-                    {% endif %}
 
                 </div>
                 <div class="justify-content-md-end text-center mb-5">
-                    <form action="{{ url("association_addContact",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-primary " type="submit" >Ajouter un contact</button>
-                    </form>
-                    <form action="{{ url("association_delete",{'id': association.id}) }}" style="cursor: pointer;display:inline-block; ">
-                        <button class="btn btn-danger " type="submit" >Supprimer</button>
-                    </form>
-                    <form action="{{ url("association_edit",{'id': association.id}) }}" style="display:inline-block; ">
-                        <button class="btn btn-primary" type="submit">Modifier</button>
-                    </form>
-                    <form action="{{ url("association_index") }}" style="display:inline-block; ">
-                        <button class="btn btn-primary" type="submit">Retour</button>
-                    </form>
+                    <a href="{{ url("association_addContact",{'id': association.id}) }}" class="btn btn-primary mx-1" type="submit" >Ajouter un contact</a>
+                    <a class="btn btn-danger mx-1" href="{{ url("association_delete",{'id': association.id}) }}" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ?');">Supprimer</a>
+                    <a href="{{ url("association_edit",{'id': association.id}) }}" class="btn btn-primary mx-1" type="submit">Modifier</a>
+                    <a href="{{ url("association_index") }}" class="btn btn-primary mx-1" type="submit">Retour</a>
                 </div>
         </div>
     </div>

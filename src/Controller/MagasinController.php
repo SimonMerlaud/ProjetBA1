@@ -3,13 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Adresse;
+use App\Entity\Booking;
 use App\Entity\Contact;
 use App\Entity\Lieux;
+use App\Entity\MainStart;
 use App\Entity\TypeLieux;
 use App\Form\ContactAssoType;
 use App\Form\LieuxType;
 use App\Form\ModifyLieuxType;
 use App\Form\SearchAssoType;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -32,7 +35,7 @@ class MagasinController extends AbstractController
         }
         $magasins = $em->getRepository("App\Entity\Lieux")->myFindAllWithPaging("magasin", $page);
         $nbTotalPages = intval(ceil(count($magasins) / 20) ) ;
-        if ($page >$nbTotalPages){
+        if ($page >$nbTotalPages && $page !=1){
             throw new NotFoundHttpException("La page n'existe pas");
         }
 
@@ -169,7 +172,7 @@ class MagasinController extends AbstractController
             }
             $em->getRepository(Lieux::class)->remove($mag);
             $em->flush();
-            $this->addFlash('add', "Le magasin a été supprimer");
+            $this->addFlash('warning', "Le magasin a été supprimer");
             return $this->redirectToRoute('magasin_index');
         }
     }
@@ -209,30 +212,18 @@ class MagasinController extends AbstractController
         return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$id,'titre'=>'Ajouter un contact']);
     }
 
-    #[Route('/viewContacts/{id}', name: '_viewContacts',
-        requirements:[ 'id'=>'\d+'])]
-    public function viewAllContactAction(EntityManagerInterface $em,$id):Response
-    {
-        $mag = $em->getRepository(Lieux::class)->find($id);
-        if($mag == null){
-            $this->addFlash('error', 'Le magasin n\'existe pas');
-            return $this->redirectToRoute('magasin_index');
-        }
-        return $this->render('magasin/viewContacts.html.twig',['magasin'=>$mag]);
-    }
-
-    #[Route('/modifyContact/{MagId}/{id}', name: '_modifyContact',
+    #[Route('/modifyContact/{magId}/{id}', name: '_modifyContact',
         requirements:[ 'id'=>'\d+',
             'MagId'=>'\d+'
         ])]
-    public function modifyContactAction(EntityManagerInterface $em,$id,$MagId,\Symfony\Component\HttpFoundation\Request $request):Response
+    public function modifyContactAction(EntityManagerInterface $em,$id,$magId,\Symfony\Component\HttpFoundation\Request $request):Response
     {
         $contact = $em->getRepository(Contact::class)->find($id);
 
 
         if($contact== null){
             $this->addFlash('error', 'Le contact n\'existe pas');
-            return $this->redirectToRoute('magasin_view',['id'=>$MagId]);
+            return $this->redirectToRoute('magasin_view',['id'=>$magId]);
         }
         $form = $this->createForm(ContactAssoType::class,$contact);
         $form->add('send',SubmitType::class,['label'=>'Modifier']);
@@ -242,9 +233,9 @@ class MagasinController extends AbstractController
             $em->persist($contact);
             $em->flush();
             $this->addFlash('add', 'Le contact a été modifié');
-            return $this->redirectToRoute('magasin_viewContacts',['id'=>$MagId]);
+            return $this->redirectToRoute('magasin_view',['id'=>$magId]);
         }
-        return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$MagId,'titre'=>'Modifier un contact']);
+        return $this->render('magasin/formContact.html.twig',['form'=>$form->createView(),'id'=>$magId,'titre'=>'Modifier un contact']);
     }
 
     #[Route('/deleteContact/{magId}/{id}', name: '_deleteContact',
@@ -267,12 +258,170 @@ class MagasinController extends AbstractController
         $mag->removeContact($cont);
         $em->persist($mag);
         $em->flush();
-
-        return $this->render('magasin/viewContacts.html.twig',['magasin'=>$mag]);
+        $this->addFlash('warning', 'Le contact a été supprimer');
+        return $this->redirectToRoute('magasin_view',['id'=>$magId]);
     }
 
     public function Pagination($currentPage, $nbPage):Response
     {
         return $this->render('magasin/pagination.html.twig',['nbPage'=>$nbPage,'currentPage'=>$currentPage]);
+    }
+
+    #[Route('/booking/{magId}', name: '_booking')]
+    public function bookingMagasin($magId,EntityManagerInterface $entityManager):Response
+    {
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        $dateCollecte = $entityManager->getRepository(MainStart::class)->find(1);
+        if ($dateCollecte->getBeginAt() != null){
+            $startCollecte = $dateCollecte->getBeginAt()->format('Y-m-d');
+            $endCollecte = $dateCollecte->getEndAt()->format('Y-m-d');
+            return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte' => $startCollecte, 'endCollecte' => $endCollecte]);
+        }
+        else{
+            return $this->render('magasin/booking.html.twig',['magasin'=>$magasin, 'startCollecte' => null, 'endCollecte' => null]);
+        }
+    }
+
+    #[Route('/affectation/{idBenevsOutput}/{idBenevsInput}/{params}/', name: '_affectation')]
+    public function affectation($idBenevsOutput,$idBenevsInput,EntityManagerInterface $entityManager,$params):Response
+    {
+
+        $parametres = explode(',', $params);
+        $start = new \DateTime($parametres[0]);
+        $end = new \DateTime($parametres[1]);
+        $magId = $parametres[2];
+        $magasin = $entityManager->getRepository(Lieux::class)->find($magId);
+        $magasinCreneau = $entityManager->getRepository(Booking::class)->findOneBy(['lieux'=>$magasin,'beginAt'=>$start,'endAt'=>$end]);
+        if($idBenevsOutput == "null" && $idBenevsInput == "null"){
+            return $this->redirectToRoute('magasin_booking', ['magId' =>$magId]);
+        }
+        if(strstr( $idBenevsInput, ',' )) {
+            $idBenevsInput = explode(',', $idBenevsInput);
+            foreach ($idBenevsInput as $idBenevInput) {
+                $this->AffectationInput($magasinCreneau, $magasin, $start, $end, $idBenevInput, $entityManager);
+            }
+        }elseif($idBenevsInput != "null"){
+            $idBenevInput = $idBenevsInput;
+            $this->AffectationInput($magasinCreneau, $magasin, $start, $end, $idBenevInput, $entityManager);
+        }
+
+        if(strstr( $idBenevsOutput, ',' )) {
+            $idBenevsOutput = explode(',', $idBenevsOutput);
+            foreach ($idBenevsOutput as $idBenevOutput) {
+                $this->AffectationOutput($magasinCreneau, $idBenevOutput, $entityManager);
+            }
+        }elseif($idBenevsOutput != "null"){
+            $idBenevOutput = $idBenevsOutput;
+            $this->AffectationOutput($magasinCreneau, $idBenevOutput, $entityManager);
+        }
+        return $this->redirectToRoute('booking_show', ['id' => $magasinCreneau->getId(), 'magId' => $magasin->getId()]);    }
+
+    private function createBeginBooking($benevole, $booking, $start){
+        $creneauStart = new Booking();
+        $creneauStart->addContact($benevole);
+        $creneauStart->setBeginAt($booking->getBeginAt());
+        $creneauStart->setEndAt($start);
+        $creneauStart->setMagasinId(0);
+        $creneauStart->setTitle('Libre ');
+        $booking->setBeginAt($start);
+        return $creneauStart;
+    }
+
+    private function createEndBooking($benevole, $booking, $end){
+        $creneauEnd = new Booking();
+        $creneauEnd->addContact($benevole);
+        $creneauEnd->setBeginAt($end);
+        $creneauEnd->setEndAt($booking->getEndAt());
+        $creneauEnd->setMagasinId(0);
+        $creneauEnd->setTitle('Libre ');
+        $booking->setEndAt($end);
+        return $creneauEnd;
+    }
+
+    private function AffectationInput($magasinCreneau, $magasin, $start, $end, $idBenevInput, EntityManagerInterface $entityManager){
+        $idBenevInput = explode('_', $idBenevInput);
+        $benevole = $entityManager->getRepository(Contact::class)->find($idBenevInput[0]);
+        $bookings=$entityManager->getRepository(Booking::class)->findWithId($idBenevInput[0],$idBenevInput[1]);
+        foreach ($bookings as $booking) {
+            if ($booking->getMagasinId() == 0) {
+                $startText = $booking->getBeginAt()->format('H:i');
+                $endText = $booking->getEndAt()->format('H:i');
+                if ($booking->getEndAt() > $end || $booking->getBeginAt() < $start) {
+                    if ($booking->getEndAt() > $end) {
+                        $creneauEnd = $this->createEndBooking($benevole, $booking, $end);
+                        $entityManager->persist($creneauEnd);
+                        if($booking->getBeginAt() >=$start){
+                            $startText = $booking->getBeginAt()->format('H:i');
+                            $endText = $creneauEnd->getBeginAt()->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                        }
+                    }
+                    if ($booking->getBeginAt() < $start) {
+                        $creneauStart = $this->createBeginBooking($benevole, $booking, $start);
+                        $entityManager->persist($creneauStart);
+                        if($booking->getEndAt() <= $end) {
+                            $startText = $start->format('H:i');
+                            $endText = $booking->getEndAt()->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle() . "\n" . $benevole->getMail() . " (" . $startText . "," . $endText . ")");
+                        }else{
+                            $startText = $start->format('H:i');
+                            $endText = $end->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                        }
+                    }
+                }else{
+                    $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                }
+                $booking->setTitle('Affecté à ' . ' ' . $magasin->getNom());
+                $booking->setMagasinId($magasin->getId());
+                if ($magasinCreneau->getNbPersonneNecessaire() - 1 < 0) {
+                    $this->addFlash('error', 'Le nombre de personne nécessaire est dépasser');
+                    return $this->redirectToRoute('booking_show', ['id' => $magasinCreneau->getId(), 'magId' => $magasin->getId()]);
+                } else {
+                    $magasinCreneau->setNbPersonneNecessaire($magasinCreneau->getNbPersonneNecessaire() - 1);
+                }
+                $magasinCreneau->addContact($benevole);
+                $entityManager->persist($magasinCreneau);
+                $entityManager->persist($booking);
+                $entityManager->flush();
+            }
+        }
+    }
+
+    private function AffectationOutput($magasinCreneau, $idBenevOutput, $entityManager)
+    {
+        $idBenevOutput = explode('_', $idBenevOutput);
+        $benevole = $entityManager->getRepository(Contact::class)->find($idBenevOutput[0]);
+        $bookings=$entityManager->getRepository(Booking::class)->findWithId($idBenevOutput[0],$idBenevOutput[1]);
+        foreach ($bookings as $booking) {
+            if ($booking->getMagasinId() != 0) {
+                $booking->setTitle('Libre ');
+                $booking->setMagasinId(0);
+                $magasinCreneau->setNbPersonneNecessaire($magasinCreneau->getNbPersonneNecessaire() + 1);
+                $titles = $magasinCreneau->getTitle();
+                $title = explode("\n",$titles);
+                $nbItem = count($title);
+                for ($i = 0; $i < $nbItem; $i++){
+                    $startText = $booking->getBeginAt()->format('H:i');
+                    $endText = $booking->getEndAt()->format('H:i');
+                    if($title[$i] == $benevole->getMail()." (".$startText.",".$endText.")"){
+                        unset($title[$i]);
+                    }
+                }
+                $nbItem = count($title);
+                $newTitle="";
+                $title = array_values($title);
+                for($i = 0; $i < $nbItem; $i++){
+                    if($title[$i] != "") {
+                        $newTitle = $newTitle . "\n" . $title[$i];
+                    }
+                }
+                $magasinCreneau->setTitle($newTitle);
+                $magasinCreneau->removeContact($benevole);
+                $entityManager->persist($magasinCreneau);
+                $entityManager->persist($booking);
+                $entityManager->flush();
+            }
+        }
     }
 }

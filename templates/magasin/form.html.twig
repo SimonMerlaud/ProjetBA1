@@ -13,14 +13,8 @@
             <div class="col-8">
                 {{ form_start(form) }}
                     <div class="form-group">
-                        <label for="email" class="form-label mt-2">{{ form_label(form.nom, 'Association') }}</label>
+                        <label for="email" class="form-label mt-2">{{ form_label(form.nom, 'Nom du magasin') }}</label>
                         {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.nom) }}
-                    </div>
-                    <div class="form-group">
-                        <label for="password" class="form-label mt-2">{{ form_label(form.nbPersonneNecessaire, 'Nombre de personne nécessaire') }}</label>
-                        {{ form_widget(form.nbPersonneNecessaire, {'attr': {'class': 'form-control'}}) }}
-                        {{ form_errors(form.nbPersonneNecessaire) }}
                     </div>
                     <div class="form-group mt-4">
                             <lengend>Adresse</lengend>
@@ -35,8 +29,8 @@
                         {{ form_errors(form.contacts) }}
                     </div>
                     <div class="d-flex justify-content-center mt-2 mb-5">
-                        {{ form_widget(form.send, {'attr': {'class': 'btn btn-primary mx-3'}}) }}
-                        <a class="btn btn-primary mx-3" href="{{ path('magasin_index') }}">Retour</a>
+                        {{ form_widget(form.send, {'attr': {'class': 'btn btn-primary mx-1'}}) }}
+                        <a class="btn btn-primary mx-1" href="{{ path('magasin_index') }}">Retour</a>
                     </div>
                 {{ form_end(form) }}
             </div>

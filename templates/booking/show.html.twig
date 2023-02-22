@@ -2,29 +2,53 @@
 
 {% block title %}Booking{% endblock %}
 
+{% block h1 %}
+    {% if(magasin) %}
+    Affectation pour {{ magasin.nom }} ({{ startDate|date('j/m') }})
+    {% else %}
+    {{ booking.title }}
+    {% endif %}
+{% endblock %}
 {% block body %}
-    <h1>Booking</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ booking.id }}</td>
-            </tr>
-            <tr>
-                <th>BeginAt</th>
-                <td>{{ booking.beginAt ? booking.beginAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>EndAt</th>
-                <td>{{ booking.endAt ? booking.endAt|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <a href="{{ path('booking_index') }}">back to list</a>
-
-    <a href="{{ path('booking_edit', {'id': booking.id }) }}">edit</a>
-
-    {{ include('booking/_delete_form.html.twig') }}
+    <div class="container ">
+        <div class="row justify-content-center align-center">
+            <div class="col-8">
+                <table class="table">
+                    <tbody>
+                        {% if(magasin) %}
+                            <tr>
+                                <th>Magasin</th>
+                                <td>{{ magasin.adresse.numeroRue }} {{ magasin.adresse.rue }}, {{ magasin.adresse.ville }} {{ magasin.adresse.codePostale }}</td>
+                            </tr>
+                        {% endif %}
+                        <tr>
+                            <th>Date de debut</th>
+                            <td>{{ booking.beginAt ? booking.beginAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        <tr>
+                            <th>Date de fin</th>
+                            <td>{{ booking.endAt ? booking.endAt|date('Y-m-d H:i:s') : '' }}</td>
+                        </tr>
+                        {% if is_granted('ROLE_BA') %}
+                            <tr>
+                                <th>Nombre de personne nécessaire</th>
+                                <td>{{ booking.nbPersonneNecessaire }}</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+                <div class="d-flex justify-content-center mt-2 mb-5">
+                    {{ include('booking/_delete_form.html.twig') }}
+                    {% if is_granted('ROLE_BA') %}
+                        <a class="btn btn-lg btn-primary mx-1" href="{{ path('magasin_booking',{'magId': magId}) }}">Retour</a>
+                    {% else %}
+                        <a class="btn btn-lg btn-primary mx-1" href="{{ path('accueil') }}">Retour</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if is_granted('ROLE_BA') %}
+        {% include 'magasin/affectMagasin.html.twig' with { 'magasin' : magasin,'bookingsInput' : bookingsInput,'bookingsOutput' : bookingsOutput, 'start' : startDate|date('Y-m-d H:i:s'),'end' : endDate|date('Y-m-d H:i:s') } %}
+    {% endif %}
 {% endblock %}

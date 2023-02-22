@@ -19,12 +19,6 @@ class Lieux
     #[ORM\Column(length: 40)]
     private ?string $nom = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $nbPersonneNecessaire = null;
-
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    private array $datesMag = [];
-
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
     private ?TypeLieux $TypeLieux = null;
@@ -32,8 +26,11 @@ class Lieux
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     private ?Adresse $adresse = null;
 
-    #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'lieux')]
+    #[ORM\ManyToMany(targetEntity: Contact::class, inversedBy: 'lieux', cascade: ['persist'])]
     private Collection $contacts;
+
+    #[ORM\OneToMany(mappedBy: 'lieux', targetEntity: Booking::class)]
+    private Collection $bookings;
 
     public function __construct()
     {
@@ -57,30 +54,6 @@ class Lieux
         return $this;
     }
 
-    public function getNbPersonneNecessaire(): ?int
-    {
-        return $this->nbPersonneNecessaire;
-    }
-
-    public function setNbPersonneNecessaire(int $nbPersonneNecessaire): self
-    {
-        $this->nbPersonneNecessaire = $nbPersonneNecessaire;
-
-        return $this;
-    }
-
-    public function getDatesMag(): array
-    {
-        return $this->datesMag;
-    }
-
-    public function setDatesMag(array $datesMag): self
-    {
-        $this->datesMag = $datesMag;
-
-        return $this;
-    }
-
     public function getTypeLieux(): ?TypeLieux
     {
         return $this->TypeLieux;
@@ -94,6 +67,11 @@ class Lieux
     }
 
     public function getAdresse(): ?Adresse
+    {
+        return $this->adresse;
+    }
+
+    public function getAdresseS(): ?String
     {
         return $this->adresse;
     }
@@ -125,6 +103,36 @@ class Lieux
     public function removeContact(Contact $contact): self
     {
         $this->contacts->removeElement($contact);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Booking>
+     */
+    public function getBookings(): Collection
+    {
+        return $this->bookings;
+    }
+
+    public function addBooking(Booking $booking): self
+    {
+        if (!$this->bookings->contains($booking)) {
+            $this->bookings->add($booking);
+            $booking->setLieux($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBooking(Booking $booking): self
+    {
+        if ($this->bookings->removeElement($booking)) {
+            // set the owning side to null (unless already changed)
+            if ($booking->getLieux() === $this) {
+                $booking->setLieux(null);
+            }
+        }
 
         return $this;
     }

@@ -5,7 +5,9 @@
 {% endblock %}
 
 {% block body %}
-
+    <style>
+        .col-form-label {display:none;}
+    </style>
 <div class="container ">
     <div class="row justify-content-center align-center">
         <div class="col-8">
@@ -14,38 +16,20 @@
             {{ form_label(form.nom, 'Nom de l\'association') }}
             {{ form_errors(form.nom) }}
             {{ form_widget(form.nom) }}
-            {{ form_label(form.nbPersonneNecessaire, 'Nombre de bénévole') }}
-            {{ form_errors(form.nbPersonneNecessaire) }}
-            {{ form_widget(form.nbPersonneNecessaire) }}
 
-            {{ form_label(form.adresse.codePostale) }}
-            {{ form_errors(form.adresse.codePostale) }}
-            {{ form_widget(form.adresse.codePostale) }}
-
-            {{ form_label(form.adresse.ville) }}
-            {{ form_errors(form.adresse.ville) }}
-            {{ form_widget(form.adresse.ville) }}
-
-            {{ form_label(form.adresse.rue) }}
-            {{ form_errors(form.adresse.rue) }}
-            {{ form_widget(form.adresse.rue) }}
-
-            {{ form_label(form.adresse.numeroRue) }}
-            {{ form_errors(form.adresse.numeroRue) }}
-            {{ form_widget(form.adresse.numeroRue) }}
-
-            {{ form_label(form.adresse.numeroAppart) }}
-            {{ form_errors(form.adresse.numeroAppart) }}
-            {{ form_widget(form.adresse.numeroAppart) }}
+            <div class="form-group mt-4">
+                <lengend>Adresse</lengend>
+                <label for="roles" class="form-label mt-2">{{ form_label(form.adresse) }}</label>
+                {{ form_widget(form.adresse, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.adresse) }}
+            </div>
             <br>
             <div class="justify-content-md-end text-center mb-5 mt-2">
                 {{ form_label(form.send) }}
-                {{ form_widget(form.send) }}
+                {{ form_widget(form.send,{'attr': {'class': 'btn btn-primary mx-1'}}) }}
                 {{ form_end(form) }}
 
-                <form action="{{ url("association_view",{'id': id}) }}" style="display:inline-block; ">
-                    <button class="btn btn-primary " type="submit">Retour</button>
-                </form>
+                <a class="btn btn-primary mx-1" type="submit" href="{{ url("association_view",{'id': id}) }}">Retour</a>
             </div>
                 <br><br>
             </div>

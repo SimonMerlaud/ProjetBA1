@@ -3,7 +3,7 @@
 {% block title %}New Booking{% endblock %}
 
 {% block h1 %}Nouveau créneaux{% endblock %}
-{% block body %}
 
-    {{ include('booking/_form.html.twig') }}
+{% block body %}
+    {{ include('booking/_form.html.twig',{'date_start': startCollecte,'date_end': endCollecte ,'magId':magId}) }}
 {% endblock %}

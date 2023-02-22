@@ -12,14 +12,13 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends AbstractController
 {
+    #[Route('searchAsso', name: 'searchAsso')]
     public function searchAsso(EntityManagerInterface $em, Request $request): Response
     {
         $searchForm = $this->createForm(SearchAssoType::class);
         if ($searchForm->handleRequest($request)->isSubmitted() && $searchForm->isValid()){
             $criteria = $searchForm->getData();
-            dump($criteria);
             $produits = $em->getRepository(Lieux::class)->findWithKeyWord("association", $criteria);
-            dump($produits);
             return $this->render('association/list.html.twig',['produits'=>$produits]);
         }else{
             return $this->render("search/searchBarAsso.html.twig",['form' => $searchForm->createView()]);

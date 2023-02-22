@@ -1,0 +1,50 @@
+
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .sr-only {display:none}
+</style>
+
+
+<div class="example-wrapper">
+    {{ form_start(formStart) }}
+
+    <div class="mb-3">
+        {{ form_label(formStart.beginAt, 'Date de début de collecte (yyyy-MM-dd)') }}
+        {% if disabled %}
+            {{ form_widget(formStart.beginAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled'}}) }}
+        {% else %}
+            {{ form_widget(formStart.beginAt, {'attr': {'class': 'datetimepicker1'}}) }}
+        {% endif %}
+        {{ form_errors(formStart.beginAt) }}
+        {{ form_errors(formStart.beginAt) }}
+
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formStart.endAt, 'Date de fin de collecte (yyyy-MM-dd)') }}
+        {% if disabled %}
+            {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled', 'value': formStart.vars.value.endAt|date_modify('-1 day')|date('Y-m-d') }}) }}
+        {% else %}
+            {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1'}}) }}
+        {% endif %}
+        {{ form_errors(formStart.endAt) }}
+    </div>
+    {% if disabled %}
+        <a class="btn btn-primary mt-2" href="{{ path('accueil', {'restart' : 'vrai'}) }}">Fin de collecte</a>
+    {% else %}
+        <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
+    {% endif %}
+    <script type="text/javascript">
+        jQuery.datetimepicker.setLocale('fr');
+        $(function () {
+            $('.datetimepicker1').datetimepicker(
+                {
+                    timepicker:false,
+                    format:'Y-m-d'
+                }
+            );
+        });
+    </script>
+    {{ form_end(formStart) }}
+</div>

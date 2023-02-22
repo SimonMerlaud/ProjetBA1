@@ -1,21 +1,76 @@
+
 <style>
     .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .sr-only {display:none}
 </style>
 
+
 <div class="example-wrapper">
-{{ form_start(form) }}
+    {{ form_start(form) }}
 
-    {{ form_label(form.beginAt, 'Date de début') }}
-    {{ form_widget(form.beginAt) }}
-    {{ form_errors(form.beginAt) }}
+    <div class="mb-3">
+        {{ form_label(form.beginAt, 'Date de début (AAAA-MM-JJ  HH:mm)') }}
+        {{ form_widget(form.beginAt, {'attr': {'class': 'datetimepicker1'}}) }}
+        {{ form_errors(form.beginAt) }}
+    </div>
 
-    {{ form_label(form.endAt, 'Date de fin') }}
-    {{ form_widget(form.endAt) }}
-    {{ form_errors(form.endAt) }}
+    <div class="mb-3">
+        {{ form_label(form.endAt, 'Date de fin (AAAA-MM-JJ  HH:mm)') }}
+        {{ form_widget(form.endAt,{'attr': {'class': 'datetimepicker1'}}) }}
+        {{ form_errors(form.endAt) }}
+    </div>
+    {% if is_granted('ROLE_BA') %}
+        <div class="mb-3">
+            {{ form_label(form.nbPersonneNecessaire, 'Nombre de personnes nécessaires') }}
+            {{ form_widget(form.nbPersonneNecessaire) }}
+            {{ form_errors(form.nbPersonneNecessaire) }}
+        </div>
+    {% else %}
+        <div class="mb-3">
+            {{ form_widget(form.nbPersonneNecessaire,{'attr':{'class':'d-none'}}) }}
+            {{ form_errors(form.nbPersonneNecessaire) }}
+        </div>
+    {% endif %}
 
-    <a class="btn btn-primary mt-2" href="{{ path('booking_calendar') }}">retour</a>
-    <button class="btn btn-primary mt-2">{{ button_label|default('Valider') }}</button>
+    <div class="justify-content-md-end text-center mb-5">
 
-{{ form_end(form) }}
+        <button class="btn btn-primary mx-1">{{ button_label|default('Valider') }}</button>
+
+        {% if is_granted('ROLE_BENEVOLE') %}
+            <a class="btn btn-primary mx-1" href="{{ path('accueil') }}">retour</a>
+        {% else %}
+            <a class="btn btn-primary mx-1" href="{{ path('magasin_booking', {'magId':magId}) }}">retour</a>
+        {% endif %}
+    </div>
+    <script type="text/javascript">
+        jQuery.datetimepicker.setLocale('fr');
+        $(function () {
+            $('.datetimepicker1').datetimepicker(
+                {
+                    defaultDate:'{{ date_start }}',
+                    defaultTime:'08:00',
+                    allowTimes:[
+                        '08:00',
+                        '09:00',
+                        '10:00',
+                        '11:00',
+                        '12:00',
+                        '13:00',
+                        '14:00',
+                        '15:00',
+                        '16:00',
+                        '17:00',
+                        '18:00',
+                        '19:00',
+                        '20:00',
+                    ],
+                    minDate: '{{ date_start }}',
+                    maxDate: '{{ date_end }}',
+                    format:'Y-m-d H:i'
+                }
+            );
+        });
+    </script>
+    {{ form_end(form) }}
 </div>
