@@ -342,7 +342,7 @@ class MagasinController extends AbstractController
                     if ($booking->getEndAt() > $end) {
                         $creneauEnd = $this->createEndBooking($benevole, $booking, $end);
                         $entityManager->persist($creneauEnd);
-                        if($booking->getBeginAt() >$start){
+                        if($booking->getBeginAt() >=$start){
                             $startText = $booking->getBeginAt()->format('H:i');
                             $endText = $creneauEnd->getBeginAt()->format('H:i');
                             $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
@@ -351,7 +351,7 @@ class MagasinController extends AbstractController
                     if ($booking->getBeginAt() < $start) {
                         $creneauStart = $this->createBeginBooking($benevole, $booking, $start);
                         $entityManager->persist($creneauStart);
-                        if($booking->getEndAt() < $end) {
+                        if($booking->getEndAt() <= $end) {
                             $startText = $start->format('H:i');
                             $endText = $booking->getEndAt()->format('H:i');
                             $magasinCreneau->setTitle($magasinCreneau->getTitle() . "\n" . $benevole->getMail() . " (" . $startText . "," . $endText . ")");
