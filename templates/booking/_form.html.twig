@@ -10,13 +10,13 @@
     {{ form_start(form) }}
 
     <div class="mb-3">
-        {{ form_label(form.beginAt, 'Date de début (yyyy-MM-dd  HH:mm)') }}
+        {{ form_label(form.beginAt, 'Date de début (AAAA-MM-JJ  HH:mm)') }}
         {{ form_widget(form.beginAt, {'attr': {'class': 'datetimepicker1'}}) }}
         {{ form_errors(form.beginAt) }}
     </div>
 
     <div class="mb-3">
-        {{ form_label(form.endAt, 'Date de fin (yyyy-MM-dd  HH:mm)') }}
+        {{ form_label(form.endAt, 'Date de fin (AAAA-MM-JJ  HH:mm)') }}
         {{ form_widget(form.endAt,{'attr': {'class': 'datetimepicker1'}}) }}
         {{ form_errors(form.endAt) }}
     </div>

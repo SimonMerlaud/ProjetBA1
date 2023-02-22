@@ -4,47 +4,12 @@
     Liste des associations
 {% endblock %}
 
-{% block javascripts %}
-{{ parent() }}
-<script type="text/javascript" >
-    $('#searchbar').on('input', function() {
-        demanderListe($(this).val());
-    });
-
-    function demanderListe(recherche) {
-        $.ajax({
-            async: "true",
-            type: "POST",
-            url: '{{ path('searchAsso') }}',
-            data: {
-                search: recherche,
-            },
-            dataType: "json",
-            success: function (data) {
-                console.log(data);
-            },
-            error: function (data) {
-                console.log(data);
-            }
-        });
-    }
-
-    function remplirListe(responseJSON){
-        $("#list").html("");
-
-        responseJSON.forEach(element => {
-            $("#list").append("<li>"+element+"</li>");
-        });
-    }
-</script>
-{% endblock %}
 {% block body %}
     <div class="justify-content-md-end text-center">
         <a class="btn btn-secondary mx-1" type="submit " href="{{ url("association_add") }}">Ajouter une association</a>
         <a class="btn btn-secondary mx-1" type="submit" href="{{ path('accueil') }}" >Retour</a>
         <div class="row d-flex justify-content-center">
             <div class="col-4 mt-2">
-                <input type="text" class="form-control me-sm-2 mb-2" id="searchbar" placeholder="Rechercher par nom">
                 {{ render(controller(
                     'App\\Controller\\SearchController::searchAsso'
                 )) }}
