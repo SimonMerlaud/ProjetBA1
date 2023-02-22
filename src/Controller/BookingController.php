@@ -115,6 +115,15 @@ class BookingController extends AbstractController
             foreach ($contacts as $contact){
                 $booking->removeContact($contact);
             }
+            if($magId > 0 ){
+                $bookingsBenev = $em->getRepository(Booking::class)->findAllWithMagId($magId);
+                foreach ($bookingsBenev as $bookbenev){
+                    $bookbenev->setTitle('Libre');
+                    $bookbenev->setMagasinId(0);
+                    $em->persist($bookbenev);
+                    $em->flush();
+                }
+            }
             $em->persist($booking);
             $em->flush();
             $em->remove($booking);

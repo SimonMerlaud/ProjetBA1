@@ -75,6 +75,14 @@ class BookingRepository extends ServiceEntityRepository
             ->setParameter('contactId', $contactId);
         return $query->getQuery()->getResult();
     }
+
+    public function findAllWithMagId($magId){
+        return $this->createQueryBuilder('b')
+            ->where('b.MagasinId= :magId')
+            ->setParameter('magId',$magId)
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Booking[] Returns an array of Booking objects
 //     */

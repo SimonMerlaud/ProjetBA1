@@ -338,23 +338,31 @@ class MagasinController extends AbstractController
             if ($booking->getMagasinId() == 0) {
                 $startText = $booking->getBeginAt()->format('H:i');
                 $endText = $booking->getEndAt()->format('H:i');
-                $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
                 if ($booking->getEndAt() > $end || $booking->getBeginAt() < $start) {
                     if ($booking->getEndAt() > $end) {
                         $creneauEnd = $this->createEndBooking($benevole, $booking, $end);
-                        $startText = $creneauEnd->getBeginAt()|date('H:i:s');
-                        $endText = $creneauEnd->getEndAt()|date('H:i:s');
-                        $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                        $entityManager->persist($creneauEnd);
+                        if($booking->getBeginAt() >$start){
+                            $startText = $booking->getBeginAt()->format('H:i');
+                            $endText = $creneauEnd->getBeginAt()->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                        }
                     }
                     if ($booking->getBeginAt() < $start) {
                         $creneauStart = $this->createBeginBooking($benevole, $booking, $start);
-                        $startText = $creneauStart->getBeginAt()|date('H:i:s');
-                        $endText = $creneauStart->getEndAt()|date('H:i:s');
-                        $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
-
+                        $entityManager->persist($creneauStart);
+                        if($booking->getEndAt() < $end) {
+                            $startText = $start->format('H:i');
+                            $endText = $booking->getEndAt()->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle() . "\n" . $benevole->getMail() . " (" . $startText . "," . $endText . ")");
+                        }else{
+                            $startText = $start->format('H:i');
+                            $endText = $end->format('H:i');
+                            $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
+                        }
                     }
-                    $entityManager->persist($creneauStart);
-                    $entityManager->persist($creneauEnd);
+                }else{
+                    $magasinCreneau->setTitle($magasinCreneau->getTitle(). "\n". $benevole->getMail()." (".$startText.",".$endText.")");
                 }
                 $booking->setTitle('Affecté à ' . ' ' . $magasin->getNom());
                 $booking->setMagasinId($magasin->getId());
