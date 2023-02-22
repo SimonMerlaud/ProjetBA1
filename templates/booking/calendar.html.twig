@@ -52,7 +52,9 @@
                         dataType: "json",
                         success : function (data){
                             console.log(data);
-                            alert(data);
+                            if(data.length > 6){
+                                alert(data);
+                            }
                         },
                         error: function(data){
                             console.log(data);
@@ -76,6 +78,9 @@
                         dataType: "json",
                         success : function (data){
                             console.log(data);
+                            if(data.length > 6){
+                                alert(data);
+                            }
                         },
                         error: function(data){
                             console.log(data);
