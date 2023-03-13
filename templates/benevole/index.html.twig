@@ -9,10 +9,10 @@
         {% if startCollecte is not null %}
             {% include 'booking/calendar.html.twig' with {'magasin':null, 'benevole': true,'startCollecte' : startCollecte, 'endCollecte' : endCollecte} %}
         {% else %}
-            <h4 class="d-flex justify-content-center mt-5">Le weekend de collecte n'a pa encore été définies</h4>
+            <h4 class="d-flex justify-content-center mt-5">Le weekend de collecte n'a pas encore été défini</h4>
         {% endif %}
     {% elseif is_granted('ROLE_BA') %}
-        <h4 class="d-flex justify-content-center mt-5">Veuillez entrez la date de debut et de fin de la collecte</h4>
+        <h4 class="d-flex justify-content-center mt-5">Veuillez entrer la date de début et de fin de la collecte</h4>
         {{ include('benevole/formDateCollecte.html.twig') }}
     {% endif %}
 {% endblock %}

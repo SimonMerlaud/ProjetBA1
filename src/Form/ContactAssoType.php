@@ -15,10 +15,10 @@ class ContactAssoType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom', TextType::class, )
-            ->add('prenom',TextType::class)
-            ->add('mail',EmailType::class)
-            ->add('telephone',TextType::class)
+            ->add('nom', TextType::class,array('label'=>'Nom'))
+            ->add('prenom',TextType::class,array('label'=>'Prénom'))
+            ->add('mail',EmailType::class,array('label'=>'Email'))
+            ->add('telephone',TextType::class,array('label'=>'Téléphone'))
         ;
     }
 

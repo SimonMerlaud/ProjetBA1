@@ -10,7 +10,7 @@
     {{ form_start(formStart) }}
 
     <div class="mb-3">
-        {{ form_label(formStart.beginAt, 'Date de début de collecte (yyyy-MM-dd)') }}
+        {{ form_label(formStart.beginAt, 'Date de début de collecte (AAAA-MM-JJ)') }}
         {% if disabled %}
             {{ form_widget(formStart.beginAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled'}}) }}
         {% else %}
@@ -22,7 +22,7 @@
     </div>
 
     <div class="mb-3">
-        {{ form_label(formStart.endAt, 'Date de fin de collecte (yyyy-MM-dd)') }}
+        {{ form_label(formStart.endAt, 'Date de fin de collecte (AAAA-MM-JJ)') }}
         {% if disabled %}
             {{ form_widget(formStart.endAt, {'attr': {'class': 'datetimepicker1', 'disabled':'disabled', 'value': formStart.vars.value.endAt|date_modify('-1 day')|date('Y-m-d') }}) }}
         {% else %}

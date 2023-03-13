@@ -23,6 +23,9 @@ class AppFixtures extends Fixture
         $compteFixtures = new CompteFixtures();
         $compteFixtures->charger($manager, $this->passwordHasher);
 
+        $bookingFixtures = new BookingFixtures();
+        $bookingFixtures->charger($manager, $this->passwordHasher);
+
         $assoFixtures = new AssoFixtures();
         $assoFixtures->charger($manager);
 

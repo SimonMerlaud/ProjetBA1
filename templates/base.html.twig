@@ -90,7 +90,7 @@
                 {{ message }}
             </div>
         {% endfor %}
-        {% for message in app.flashes('delete') %}
+        {% for message in app.flashes('warning') %}
             <div class="alert alert-dismissible alert-warning text-center">
                 <button type="button" class="btn-close btn btn-warning" data-bs-dismiss="alert"></button>
                 {{ message }}

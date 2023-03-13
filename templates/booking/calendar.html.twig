@@ -4,7 +4,7 @@
     {% else %}
         {% set magasinId =  magasin.id  %}
     {% endif %}
-    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau Creneaux</a>
+    <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_new',{'magId':  magasinId }) }}">Nouveau créneau</a>
     <a class="btn btn-primary mx-1 mb-2" href="{{ path('booking_export',{'magId': magasinId}) }}">Export</a>
     {% if is_granted('ROLE_BA') %}
         <a class="btn btn-primary mx-1 mb-2" href="{{ path('magasin_index') }}">Retour</a>
@@ -56,6 +56,7 @@
                             console.log(data);
                             if(data.length > 6){
                                 alert(data);
+                                location.reload();
                             }
                         },
                         error: function(data){
@@ -82,6 +83,7 @@
                             console.log(data);
                             if(data.length > 6){
                                 alert(data);
+                                location.reload();
                             }
                         },
                         error: function(data){

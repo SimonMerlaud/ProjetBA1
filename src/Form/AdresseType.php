@@ -14,11 +14,11 @@ class AdresseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('codePostale',TextType::class)
-            ->add('ville',TextType::class)
-            ->add('rue',TextType::class)
-            ->add('numeroRue',IntegerType::class)
-            ->add('numeroAppart',IntegerType::class,['required'=>false])
+            ->add('codePostale',TextType::class,array('label'=>'Code postal '))
+            ->add('ville',TextType::class,array('label'=>'Ville '))
+            ->add('rue',TextType::class,array('label'=>'Rue '))
+            ->add('numeroRue',IntegerType::class,array('label'=>'Numéro de la rue '))
+            ->add('numeroAppart',IntegerType::class,['required'=>false,'label'=>'Numéro d\'appartement (facultatif)'])
         ;
     }
 
