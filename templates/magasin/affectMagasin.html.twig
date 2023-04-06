@@ -47,7 +47,7 @@
     <div class="container">
         <div class="row">
             <div class="col-6"style="height:30vw">
-                <h3 class="text-center">Bénévoles libre(s) :</h3>
+                <h3 class="text-center">Bénévoles(s) libre(s) :</h3>
                 <ul class="list-group border h-100 connectedSortable" id="sortable1" >
                     {% for BookingOutput in bookingsOutput %}
                         {% for contact in BookingOutput.contacts %}
@@ -57,7 +57,7 @@
                 </ul>
             </div>
             <div class="col-6" style="height:30vw">
-                <h3 class="text-center">Bénévoles choisi(s) :</h3>
+                <h3 class="text-center">Bénévoles(s) choisi(s) :</h3>
                 <ul id="sortable2" class="list-group border h-100 connectedSortable">
                     {% for BookingInput in bookingsInput %}
                         {% for contact in BookingInput.contacts %}
